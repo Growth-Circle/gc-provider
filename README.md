@@ -31,6 +31,18 @@ npm install -g openclaw && openclaw plugins install gc-provider --pin && opencla
 openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
+### If gc-provider is already installed
+
+```sh
+openclaw plugins update gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+```
+
+### Works for new or existing plugin installs
+
+```sh
+(openclaw plugins update gc-provider || openclaw plugins install gc-provider --pin) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+```
+
 ### Manual steps
 
 ```sh
