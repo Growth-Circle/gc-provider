@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.7
+
+- Made the README install path update-first so existing `gc-provider` installs do not fail with `plugin already exists`.
+- Added explicit troubleshooting commands for replacing an untracked or broken existing install with `--force`.
+
 ## 0.1.6
 
 - Added scanner-facing `SKILL.md` metadata that declares `GROWTHCIRCLE_API_KEY`.

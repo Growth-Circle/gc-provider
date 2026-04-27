@@ -112,12 +112,14 @@ growthcircle/gpt-5.5
 After installation, the model configuration wizard will show
 `GrowthCircle.id` / `growthcircle` in the provider list.
 
-### From ClawHub
+### One Command
 
-Use this after the ClawHub release is approved:
+Use this whether `gc-provider` is new or was installed before. It updates an
+existing tracked install first, then falls back to a forced ClawHub install if
+there is no tracked install yet.
 
 ```sh
-openclaw plugins install clawhub:gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+(openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force --pin) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### Recommended Upgrade Path
@@ -133,19 +135,19 @@ range: `2026.4.15`, `2026.4.20`, `2026.4.21`, `2026.4.22`, `2026.4.23`,
 published on npm.
 
 ```sh
-npm install -g openclaw@latest && openclaw plugins update gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+npm install -g openclaw@latest && (openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force --pin) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If OpenClaw is not installed yet
 
 ```sh
-npm install -g openclaw && openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+npm install -g openclaw && openclaw plugins install clawhub:gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If OpenClaw is already installed
 
 ```sh
-openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+(openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force --pin) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If gc-provider is already installed
@@ -158,19 +160,36 @@ Use this same command when upgrading from an older version. After the gateway
 restarts, reopen the model wizard so OpenClaw refreshes the GrowthCircle model
 catalog for the current API key.
 
-### Works for new or existing plugin installs
+### Fresh ClawHub Install Only
+
+Use this only when `gc-provider` is not already installed:
 
 ```sh
-(openclaw plugins update gc-provider || openclaw plugins install gc-provider --pin) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+openclaw plugins install clawhub:gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### Manual steps
 
 ```sh
-openclaw plugins install gc-provider --pin
+openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force --pin
 openclaw plugins enable gc-provider
 openclaw gateway restart
 openclaw configure --section=model
+```
+
+### `plugin already exists`
+
+If OpenClaw prints `plugin already exists`, the plugin is already present in
+`~/.openclaw/extensions/gc-provider`. Do not rerun a plain install command. Use:
+
+```sh
+openclaw plugins update gc-provider
+```
+
+If the existing copy is untracked or broken, replace it explicitly:
+
+```sh
+openclaw plugins install clawhub:gc-provider --force --pin
 ```
 
 ### Plugin allowlist warning
