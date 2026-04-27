@@ -16,33 +16,29 @@ Model discovery is auth-aware. The plugin calls `/models` with the configured AP
 
 ## Install
 
-Install OpenClaw first, then install this plugin before model configuration:
+Install OpenClaw, enable the plugin, restart the gateway, then open the model
+configuration wizard:
+
+```sh
+npm install -g openclaw && openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+```
+
+That wizard will show `GrowthCircle.id` / `growthcircle` in the provider list.
+
+If you prefer to run each step manually:
 
 ```sh
 npm install -g openclaw
 openclaw plugins install gc-provider --pin
 openclaw plugins enable gc-provider
-```
-
-Configure GrowthCircle.id auth:
-
-```sh
-openclaw onboard --auth-choice growthcircle-api-key --growthcircle-api-key "$GROWTHCIRCLE_API_KEY"
-```
-
-Or set the key in your shell and use the interactive model section:
-
-```sh
-export GROWTHCIRCLE_API_KEY="gc-..."
+openclaw gateway restart
 openclaw configure --section=model
 ```
 
-Then choose a model from the key-specific catalog:
+After configuration, you can verify the key-specific model catalog:
 
 ```sh
 openclaw models list --provider growthcircle
-openclaw models set growthcircle/<model-id>
-openclaw gateway restart
 ```
 
 The onboarding default is `growthcircle/gpt-5.5`, with OpenClaw's current
