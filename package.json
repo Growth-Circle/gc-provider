@@ -1,0 +1,63 @@
+{
+  "name": "gc-provider",
+  "version": "0.1.0",
+  "description": "OpenClaw provider plugin for GrowthCircle.id models.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Growth Circle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Growth-Circle/gc-provider.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Growth-Circle/gc-provider/issues"
+  },
+  "homepage": "https://github.com/Growth-Circle/gc-provider#readme",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "provider",
+    "models",
+    "growthcircle"
+  ],
+  "files": [
+    "index.ts",
+    "src",
+    "README.md",
+    "LICENSE",
+    "openclaw.plugin.json"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "providers": [
+      "growthcircle"
+    ],
+    "compat": {
+      "pluginApi": ">=2026.4.25",
+      "minGatewayVersion": "2026.4.25"
+    },
+    "build": {
+      "openclawVersion": "2026.4.25",
+      "pluginSdkVersion": "2026.4.25"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "openclaw": "2026.4.25",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
