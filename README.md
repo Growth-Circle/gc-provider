@@ -2,6 +2,10 @@
 
 OpenClaw model-provider plugin for GrowthCircle.id.
 
+<p>
+  <img src="assets/growthcircle-provider-preview.png" alt="GrowthCircle.id landing page preview" width="920" />
+</p>
+
 It registers `GrowthCircle.id` as provider `growthcircle` and uses the OpenAI-compatible endpoint:
 
 ```text
