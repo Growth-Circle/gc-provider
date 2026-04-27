@@ -1,10 +1,13 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": ["./index.ts"],
   "providers": ["growthcircle"],
+  "providerAuthEnvVars": {
+    "growthcircle": ["GROWTHCIRCLE_API_KEY"]
+  },
   "setup": {
     "requiresRuntime": false,
     "providers": [

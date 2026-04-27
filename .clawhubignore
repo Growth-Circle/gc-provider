@@ -1,0 +1,7 @@
+.clawhubignore
+.git/
+node_modules/
+*.tgz
+*.tar.gz
+coverage/
+dist/

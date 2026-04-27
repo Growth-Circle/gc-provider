@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Added `.clawhubignore` so local npm pack archives are not uploaded to ClawHub release artifacts.
+- Declared `GROWTHCIRCLE_API_KEY` in provider auth metadata for registry and scanner visibility.
+- Replaced the README `node -e` allowlist helper with explicit `openclaw config set` commands.
+- Documented the GrowthCircle API key creation flow.
+
 ## 0.1.4
 
 - Split GrowthCircle setup into Free, Paid, and Team API-key choices.

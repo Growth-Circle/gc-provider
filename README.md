@@ -20,6 +20,26 @@ shows GrowthCircle text-inference models; image, video, audio, music, and
 unavailable models returned by the catalog are filtered out. Free-tier model ids
 use the required `-free` suffix, for example `growthcircle/gpt-5.5-free`.
 
+## Required Credential
+
+This provider requires a GrowthCircle API key. Configure it through the
+OpenClaw setup wizard or set:
+
+```sh
+GROWTHCIRCLE_API_KEY=<your-growthcircle-key>
+```
+
+Supported key prefixes are `gc-free`, `gc-paid`, and `gc-team`.
+
+To get an API key:
+
+1. Sign in at <https://growthcircle.id/app/ai> with your email.
+2. Open the magic link sent to your email.
+3. Go to **AI Console**.
+4. Open the **Key** tab.
+5. Generate an API key and store it securely. GrowthCircle only shows the key
+   once, so it cannot be read again after you leave the page.
+
 ## Tier Model Catalogs
 
 The catalogs below were verified from GrowthCircle `/v1/models` and are exposed
@@ -144,12 +164,17 @@ openclaw configure --section=model
 
 ### Plugin allowlist warning
 
-If OpenClaw prints `plugins.allow is empty`, create an explicit allowlist from
-the plugins already enabled in your own config and include `gc-provider`:
+If OpenClaw prints `plugins.allow is empty`, set an explicit allowlist that
+includes every non-bundled plugin you trust. For a fresh install that only needs
+this provider, use:
 
 ```sh
-node -e 'const {execFileSync}=require("node:child_process");const entries=JSON.parse(execFileSync("openclaw",["config","get","plugins.entries"],{encoding:"utf8"})||"{}");const ids=Object.entries(entries).filter(([,entry])=>!entry||entry.enabled!==false).map(([id])=>id);if(!ids.includes("gc-provider"))ids.push("gc-provider");execFileSync("openclaw",["config","set","plugins.allow",JSON.stringify(ids),"--strict-json"],{stdio:"inherit"});' && openclaw gateway restart
+openclaw config set plugins.allow '["gc-provider"]' --strict-json
+openclaw gateway restart
 ```
+
+If you already use other non-bundled plugins, include them in the same JSON
+array instead of replacing the list with only `gc-provider`.
 
 After configuration, you can verify the key-specific model catalog:
 
