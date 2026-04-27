@@ -16,19 +16,24 @@ Model discovery is auth-aware. The plugin calls `/models` with the configured AP
 
 ## Install
 
-Install OpenClaw, enable the plugin, restart the gateway, then open the model
-configuration wizard:
+After installation, the model configuration wizard will show
+`GrowthCircle.id` / `growthcircle` in the provider list.
+
+### If OpenClaw is not installed yet
 
 ```sh
 npm install -g openclaw && openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
-That wizard will show `GrowthCircle.id` / `growthcircle` in the provider list.
-
-If you prefer to run each step manually:
+### If OpenClaw is already installed
 
 ```sh
-npm install -g openclaw
+openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+```
+
+### Manual steps
+
+```sh
 openclaw plugins install gc-provider --pin
 openclaw plugins enable gc-provider
 openclaw gateway restart
