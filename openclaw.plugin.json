@@ -1,7 +1,7 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": ["./index.ts"],
   "providers": ["growthcircle"],
@@ -10,7 +10,7 @@
     "providers": [
       {
         "id": "growthcircle",
-        "authMethods": ["api-key"],
+        "authMethods": ["free-api-key", "paid-api-key", "team-api-key"],
         "envVars": ["GROWTHCIRCLE_API_KEY"]
       }
     ]
@@ -18,17 +18,99 @@
   "providerAuthChoices": [
     {
       "provider": "growthcircle",
-      "method": "api-key",
-      "choiceId": "growthcircle-api-key",
-      "choiceLabel": "GrowthCircle.id API key",
-      "choiceHint": "Use a gc-free, gc-paid, or gc-team key.",
+      "method": "free-api-key",
+      "choiceId": "growthcircle-free-api-key",
+      "choiceLabel": "GrowthCircle.id Free API key",
+      "choiceHint": "Use a gc-free key. Free-tier model ids use the -free suffix.",
       "groupId": "growthcircle",
       "groupLabel": "GrowthCircle.id",
       "optionKey": "growthcircleApiKey",
       "cliFlag": "--growthcircle-api-key",
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
-      "onboardingScopes": ["text-inference"]
+      "onboardingScopes": ["text-inference"],
+      "modelAllowlist": {
+        "allowedKeys": [
+          "growthcircle/MiniMax-M2.7-free",
+          "growthcircle/MiniMax-M2.7-highspeed-free",
+          "growthcircle/claude-haiku-4-5-20251001-free",
+          "growthcircle/claude-opus-4-6-free",
+          "growthcircle/claude-opus-4-7-free",
+          "growthcircle/claude-sonnet-4-6-free",
+          "growthcircle/gemini-2.5-flash-free",
+          "growthcircle/gemini-2.5-pro-free",
+          "growthcircle/gemini-3-flash-preview-free",
+          "growthcircle/gemini-3.1-pro-preview-free",
+          "growthcircle/gpt-5.3-codex-free",
+          "growthcircle/gpt-5.3-codex-spark-free",
+          "growthcircle/gpt-5.4-free",
+          "growthcircle/gpt-5.4-mini-free",
+          "growthcircle/gpt-5.5-free"
+        ],
+        "initialSelections": ["growthcircle/gpt-5.5-free"],
+        "message": "GrowthCircle.id free models in /model picker (multi-select)"
+      }
+    },
+    {
+      "provider": "growthcircle",
+      "method": "paid-api-key",
+      "choiceId": "growthcircle-paid-api-key",
+      "choiceLabel": "GrowthCircle.id Paid API key",
+      "choiceHint": "Use a gc-paid key.",
+      "groupId": "growthcircle",
+      "groupLabel": "GrowthCircle.id",
+      "optionKey": "growthcircleApiKey",
+      "cliFlag": "--growthcircle-api-key",
+      "cliOption": "--growthcircle-api-key <key>",
+      "cliDescription": "GrowthCircle.id API key.",
+      "onboardingScopes": ["text-inference"],
+      "modelAllowlist": {
+        "allowedKeys": [
+          "growthcircle/MiniMax-M2.7",
+          "growthcircle/MiniMax-M2.7-highspeed",
+          "growthcircle/claude-3-5-haiku-latest",
+          "growthcircle/claude-haiku-4-5-20251001",
+          "growthcircle/claude-opus-4-6",
+          "growthcircle/claude-opus-4-7",
+          "growthcircle/claude-sonnet-4-6",
+          "growthcircle/gemini-2.5-flash",
+          "growthcircle/gemini-2.5-pro",
+          "growthcircle/gemini-3-flash-preview",
+          "growthcircle/gemini-3.1-pro-preview",
+          "growthcircle/gpt-5.3-codex",
+          "growthcircle/gpt-5.3-codex-spark",
+          "growthcircle/gpt-5.4",
+          "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.5"
+        ],
+        "initialSelections": ["growthcircle/gpt-5.5"],
+        "message": "GrowthCircle.id paid models in /model picker (multi-select)"
+      }
+    },
+    {
+      "provider": "growthcircle",
+      "method": "team-api-key",
+      "choiceId": "growthcircle-team-api-key",
+      "choiceLabel": "GrowthCircle.id Team API key",
+      "choiceHint": "Use a gc-team key.",
+      "groupId": "growthcircle",
+      "groupLabel": "GrowthCircle.id",
+      "optionKey": "growthcircleApiKey",
+      "cliFlag": "--growthcircle-api-key",
+      "cliOption": "--growthcircle-api-key <key>",
+      "cliDescription": "GrowthCircle.id API key.",
+      "onboardingScopes": ["text-inference"],
+      "modelAllowlist": {
+        "allowedKeys": [
+          "growthcircle/gpt-5.3-codex",
+          "growthcircle/gpt-5.3-codex-spark",
+          "growthcircle/gpt-5.4",
+          "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.5"
+        ],
+        "initialSelections": ["growthcircle/gpt-5.5"],
+        "message": "GrowthCircle.id team models in /model picker (multi-select)"
+      }
     }
   ],
   "configSchema": {

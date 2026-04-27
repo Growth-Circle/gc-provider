@@ -2,7 +2,6 @@ import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-model-t
 import type {
   OpenClawConfig,
   ProviderRuntimeModel,
-  ProviderThinkingProfile,
 } from "openclaw/plugin-sdk/plugin-entry";
 import { applyProviderConfigWithDefaultModelPreset } from "openclaw/plugin-sdk/provider-onboard";
 
@@ -13,17 +12,81 @@ export const PROVIDER_ID = "growthcircle";
 export const PROVIDER_LABEL = "GrowthCircle.id";
 export const ENV_VAR = "GROWTHCIRCLE_API_KEY";
 export const BASE_URL = "https://ai.growthcircle.id/v1";
+export const FREE_MODEL_SUFFIX = "-free";
 export const DEFAULT_MODEL_ID = "gpt-5.5";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
+export const DEFAULT_FREE_MODEL_ID = `${DEFAULT_MODEL_ID}${FREE_MODEL_SUFFIX}`;
+export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
+
+export const FREE_TEXT_MODEL_IDS = [
+  "MiniMax-M2.7",
+  "MiniMax-M2.7-highspeed",
+  "claude-haiku-4-5-20251001",
+  "claude-opus-4-6",
+  "claude-opus-4-7",
+  "claude-sonnet-4-6",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
+  "gemini-3-flash-preview",
+  "gemini-3.1-pro-preview",
+  "gpt-5.3-codex",
+  "gpt-5.3-codex-spark",
+  "gpt-5.4",
+  "gpt-5.4-mini",
+  DEFAULT_MODEL_ID,
+] as const;
+
+export const PAID_TEXT_MODEL_IDS = [
+  "MiniMax-M2.7",
+  "MiniMax-M2.7-highspeed",
+  "claude-3-5-haiku-latest",
+  "claude-haiku-4-5-20251001",
+  "claude-opus-4-6",
+  "claude-opus-4-7",
+  "claude-sonnet-4-6",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
+  "gemini-3-flash-preview",
+  "gemini-3.1-pro-preview",
+  "gpt-5.3-codex",
+  "gpt-5.3-codex-spark",
+  "gpt-5.4",
+  "gpt-5.4-mini",
+  DEFAULT_MODEL_ID,
+] as const;
+
+export const TEAM_TEXT_MODEL_IDS = [
+  "gpt-5.3-codex",
+  "gpt-5.3-codex-spark",
+  "gpt-5.4",
+  "gpt-5.4-mini",
+  DEFAULT_MODEL_ID,
+] as const;
+
+export const FREE_TEXT_MODEL_IDS_WITH_SUFFIX = FREE_TEXT_MODEL_IDS.map((modelId) =>
+  toGrowthCircleFreeModelId(modelId),
+);
+
+export const FREE_TEXT_MODEL_REFS = FREE_TEXT_MODEL_IDS_WITH_SUFFIX.map((modelId) => `${PROVIDER_ID}/${modelId}`);
+export const PAID_TEXT_MODEL_REFS = PAID_TEXT_MODEL_IDS.map((modelId) => `${PROVIDER_ID}/${modelId}`);
+export const TEAM_TEXT_MODEL_REFS = TEAM_TEXT_MODEL_IDS.map((modelId) => `${PROVIDER_ID}/${modelId}`);
+
+export const KNOWN_TEXT_MODEL_IDS = Array.from(
+  new Set([...FREE_TEXT_MODEL_IDS, ...PAID_TEXT_MODEL_IDS, ...TEAM_TEXT_MODEL_IDS]),
+);
+
+export const KNOWN_TEXT_MODEL_REFS = [...KNOWN_TEXT_MODEL_IDS, ...FREE_TEXT_MODEL_IDS_WITH_SUFFIX].map(
+  (modelId) => `${PROVIDER_ID}/${modelId}`,
+);
 
 export const DEFAULT_MODEL_LIMITS = {
-  contextWindow: 272_000,
-  maxTokens: 128_000,
+  contextWindow: 256_000,
+  maxTokens: 36_000,
 } as const;
 
 export const FALLBACK_MODEL_LIMITS = {
-  contextWindow: 128_000,
-  maxTokens: 8_192,
+  contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+  maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
 } as const;
 
 const ZERO_COST: ModelDefinitionConfig["cost"] = {
@@ -44,16 +107,10 @@ export const DEFAULT_MODEL: ModelDefinitionConfig = {
   maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
 };
 
-const GROWTHCIRCLE_THINKING_PROFILE: ProviderThinkingProfile = {
-  levels: [
-    { id: "off", rank: 0 },
-    { id: "minimal", rank: 1 },
-    { id: "low", rank: 2 },
-    { id: "medium", rank: 3 },
-    { id: "high", rank: 4 },
-    { id: "xhigh", rank: 5 },
-  ],
-  defaultLevel: "medium",
+export const DEFAULT_FREE_MODEL: ModelDefinitionConfig = {
+  ...DEFAULT_MODEL,
+  id: DEFAULT_FREE_MODEL_ID,
+  name: "GPT-5.5 Free",
 };
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>;
@@ -63,6 +120,12 @@ type FetchGrowthCircleModelsOptions = {
   fetchFn?: FetchLike;
   timeoutMs?: number;
 };
+
+type NormalizeGrowthCircleModelsOptions = {
+  freeModels?: boolean;
+};
+
+export type GrowthCircleKeyTier = "free" | "paid" | "team";
 
 type RemoteModelObject = {
   id?: unknown;
@@ -116,12 +179,17 @@ export async function fetchGrowthCircleModels({
   }
 
   const body = (await response.json()) as unknown;
-  return normalizeGrowthCircleModels(body);
+  return normalizeGrowthCircleModels(body, {
+    freeModels: isGrowthCircleFreeApiKey(apiKey),
+  });
 }
 
-export function normalizeGrowthCircleModels(body: unknown): ModelDefinitionConfig[] {
+export function normalizeGrowthCircleModels(
+  body: unknown,
+  options: NormalizeGrowthCircleModelsOptions = {},
+): ModelDefinitionConfig[] {
   const models = extractModelItems(body)
-    .map(normalizeModel)
+    .map((model) => normalizeModel(model, options))
     .filter((model): model is ModelDefinitionConfig => model !== null);
 
   const seen = new Set<string>();
@@ -143,24 +211,47 @@ export function resolveDynamicGrowthCircleModel(modelId: string): ProviderRuntim
   };
 }
 
-export function resolveGrowthCircleThinkingProfile(params: {
+export function growthCircleDefaultModelRefForApiKey(apiKey: unknown): string {
+  return isGrowthCircleFreeApiKey(apiKey) ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+}
+
+export function growthCircleDefaultModelRefForTier(tier: GrowthCircleKeyTier): string {
+  return tier === "free" ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+}
+
+export function growthCircleModelRefsForTier(tier: GrowthCircleKeyTier): string[] {
+  if (tier === "free") return [...FREE_TEXT_MODEL_REFS];
+  if (tier === "team") return [...TEAM_TEXT_MODEL_REFS];
+  return [...PAID_TEXT_MODEL_REFS];
+}
+
+export function resolveGrowthCircleDefaultThinkingLevel(params: {
   modelId: string;
   reasoning?: boolean;
-}): ProviderThinkingProfile | null {
+}): "medium" | null {
   if (isDefaultModelId(params.modelId) || params.reasoning) {
-    return GROWTHCIRCLE_THINKING_PROFILE;
+    return "medium";
   }
   return null;
 }
 
-export function applyGrowthCircleDefaults(cfg: OpenClawConfig): OpenClawConfig {
+export function supportsGrowthCircleXHighThinking(params: { modelId: string }): boolean | undefined {
+  return isDefaultModelId(params.modelId) ? true : undefined;
+}
+
+export function applyGrowthCircleDefaults(
+  cfg: OpenClawConfig,
+  options: NormalizeGrowthCircleModelsOptions = {},
+): OpenClawConfig {
+  const defaultModel = options.freeModels ? DEFAULT_FREE_MODEL : DEFAULT_MODEL;
+  const defaultModelRef = options.freeModels ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
   const withModel = applyProviderConfigWithDefaultModelPreset(cfg, {
     providerId: PROVIDER_ID,
     api: "openai-completions",
     baseUrl: BASE_URL,
-    defaultModel: DEFAULT_MODEL,
-    aliases: [{ modelRef: DEFAULT_MODEL_REF, alias: "GPT" }],
-    primaryModelRef: DEFAULT_MODEL_REF,
+    defaultModel,
+    aliases: [{ modelRef: defaultModelRef, alias: "GPT" }],
+    primaryModelRef: defaultModelRef,
   });
 
   return {
@@ -175,6 +266,18 @@ export function applyGrowthCircleDefaults(cfg: OpenClawConfig): OpenClawConfig {
   };
 }
 
+export function applyGrowthCircleDefaultsForApiKey(cfg: OpenClawConfig, apiKey: unknown): OpenClawConfig {
+  return applyGrowthCircleDefaults(cfg, {
+    freeModels: isGrowthCircleFreeApiKey(apiKey),
+  });
+}
+
+export function applyGrowthCircleDefaultsForTier(cfg: OpenClawConfig, tier: GrowthCircleKeyTier): OpenClawConfig {
+  return applyGrowthCircleDefaults(cfg, {
+    freeModels: tier === "free",
+  });
+}
+
 function extractModelItems(body: unknown): unknown[] {
   if (Array.isArray(body)) return body;
   if (!isRecord(body)) return [];
@@ -183,15 +286,18 @@ function extractModelItems(body: unknown): unknown[] {
   return [];
 }
 
-function normalizeModel(raw: unknown): ModelDefinitionConfig | null {
+function normalizeModel(
+  raw: unknown,
+  options: NormalizeGrowthCircleModelsOptions = {},
+): ModelDefinitionConfig | null {
   if (typeof raw === "string") {
-    const id = raw.trim();
+    const id = normalizeModelIdForTier(raw.trim(), options);
     return id ? createModelDefinition({ id }) : null;
   }
 
   if (!isRecord(raw)) return null;
   const object = raw as RemoteModelObject;
-  const id = readString(object.id);
+  const id = normalizeModelIdForTier(readString(object.id), options);
   if (!id) return null;
   if (!isGrowthCircleTextModel(object)) return null;
 
@@ -201,15 +307,6 @@ function normalizeModel(raw: unknown): ModelDefinitionConfig | null {
     reasoning: readReasoning(object, id),
     input: readInput(object),
     cost: readCost(object.cost),
-    contextWindow:
-      readPositiveInteger(object.contextWindow) ??
-      readPositiveInteger(object.context_window) ??
-      readPositiveInteger(object.context_length) ??
-      readPositiveInteger(object.max_context_tokens),
-    maxTokens:
-      readPositiveInteger(object.maxTokens) ??
-      readPositiveInteger(object.max_tokens) ??
-      readPositiveInteger(object.max_output_tokens),
   });
 }
 
@@ -219,21 +316,16 @@ function createModelDefinition(params: {
   reasoning?: boolean;
   input?: ModelDefinitionConfig["input"];
   cost?: ModelDefinitionConfig["cost"];
-  contextWindow?: number;
-  maxTokens?: number;
 }): ModelDefinitionConfig {
   const limits = defaultLimitsForModel(params.id);
-  const useFixedDefaultLimits = isDefaultModelId(params.id);
   return {
     id: params.id,
     name: params.name ?? defaultNameForModel(params.id),
     reasoning: params.reasoning ?? isDefaultModelId(params.id),
     input: params.input ?? defaultInputForModel(params.id),
     cost: params.cost ?? { ...ZERO_COST },
-    contextWindow: useFixedDefaultLimits
-      ? DEFAULT_MODEL_LIMITS.contextWindow
-      : params.contextWindow ?? limits.contextWindow,
-    maxTokens: useFixedDefaultLimits ? DEFAULT_MODEL_LIMITS.maxTokens : params.maxTokens ?? limits.maxTokens,
+    contextWindow: limits.contextWindow,
+    maxTokens: limits.maxTokens,
   };
 }
 
@@ -251,6 +343,14 @@ function isGrowthCircleTextModel(model: RemoteModelObject): boolean {
   if (outputModalities && !outputModalities.some((modality) => modality.toLowerCase() === "text")) return false;
 
   return true;
+}
+
+function normalizeModelIdForTier(
+  modelId: string | undefined,
+  options: NormalizeGrowthCircleModelsOptions,
+): string | undefined {
+  if (!modelId) return undefined;
+  return options.freeModels ? toGrowthCircleFreeModelId(modelId) : modelId;
 }
 
 function readReasoning(model: RemoteModelObject, modelId: string): boolean {
@@ -331,10 +431,20 @@ function readStringArray(raw: unknown): string[] | undefined {
   return values.length > 0 ? values : undefined;
 }
 
-function readPositiveInteger(raw: unknown): number | undefined {
-  const value = readNumber(raw);
-  if (value === undefined || !Number.isInteger(value) || value <= 0) return undefined;
-  return value;
+export function isGrowthCircleFreeApiKey(apiKey: unknown): boolean {
+  return typeof apiKey === "string" && apiKey.trim().toLowerCase().startsWith("gc-free-");
+}
+
+export function isGrowthCircleApiKeyForTier(apiKey: unknown, tier: GrowthCircleKeyTier): boolean {
+  return typeof apiKey === "string" && apiKey.trim().toLowerCase().startsWith(`gc-${tier}-`);
+}
+
+export function toGrowthCircleFreeModelId(modelId: string): string {
+  return modelId.endsWith(FREE_MODEL_SUFFIX) ? modelId : `${modelId}${FREE_MODEL_SUFFIX}`;
+}
+
+function stripGrowthCircleFreeModelSuffix(modelId: string): string {
+  return modelId.endsWith(FREE_MODEL_SUFFIX) ? modelId.slice(0, -FREE_MODEL_SUFFIX.length) : modelId;
 }
 
 function readNumber(raw: unknown): number | undefined {
@@ -353,7 +463,8 @@ function defaultLimitsForModel(modelId: string): typeof DEFAULT_MODEL_LIMITS | t
 }
 
 function defaultNameForModel(modelId: string): string {
-  return isDefaultModelId(modelId) ? "GPT-5.5" : modelId;
+  if (!isDefaultModelId(modelId)) return modelId;
+  return modelId.endsWith(FREE_MODEL_SUFFIX) ? "GPT-5.5 Free" : "GPT-5.5";
 }
 
 function defaultInputForModel(modelId: string): ModelDefinitionConfig["input"] {
@@ -361,7 +472,7 @@ function defaultInputForModel(modelId: string): ModelDefinitionConfig["input"] {
 }
 
 function isDefaultModelId(modelId: string): boolean {
-  return modelId.trim().toLowerCase() === DEFAULT_MODEL_ID;
+  return stripGrowthCircleFreeModelSuffix(modelId.trim().toLowerCase()) === DEFAULT_MODEL_ID;
 }
 
 function isGrowthCircleOwner(owner: string): boolean {

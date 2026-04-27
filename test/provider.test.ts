@@ -1,17 +1,42 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import {
   BASE_URL,
+  DEFAULT_FREE_MODEL_REF,
   DEFAULT_MODEL_ID,
   DEFAULT_MODEL_LIMITS,
   DEFAULT_MODEL_REF,
+  FREE_TEXT_MODEL_REFS,
+  PAID_TEXT_MODEL_REFS,
+  TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaults,
+  applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
+  growthCircleModelRefsForTier,
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
-  resolveGrowthCircleThinkingProfile,
+  resolveGrowthCircleDefaultThinkingLevel,
+  supportsGrowthCircleXHighThinking,
 } from "../src/provider.js";
 
+const manifest = JSON.parse(
+  readFileSync(fileURLToPath(new URL("../openclaw.plugin.json", import.meta.url)), "utf8"),
+) as {
+  setup: { providers: Array<{ authMethods: string[] }> };
+  providerAuthChoices: Array<{ choiceId: string }>;
+};
+
 describe("GrowthCircle.id model catalog", () => {
+  it("declares only tier-specific setup auth choices in the manifest", () => {
+    expect(manifest.setup.providers[0].authMethods).toEqual(["free-api-key", "paid-api-key", "team-api-key"]);
+    expect(manifest.providerAuthChoices.map((choice) => choice.choiceId)).toEqual([
+      "growthcircle-free-api-key",
+      "growthcircle-paid-api-key",
+      "growthcircle-team-api-key",
+    ]);
+  });
+
   it("normalizes OpenAI-compatible /models responses", () => {
     const models = normalizeGrowthCircleModels({
       data: [
@@ -42,8 +67,8 @@ describe("GrowthCircle.id model catalog", () => {
           cacheRead: 0.01,
           cacheWrite: 0,
         },
-        contextWindow: 64_000,
-        maxTokens: 4096,
+        contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+        maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
       },
     ]);
   });
@@ -57,7 +82,7 @@ describe("GrowthCircle.id model catalog", () => {
       normalizeGrowthCircleModels({ models: [{ id: "model-c", max_tokens: "1234" }] })[0],
     ).toMatchObject({
       id: "model-c",
-      maxTokens: 1234,
+      maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
     });
   });
 
@@ -152,8 +177,8 @@ describe("GrowthCircle.id model catalog", () => {
     );
     expect(models[0]).toMatchObject({
       id: "gc-paid-large",
-      contextWindow: 128_000,
-      maxTokens: 8_192,
+      contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+      maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
     });
   });
 
@@ -163,6 +188,21 @@ describe("GrowthCircle.id model catalog", () => {
       name: "GPT-5.5",
       reasoning: true,
       input: ["text", "image"],
+      contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+      maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
+    });
+  });
+
+  it("normalizes free-tier model ids with the required -free suffix", () => {
+    const models = normalizeGrowthCircleModels(
+      { data: [{ id: DEFAULT_MODEL_ID }, { id: "gpt-5.4-free" }] },
+      { freeModels: true },
+    );
+
+    expect(models.map((model) => model.id)).toEqual(["gpt-5.5-free", "gpt-5.4-free"]);
+    expect(models[0]).toMatchObject({
+      id: "gpt-5.5-free",
+      name: "GPT-5.5 Free",
       contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
       maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
     });
@@ -200,13 +240,19 @@ describe("GrowthCircle.id model catalog", () => {
     });
   });
 
+  it("sets tier-specific model picker defaults", () => {
+    expect(applyGrowthCircleDefaultsForTier({}, "free").agents?.defaults?.model).toEqual({
+      primary: DEFAULT_FREE_MODEL_REF,
+    });
+    expect(growthCircleModelRefsForTier("free")).toEqual(FREE_TEXT_MODEL_REFS);
+    expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
+    expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
+  });
+
   it("exposes medium as the GrowthCircle reasoning default", () => {
-    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.5" })).toMatchObject({
-      defaultLevel: "medium",
-    });
-    expect(resolveGrowthCircleThinkingProfile({ modelId: "custom", reasoning: true })).toMatchObject({
-      defaultLevel: "medium",
-    });
-    expect(resolveGrowthCircleThinkingProfile({ modelId: "custom", reasoning: false })).toBeNull();
+    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.5" })).toBe("medium");
+    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: true })).toBe("medium");
+    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: false })).toBeNull();
+    expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.5" })).toBe(true);
   });
 });
