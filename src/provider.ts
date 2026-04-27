@@ -69,9 +69,23 @@ type RemoteModelObject = {
   name?: unknown;
   display_name?: unknown;
   displayName?: unknown;
+  owned_by?: unknown;
+  ownedBy?: unknown;
+  provider?: unknown;
+  unit_type?: unknown;
+  unitType?: unknown;
+  available_for_current_key?: unknown;
+  availableForCurrentKey?: unknown;
+  architecture?: unknown;
   reasoning?: unknown;
+  reasoning_effort_supported?: unknown;
+  reasoningEffortSupported?: unknown;
   input?: unknown;
   modalities?: unknown;
+  input_modalities?: unknown;
+  inputModalities?: unknown;
+  output_modalities?: unknown;
+  outputModalities?: unknown;
   capabilities?: unknown;
   cost?: unknown;
   contextWindow?: unknown;
@@ -179,6 +193,7 @@ function normalizeModel(raw: unknown): ModelDefinitionConfig | null {
   const object = raw as RemoteModelObject;
   const id = readString(object.id);
   if (!id) return null;
+  if (!isGrowthCircleTextModel(object)) return null;
 
   return createModelDefinition({
     id,
@@ -208,19 +223,42 @@ function createModelDefinition(params: {
   maxTokens?: number;
 }): ModelDefinitionConfig {
   const limits = defaultLimitsForModel(params.id);
+  const useFixedDefaultLimits = isDefaultModelId(params.id);
   return {
     id: params.id,
     name: params.name ?? defaultNameForModel(params.id),
     reasoning: params.reasoning ?? isDefaultModelId(params.id),
     input: params.input ?? defaultInputForModel(params.id),
     cost: params.cost ?? { ...ZERO_COST },
-    contextWindow: params.contextWindow ?? limits.contextWindow,
-    maxTokens: params.maxTokens ?? limits.maxTokens,
+    contextWindow: useFixedDefaultLimits
+      ? DEFAULT_MODEL_LIMITS.contextWindow
+      : params.contextWindow ?? limits.contextWindow,
+    maxTokens: useFixedDefaultLimits ? DEFAULT_MODEL_LIMITS.maxTokens : params.maxTokens ?? limits.maxTokens,
   };
+}
+
+function isGrowthCircleTextModel(model: RemoteModelObject): boolean {
+  const owner = readString(model.owned_by) ?? readString(model.ownedBy);
+  if (owner && !isGrowthCircleOwner(owner)) return false;
+
+  const availableForCurrentKey = model.available_for_current_key ?? model.availableForCurrentKey;
+  if (availableForCurrentKey === false) return false;
+
+  const unitType = readString(model.unit_type) ?? readString(model.unitType);
+  if (unitType && unitType.toLowerCase() !== "token") return false;
+
+  const outputModalities = readOutputModalities(model);
+  if (outputModalities && !outputModalities.some((modality) => modality.toLowerCase() === "text")) return false;
+
+  return true;
 }
 
 function readReasoning(model: RemoteModelObject, modelId: string): boolean {
   if (typeof model.reasoning === "boolean") return model.reasoning;
+  const reasoningEffortSupported = readStringArray(
+    model.reasoning_effort_supported ?? model.reasoningEffortSupported,
+  );
+  if (reasoningEffortSupported && reasoningEffortSupported.length > 0) return true;
   if (Array.isArray(model.capabilities)) {
     return model.capabilities.some(
       (capability) =>
@@ -232,16 +270,33 @@ function readReasoning(model: RemoteModelObject, modelId: string): boolean {
 }
 
 function readInput(model: RemoteModelObject): ModelDefinitionConfig["input"] | undefined {
-  const values = Array.isArray(model.input) ? model.input : Array.isArray(model.modalities) ? model.modalities : null;
+  const values =
+    readArchitectureModalities(model.architecture, "input") ??
+    readStringArray(model.input_modalities ?? model.inputModalities) ??
+    readStringArray(model.input) ??
+    readStringArray(model.modalities);
   if (!values) return undefined;
 
   const supported = new Set(["text", "image", "video", "audio"]);
-  const input = values.filter(
-    (value): value is ModelDefinitionConfig["input"][number] =>
-      typeof value === "string" && supported.has(value),
-  );
+  const input = values
+    .map((value) => value.toLowerCase())
+    .filter((value): value is ModelDefinitionConfig["input"][number] => supported.has(value));
 
   return input.length > 0 ? input : undefined;
+}
+
+function readOutputModalities(model: RemoteModelObject): string[] | undefined {
+  return (
+    readArchitectureModalities(model.architecture, "output") ??
+    readStringArray(model.output_modalities ?? model.outputModalities)
+  );
+}
+
+function readArchitectureModalities(raw: unknown, direction: "input" | "output"): string[] | undefined {
+  if (!isRecord(raw)) return undefined;
+  const snakeKey = `${direction}_modalities`;
+  const camelKey = `${direction}Modalities`;
+  return readStringArray(raw[snakeKey] ?? raw[camelKey]);
 }
 
 function readCost(raw: unknown): ModelDefinitionConfig["cost"] | undefined {
@@ -266,6 +321,14 @@ function readString(raw: unknown): string | undefined {
   if (typeof raw !== "string") return undefined;
   const value = raw.trim();
   return value.length > 0 ? value : undefined;
+}
+
+function readStringArray(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const values = raw
+    .map((value) => readString(value))
+    .filter((value): value is string => value !== undefined);
+  return values.length > 0 ? values : undefined;
 }
 
 function readPositiveInteger(raw: unknown): number | undefined {
@@ -299,4 +362,9 @@ function defaultInputForModel(modelId: string): ModelDefinitionConfig["input"] {
 
 function isDefaultModelId(modelId: string): boolean {
   return modelId.trim().toLowerCase() === DEFAULT_MODEL_ID;
+}
+
+function isGrowthCircleOwner(owner: string): boolean {
+  const normalized = owner.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return normalized === "growthcircle" || normalized === "growthcircleid";
 }

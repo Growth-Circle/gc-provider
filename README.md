@@ -12,7 +12,7 @@ It registers `GrowthCircle.id` as provider `growthcircle` and uses the OpenAI-co
 https://ai.growthcircle.id/v1
 ```
 
-Model discovery is auth-aware. The plugin calls `/models` with the configured API key, so `gc-free`, `gc-paid`, and `gc-team` keys can expose different model catalogs without separate provider ids.
+Model discovery is auth-aware. The plugin calls `/models` with the configured API key, so `gc-free`, `gc-paid`, and `gc-team` keys can expose different model catalogs without separate provider ids. OpenClaw's model wizard only shows GrowthCircle text-inference models; image, video, audio, music, and unavailable models returned by the catalog are filtered out.
 
 ## Install
 
@@ -37,6 +37,10 @@ openclaw plugins install gc-provider --pin && openclaw plugins enable gc-provide
 openclaw plugins update gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
+Use this same command when upgrading from an older version. After the gateway
+restarts, reopen the model wizard so OpenClaw refreshes the GrowthCircle model
+catalog for the current API key.
+
 ### Works for new or existing plugin installs
 
 ```sh
@@ -50,6 +54,15 @@ openclaw plugins install gc-provider --pin
 openclaw plugins enable gc-provider
 openclaw gateway restart
 openclaw configure --section=model
+```
+
+### Plugin allowlist warning
+
+If OpenClaw prints `plugins.allow is empty`, create an explicit allowlist from
+the plugins already enabled in your own config and include `gc-provider`:
+
+```sh
+node -e 'const {execFileSync}=require("node:child_process");const entries=JSON.parse(execFileSync("openclaw",["config","get","plugins.entries"],{encoding:"utf8"})||"{}");const ids=Object.entries(entries).filter(([,entry])=>!entry||entry.enabled!==false).map(([id])=>id);if(!ids.includes("gc-provider"))ids.push("gc-provider");execFileSync("openclaw",["config","set","plugins.allow",JSON.stringify(ids),"--strict-json"],{stdio:"inherit"});' && openclaw gateway restart
 ```
 
 After configuration, you can verify the key-specific model catalog:

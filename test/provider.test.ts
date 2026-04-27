@@ -61,6 +61,73 @@ describe("GrowthCircle.id model catalog", () => {
     });
   });
 
+  it("keeps only GrowthCircle text inference models from the live catalog shape", () => {
+    const models = normalizeGrowthCircleModels({
+      data: [
+        {
+          id: DEFAULT_MODEL_ID,
+          owned_by: "growthcircle",
+          unit_type: "token",
+          available_for_current_key: true,
+          architecture: {
+            input_modalities: ["text", "image"],
+            output_modalities: ["text"],
+          },
+          reasoning_effort_supported: ["low", "medium", "high", "xhigh"],
+          context_window: 1_050_000,
+          max_output_tokens: 128_000,
+        },
+        {
+          id: "sora-2",
+          owned_by: "growthcircle",
+          unit_type: "video_task",
+          architecture: {
+            input_modalities: ["text", "image"],
+            output_modalities: ["video"],
+          },
+        },
+        {
+          id: "gpt-image-2",
+          owned_by: "growthcircle",
+          unit_type: "image",
+          architecture: {
+            input_modalities: ["text", "image"],
+            output_modalities: ["image"],
+          },
+        },
+        {
+          id: "external-token-model",
+          owned_by: "openai",
+          unit_type: "token",
+          architecture: {
+            input_modalities: ["text"],
+            output_modalities: ["text"],
+          },
+        },
+        {
+          id: "unavailable-token-model",
+          owned_by: "growthcircle",
+          unit_type: "token",
+          available_for_current_key: false,
+          architecture: {
+            input_modalities: ["text"],
+            output_modalities: ["text"],
+          },
+        },
+      ],
+    });
+
+    expect(models).toEqual([
+      expect.objectContaining({
+        id: DEFAULT_MODEL_ID,
+        reasoning: true,
+        input: ["text", "image"],
+        contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+        maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
+      }),
+    ]);
+  });
+
   it("fetches /models with bearer auth without exposing the key in errors", async () => {
     const fetchFn = vi.fn(async () =>
       Response.json({
