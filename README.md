@@ -3,7 +3,7 @@
 OpenClaw model-provider plugin for GrowthCircle.id.
 
 <p>
-  <img src="assets/growthcircle-provider-preview.png" alt="GrowthCircle.id landing page preview" width="920" />
+  <img src="https://raw.githubusercontent.com/Growth-Circle/gc-provider/main/assets/growthcircle-provider-preview.png" alt="GrowthCircle.id landing page preview" width="920" />
 </p>
 
 It registers `GrowthCircle.id` as provider `growthcircle` and uses the OpenAI-compatible endpoint:
@@ -18,6 +18,14 @@ Model discovery is auth-aware. The plugin calls `/models` with the configured AP
 
 After installation, the model configuration wizard will show
 `GrowthCircle.id` / `growthcircle` in the provider list.
+
+### From ClawHub
+
+Use this after the ClawHub release is approved:
+
+```sh
+openclaw plugins install clawhub:gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+```
 
 ### If OpenClaw is not installed yet
 
@@ -100,5 +108,7 @@ openclaw plugins inspect gc-provider
 - Model reference format: `growthcircle/<model-id>`
 - Default model: `growthcircle/gpt-5.5`
 - Default thinking level: `medium`
+- Source repo: `https://github.com/Growth-Circle/gc-provider`
+- npm: `https://www.npmjs.com/package/gc-provider`
 
 Do not commit API keys. Rotate any key used for public demos or shared testing.
