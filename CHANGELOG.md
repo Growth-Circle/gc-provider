@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.8
+
+- Removed deprecated `providerAuthEnvVars` compatibility metadata so OpenClaw `2026.4.25+` no longer prints provider env-var deprecation warnings.
+- Kept GrowthCircle credential discovery on the supported `setup.providers[].envVars` manifest field.
+
 ## 0.1.7
 
 - Made the README install path update-first so existing `gc-provider` installs do not fail with `plugin already exists`.

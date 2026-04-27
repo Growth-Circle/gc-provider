@@ -23,13 +23,16 @@ import {
 const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL("../openclaw.plugin.json", import.meta.url)), "utf8"),
 ) as {
-  setup: { providers: Array<{ authMethods: string[] }> };
+  providerAuthEnvVars?: unknown;
+  setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
   providerAuthChoices: Array<{ choiceId: string }>;
 };
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares only tier-specific setup auth choices in the manifest", () => {
     expect(manifest.setup.providers[0].authMethods).toEqual(["free-api-key", "paid-api-key", "team-api-key"]);
+    expect(manifest.setup.providers[0].envVars).toEqual(["GROWTHCIRCLE_API_KEY"]);
+    expect(manifest.providerAuthEnvVars).toBeUndefined();
     expect(manifest.providerAuthChoices.map((choice) => choice.choiceId)).toEqual([
       "growthcircle-free-api-key",
       "growthcircle-paid-api-key",

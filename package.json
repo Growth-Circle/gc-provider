@@ -1,6 +1,6 @@
 {
   "name": "gc-provider",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "OpenClaw provider plugin for GrowthCircle.id models.",
   "type": "module",
   "license": "MIT",
@@ -41,11 +41,6 @@
     "providers": [
       "growthcircle"
     ],
-    "providerAuthEnvVars": {
-      "growthcircle": [
-        "GROWTHCIRCLE_API_KEY"
-      ]
-    },
     "requires": {
       "env": [
         "GROWTHCIRCLE_API_KEY"
