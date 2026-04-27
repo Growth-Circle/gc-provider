@@ -1,6 +1,7 @@
 .clawhubignore
 .git/
 node_modules/
+assets/
 *.tgz
 *.tar.gz
 coverage/

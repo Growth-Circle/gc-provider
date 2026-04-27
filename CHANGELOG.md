@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+- Added scanner-facing `SKILL.md` metadata that declares `GROWTHCIRCLE_API_KEY`.
+- Added package-level OpenClaw credential metadata for `GROWTHCIRCLE_API_KEY`.
+- Removed the preview PNG from npm and ClawHub artifacts to avoid binary content being read by the ClawHub prompt-injection pre-scan.
+
 ## 0.1.5
 
 - Added `.clawhubignore` so local npm pack archives are not uploaded to ClawHub release artifacts.

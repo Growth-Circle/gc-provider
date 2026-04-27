@@ -31,6 +31,17 @@ GROWTHCIRCLE_API_KEY=<your-growthcircle-key>
 
 Supported key prefixes are `gc-free`, `gc-paid`, and `gc-team`.
 
+Registry credential metadata:
+
+```yaml
+metadata:
+  openclaw:
+    requires:
+      env:
+        - GROWTHCIRCLE_API_KEY
+    primaryEnv: GROWTHCIRCLE_API_KEY
+```
+
 To get an API key:
 
 1. Sign in at <https://growthcircle.id/app/ai> with your email.
