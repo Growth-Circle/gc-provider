@@ -155,7 +155,7 @@ Use this checklist for every public release.
    - `package-lock.json`
    - `openclaw.plugin.json`
 2. Update `CHANGELOG.md` with a new section.
-3. Update README compatibility/install wording if behavior changed.
+3. Update README compatibility/install/update wording if behavior changed. Keep the default ClawHub install unversioned and unpinned so `openclaw plugins update` can follow newer releases.
 4. Run:
    ```sh
    npm run prepublishOnly
@@ -192,6 +192,30 @@ Use this checklist for every public release.
    ```sh
    clawhub package inspect gc-provider --json
    ```
+
+## User Update Policy
+
+Do not implement silent self-update behavior inside the provider plugin. Plugin
+updates install executable code and should remain operator-controlled through
+OpenClaw's managed update path.
+
+Recommended user-facing commands:
+
+```sh
+# New installs: unversioned ClawHub track, update-friendly
+openclaw plugins install clawhub:gc-provider
+
+# Existing installs: move pinned npm installs back to latest
+openclaw plugins update gc-provider@latest
+
+# Maintenance window / scheduled update
+openclaw plugins update --all && openclaw gateway restart
+```
+
+Avoid documenting `--pin` for the default ClawHub install path. Exact versions
+are useful for rollback or locked environments, but they should not be the
+default GrowthCircle.id recommendation because they do not naturally follow
+newer releases.
 
 ## GitHub Release Style
 
