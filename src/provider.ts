@@ -96,6 +96,14 @@ const ZERO_COST: ModelDefinitionConfig["cost"] = {
   cacheWrite: 0,
 };
 
+export const GROWTHCIRCLE_OPENAI_COMPAT: ModelDefinitionConfig["compat"] = {
+  supportsDeveloperRole: true,
+  supportsReasoningEffort: true,
+  supportsStrictMode: true,
+  supportsUsageInStreaming: true,
+  maxTokensField: "max_completion_tokens",
+};
+
 export const DEFAULT_MODEL: ModelDefinitionConfig = {
   id: DEFAULT_MODEL_ID,
   name: "GPT-5.5",
@@ -105,6 +113,7 @@ export const DEFAULT_MODEL: ModelDefinitionConfig = {
   cost: { ...ZERO_COST },
   contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
   maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
+  compat: { ...GROWTHCIRCLE_OPENAI_COMPAT },
 };
 
 export const DEFAULT_FREE_MODEL: ModelDefinitionConfig = {
@@ -326,6 +335,7 @@ function createModelDefinition(params: {
     cost: params.cost ?? { ...ZERO_COST },
     contextWindow: limits.contextWindow,
     maxTokens: limits.maxTokens,
+    compat: { ...GROWTHCIRCLE_OPENAI_COMPAT },
   };
 }
 

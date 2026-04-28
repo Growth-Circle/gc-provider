@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.9
+
+- Checked OpenClaw `2026.4.26` compatibility and updated the plugin SDK test target.
+- Added manifest-owned `providerRequest` metadata so OpenClaw `2026.4.26+` can classify GrowthCircle's OpenAI-compatible request family before loading plugin runtime.
+- Added a manifest `modelCatalog` preview for provider-filtered model listing while keeping runtime `/models` discovery for account-specific catalogs.
+- Added explicit OpenAI-compatible request `compat` flags to GrowthCircle model definitions so reasoning-effort and streaming-usage behavior remains stable on custom GrowthCircle endpoints.
+
 ## 0.1.8
 
 - Removed deprecated `providerAuthEnvVars` compatibility metadata so OpenClaw `2026.4.25+` no longer prints provider env-var deprecation warnings.

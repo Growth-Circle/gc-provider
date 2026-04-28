@@ -1,17 +1,27 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
-  "extensions": ["./index.ts"],
-  "providers": ["growthcircle"],
+  "extensions": [
+    "./index.ts"
+  ],
+  "providers": [
+    "growthcircle"
+  ],
   "setup": {
     "requiresRuntime": false,
     "providers": [
       {
         "id": "growthcircle",
-        "authMethods": ["free-api-key", "paid-api-key", "team-api-key"],
-        "envVars": ["GROWTHCIRCLE_API_KEY"]
+        "authMethods": [
+          "free-api-key",
+          "paid-api-key",
+          "team-api-key"
+        ],
+        "envVars": [
+          "GROWTHCIRCLE_API_KEY"
+        ]
       }
     ]
   },
@@ -28,7 +38,9 @@
       "cliFlag": "--growthcircle-api-key",
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
-      "onboardingScopes": ["text-inference"],
+      "onboardingScopes": [
+        "text-inference"
+      ],
       "modelAllowlist": {
         "allowedKeys": [
           "growthcircle/MiniMax-M2.7-free",
@@ -47,7 +59,9 @@
           "growthcircle/gpt-5.4-mini-free",
           "growthcircle/gpt-5.5-free"
         ],
-        "initialSelections": ["growthcircle/gpt-5.5-free"],
+        "initialSelections": [
+          "growthcircle/gpt-5.5-free"
+        ],
         "message": "GrowthCircle.id free models in /model picker (multi-select)"
       }
     },
@@ -63,7 +77,9 @@
       "cliFlag": "--growthcircle-api-key",
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
-      "onboardingScopes": ["text-inference"],
+      "onboardingScopes": [
+        "text-inference"
+      ],
       "modelAllowlist": {
         "allowedKeys": [
           "growthcircle/MiniMax-M2.7",
@@ -83,7 +99,9 @@
           "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5"
         ],
-        "initialSelections": ["growthcircle/gpt-5.5"],
+        "initialSelections": [
+          "growthcircle/gpt-5.5"
+        ],
         "message": "GrowthCircle.id paid models in /model picker (multi-select)"
       }
     },
@@ -99,7 +117,9 @@
       "cliFlag": "--growthcircle-api-key",
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
-      "onboardingScopes": ["text-inference"],
+      "onboardingScopes": [
+        "text-inference"
+      ],
       "modelAllowlist": {
         "allowedKeys": [
           "growthcircle/gpt-5.3-codex",
@@ -108,7 +128,9 @@
           "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5"
         ],
-        "initialSelections": ["growthcircle/gpt-5.5"],
+        "initialSelections": [
+          "growthcircle/gpt-5.5"
+        ],
         "message": "GrowthCircle.id team models in /model picker (multi-select)"
       }
     }
@@ -117,5 +139,771 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {}
+  },
+  "providerRequest": {
+    "providers": {
+      "growthcircle": {
+        "family": "growthcircle-openai-compatible"
+      }
+    }
+  },
+  "modelCatalog": {
+    "providers": {
+      "growthcircle": {
+        "baseUrl": "https://ai.growthcircle.id/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "MiniMax-M2.7",
+            "name": "MiniMax-M2.7",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "MiniMax-M2.7-highspeed",
+            "name": "MiniMax-M2.7-highspeed",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-haiku-4-5-20251001",
+            "name": "claude-haiku-4-5-20251001",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-6",
+            "name": "claude-opus-4-6",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-7",
+            "name": "claude-opus-4-7",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-6",
+            "name": "claude-sonnet-4-6",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash",
+            "name": "gemini-2.5-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-pro",
+            "name": "gemini-2.5-pro",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-flash-preview",
+            "name": "gemini-3-flash-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.1-pro-preview",
+            "name": "gemini-3.1-pro-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.3-codex",
+            "name": "gpt-5.3-codex",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.3-codex-spark",
+            "name": "gpt-5.3-codex-spark",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4",
+            "name": "gpt-5.4",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4-mini",
+            "name": "gpt-5.4-mini",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.5",
+            "name": "GPT-5.5",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-3-5-haiku-latest",
+            "name": "claude-3-5-haiku-latest",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "MiniMax-M2.7-free",
+            "name": "MiniMax-M2.7-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "MiniMax-M2.7-highspeed-free",
+            "name": "MiniMax-M2.7-highspeed-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-haiku-4-5-20251001-free",
+            "name": "claude-haiku-4-5-20251001-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-6-free",
+            "name": "claude-opus-4-6-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-7-free",
+            "name": "claude-opus-4-7-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-6-free",
+            "name": "claude-sonnet-4-6-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash-free",
+            "name": "gemini-2.5-flash-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-pro-free",
+            "name": "gemini-2.5-pro-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-flash-preview-free",
+            "name": "gemini-3-flash-preview-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.1-pro-preview-free",
+            "name": "gemini-3.1-pro-preview-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.3-codex-free",
+            "name": "gpt-5.3-codex-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.3-codex-spark-free",
+            "name": "gpt-5.3-codex-spark-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4-free",
+            "name": "gpt-5.4-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4-mini-free",
+            "name": "gpt-5.4-mini-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.5-free",
+            "name": "GPT-5.5 Free",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          }
+        ]
+      }
+    },
+    "discovery": {
+      "growthcircle": "runtime"
+    }
   }
 }

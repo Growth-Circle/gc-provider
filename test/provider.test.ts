@@ -8,6 +8,7 @@ import {
   DEFAULT_MODEL_LIMITS,
   DEFAULT_MODEL_REF,
   FREE_TEXT_MODEL_REFS,
+  GROWTHCIRCLE_OPENAI_COMPAT,
   PAID_TEXT_MODEL_REFS,
   TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaults,
@@ -26,6 +27,11 @@ const manifest = JSON.parse(
   providerAuthEnvVars?: unknown;
   setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
   providerAuthChoices: Array<{ choiceId: string }>;
+  providerRequest?: { providers?: Record<string, { family?: string }> };
+  modelCatalog?: {
+    providers?: Record<string, { baseUrl?: string; api?: string; models?: Array<{ id: string; compat?: unknown }> }>;
+    discovery?: Record<string, string>;
+  };
 };
 
 describe("GrowthCircle.id model catalog", () => {
@@ -38,6 +44,20 @@ describe("GrowthCircle.id model catalog", () => {
       "growthcircle-paid-api-key",
       "growthcircle-team-api-key",
     ]);
+    expect(manifest.providerRequest?.providers?.growthcircle?.family).toBe(
+      "growthcircle-openai-compatible",
+    );
+    expect(manifest.modelCatalog?.providers?.growthcircle).toMatchObject({
+      baseUrl: BASE_URL,
+      api: "openai-completions",
+    });
+    expect(manifest.modelCatalog?.discovery?.growthcircle).toBe("runtime");
+    expect(
+      manifest.modelCatalog?.providers?.growthcircle?.models?.find((model) => model.id === DEFAULT_MODEL_ID),
+    ).toMatchObject({
+      id: DEFAULT_MODEL_ID,
+      compat: GROWTHCIRCLE_OPENAI_COMPAT,
+    });
   });
 
   it("normalizes OpenAI-compatible /models responses", () => {
@@ -72,6 +92,7 @@ describe("GrowthCircle.id model catalog", () => {
         },
         contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
         maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
+        compat: GROWTHCIRCLE_OPENAI_COMPAT,
       },
     ]);
   });
@@ -226,6 +247,7 @@ describe("GrowthCircle.id model catalog", () => {
       api: "openai-completions",
       baseUrl: BASE_URL,
       input: ["text"],
+      compat: GROWTHCIRCLE_OPENAI_COMPAT,
     });
   });
 
