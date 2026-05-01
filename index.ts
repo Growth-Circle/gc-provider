@@ -24,6 +24,7 @@ import {
   growthCircleDefaultModelRefForTier,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
+  resolveGrowthCircleThinkingProfile,
   supportsGrowthCircleXHighThinking,
 } from "./src/provider.js";
 
@@ -72,7 +73,13 @@ export default definePluginEntry({
   name: PLUGIN_NAME,
   description: PLUGIN_DESCRIPTION,
   register(api) {
-    api.registerProvider({
+    type GrowthCircleProviderRegistration = Parameters<typeof api.registerProvider>[0] & {
+      resolveThinkingProfile?: (ctx: { modelId: string; reasoning?: boolean }) => ReturnType<
+        typeof resolveGrowthCircleThinkingProfile
+      >;
+    };
+
+    const providerRegistration: GrowthCircleProviderRegistration = {
       id: PROVIDER_ID,
       label: PROVIDER_LABEL,
       docsPath: "/providers/growthcircle",
@@ -123,6 +130,11 @@ export default definePluginEntry({
         supportsGrowthCircleXHighThinking({
           modelId: ctx.modelId,
         }),
+      resolveThinkingProfile: (ctx) =>
+        resolveGrowthCircleThinkingProfile({
+          modelId: ctx.modelId,
+          reasoning: ctx.reasoning,
+        }),
       buildMissingAuthMessage: () =>
         `GrowthCircle.id requires ${ENV_VAR} or an auth profile. Run openclaw onboard --auth-choice growthcircle-free-api-key, growthcircle-paid-api-key, or growthcircle-team-api-key; or set ${ENV_VAR}.`,
       buildUnknownModelHint: () =>
@@ -136,7 +148,9 @@ export default definePluginEntry({
       ...buildProviderReplayFamilyHooks({
         family: "openai-compatible",
       }),
-    });
+    };
+
+    api.registerProvider(providerRegistration);
   },
 });
 
@@ -164,5 +178,6 @@ export {
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
+  resolveGrowthCircleThinkingProfile,
   supportsGrowthCircleXHighThinking,
 } from "./src/provider.js";

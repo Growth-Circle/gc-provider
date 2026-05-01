@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.10
+
+- Checked OpenClaw `2026.4.29` compatibility and updated the plugin SDK test target.
+- Added manifest-owned OpenAI-compatible streaming-usage request metadata for newer OpenClaw request-policy paths.
+- Added the newer `resolveThinkingProfile` hook while retaining legacy thinking hooks for older supported OpenClaw versions.
+
 ## 0.1.9
 
 - Checked OpenClaw `2026.4.26` compatibility and updated the plugin SDK test target.

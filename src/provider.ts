@@ -104,6 +104,14 @@ export const GROWTHCIRCLE_OPENAI_COMPAT: ModelDefinitionConfig["compat"] = {
   maxTokensField: "max_completion_tokens",
 };
 
+const BASE_GROWTHCIRCLE_THINKING_LEVELS = [
+  { id: "off" },
+  { id: "minimal" },
+  { id: "low" },
+  { id: "medium" },
+  { id: "high" },
+] as const satisfies ReadonlyArray<{ id: GrowthCircleThinkingLevelId }>;
+
 export const DEFAULT_MODEL: ModelDefinitionConfig = {
   id: DEFAULT_MODEL_ID,
   name: "GPT-5.5",
@@ -135,6 +143,12 @@ type NormalizeGrowthCircleModelsOptions = {
 };
 
 export type GrowthCircleKeyTier = "free" | "paid" | "team";
+type GrowthCircleThinkingLevelId = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+
+export type GrowthCircleThinkingProfile = {
+  levels: Array<{ id: GrowthCircleThinkingLevelId }>;
+  defaultLevel?: GrowthCircleThinkingLevelId | null;
+};
 
 type RemoteModelObject = {
   id?: unknown;
@@ -246,6 +260,22 @@ export function resolveGrowthCircleDefaultThinkingLevel(params: {
 
 export function supportsGrowthCircleXHighThinking(params: { modelId: string }): boolean | undefined {
   return isDefaultModelId(params.modelId) ? true : undefined;
+}
+
+export function resolveGrowthCircleThinkingProfile(params: {
+  modelId: string;
+  reasoning?: boolean;
+}): GrowthCircleThinkingProfile {
+  const defaultLevel = resolveGrowthCircleDefaultThinkingLevel(params);
+  const levels: GrowthCircleThinkingProfile["levels"] = [...BASE_GROWTHCIRCLE_THINKING_LEVELS];
+  if (supportsGrowthCircleXHighThinking({ modelId: params.modelId })) {
+    levels.push({ id: "xhigh" });
+  }
+
+  return {
+    levels,
+    ...(defaultLevel ? { defaultLevel } : {}),
+  };
 }
 
 export function applyGrowthCircleDefaults(

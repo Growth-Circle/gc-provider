@@ -18,6 +18,7 @@ import {
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
+  resolveGrowthCircleThinkingProfile,
   supportsGrowthCircleXHighThinking,
 } from "../src/provider.js";
 
@@ -27,7 +28,9 @@ const manifest = JSON.parse(
   providerAuthEnvVars?: unknown;
   setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
   providerAuthChoices: Array<{ choiceId: string }>;
-  providerRequest?: { providers?: Record<string, { family?: string }> };
+  providerRequest?: {
+    providers?: Record<string, { family?: string; openAICompletions?: { supportsStreamingUsage?: boolean } }>;
+  };
   modelCatalog?: {
     providers?: Record<string, { baseUrl?: string; api?: string; models?: Array<{ id: string; compat?: unknown }> }>;
     discovery?: Record<string, string>;
@@ -47,6 +50,9 @@ describe("GrowthCircle.id model catalog", () => {
     expect(manifest.providerRequest?.providers?.growthcircle?.family).toBe(
       "growthcircle-openai-compatible",
     );
+    expect(manifest.providerRequest?.providers?.growthcircle?.openAICompletions).toEqual({
+      supportsStreamingUsage: true,
+    });
     expect(manifest.modelCatalog?.providers?.growthcircle).toMatchObject({
       baseUrl: BASE_URL,
       api: "openai-completions",
@@ -279,5 +285,20 @@ describe("GrowthCircle.id model catalog", () => {
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: true })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: false })).toBeNull();
     expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.5" })).toBe(true);
+    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.5" })).toEqual({
+      levels: [
+        { id: "off" },
+        { id: "minimal" },
+        { id: "low" },
+        { id: "medium" },
+        { id: "high" },
+        { id: "xhigh" },
+      ],
+      defaultLevel: "medium",
+    });
+    expect(resolveGrowthCircleThinkingProfile({ modelId: "custom", reasoning: true })).toEqual({
+      levels: [{ id: "off" }, { id: "minimal" }, { id: "low" }, { id: "medium" }, { id: "high" }],
+      defaultLevel: "medium",
+    });
   });
 });

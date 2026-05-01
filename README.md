@@ -126,15 +126,16 @@ runs can follow newer GrowthCircle.id releases.
 
 ### Recommended Upgrade Path
 
-The plugin supports OpenClaw `2026.4.15` or newer. OpenClaw `2026.4.26` or
+The plugin supports OpenClaw `2026.4.15` or newer. OpenClaw `2026.4.29` or
 newer is recommended because older `2026.4.24` builds can fall back to loading
 the full OpenClaw model catalog during the `/model` allowlist prompt, which is
 slower and can show unrelated providers.
 
-Compatibility has been typechecked against the stable npm releases in this
-range: `2026.4.15`, `2026.4.20`, `2026.4.21`, `2026.4.22`, `2026.4.23`,
-`2026.4.24`, `2026.4.25`, and `2026.4.26`. No stable
-`2026.4.16`-`2026.4.19` packages are published on npm.
+Compatibility has been checked against the declared minimum and latest stable
+npm releases. The supported stable range currently spans `2026.4.15`,
+`2026.4.20`, `2026.4.21`, `2026.4.22`, `2026.4.23`, `2026.4.24`,
+`2026.4.25`, `2026.4.26`, `2026.4.27`, and `2026.4.29`. No stable
+`2026.4.16`-`2026.4.19` or `2026.4.28` packages are published on npm.
 
 ```sh
 npm install -g openclaw@latest && (openclaw plugins update gc-provider@latest || openclaw plugins install clawhub:gc-provider --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
@@ -281,7 +282,7 @@ openclaw plugins inspect gc-provider
 - Model reference format: `growthcircle/<model-id>`
 - Default model: `growthcircle/gpt-5.5` for paid/team, `growthcircle/gpt-5.5-free` for free
 - Default thinking level: `medium`
-- OpenClaw compatibility: `2026.4.15+` (`2026.4.26+` recommended)
+- OpenClaw compatibility: `2026.4.15+` (`2026.4.29+` recommended)
 - Source repo: `https://github.com/Growth-Circle/gc-provider`
 - npm: `https://www.npmjs.com/package/gc-provider`
 
