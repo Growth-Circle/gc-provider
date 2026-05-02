@@ -1,3 +1,5 @@
+> **Production safety:** Jangan pernah menghapus data atau memformat VM/disk production tanpa persetujuan eksplisit dari Rama. Untuk migrasi storage, ikuti `docs/PRODUCTION_DISK_SAFETY.md`.
+
 # gc-provider
 
 OpenClaw model-provider plugin for GrowthCircle.id.

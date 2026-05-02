@@ -1,3 +1,7 @@
+## RULE UTAMA - Production Disk Safety
+
+SERVER INI ADALAH SERVER PRODUCTION ACTIVE DAN DIPAKAI OLEH RIBUAN MEMBER. Jangan pernah menghapus data atau memformat VM/disk tanpa persetujuan eksplisit dari Rama. Untuk migrasi storage, ikuti `docs/PRODUCTION_DISK_SAFETY.md` dan gunakan jalur aman/rollback.
+
 # gc-provider Agent Guide
 
 Last updated: 2026-04-28
