@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.11
+
+- Checked OpenClaw `2026.5.2` compatibility and updated the plugin SDK test
+  target.
+- Documented npm `latest` as the primary install fallback for OpenClaw builds
+  that reject ClawHub package metadata without archive verification fields.
+
 ## 0.1.10
 
 - Checked OpenClaw `2026.4.29` compatibility and updated the plugin SDK test target.

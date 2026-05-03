@@ -117,42 +117,42 @@ After installation, the model configuration wizard will show
 ### One Command
 
 Use this whether `gc-provider` is new or was installed before. It first moves
-tracked npm installs back to the registry `latest` line, then falls back to an
-unversioned ClawHub install if there is no tracked install yet. The unversioned
-ClawHub install is intentionally not pinned so future `openclaw plugins update`
-runs can follow newer GrowthCircle.id releases.
+tracked npm installs back to the registry `latest` line, then installs the npm
+latest package if there is no tracked install yet.
 
 ```sh
-(openclaw plugins update gc-provider@latest || openclaw plugins install clawhub:gc-provider --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+(openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### Recommended Upgrade Path
 
-The plugin supports OpenClaw `2026.4.15` or newer. OpenClaw `2026.4.29` or
-newer is recommended because older `2026.4.24` builds can fall back to loading
-the full OpenClaw model catalog during the `/model` allowlist prompt, which is
-slower and can show unrelated providers.
+The plugin supports OpenClaw `2026.4.15` or newer. OpenClaw `2026.5.2` is the
+current tested SDK target, and `2026.4.29` or newer is recommended because older
+`2026.4.24` builds can fall back to loading the full OpenClaw model catalog
+during the `/model` allowlist prompt, which is slower and can show unrelated
+providers.
 
 Compatibility has been checked against the declared minimum and latest stable
 npm releases. The supported stable range currently spans `2026.4.15`,
 `2026.4.20`, `2026.4.21`, `2026.4.22`, `2026.4.23`, `2026.4.24`,
-`2026.4.25`, `2026.4.26`, `2026.4.27`, and `2026.4.29`. No stable
-`2026.4.16`-`2026.4.19` or `2026.4.28` packages are published on npm.
+`2026.4.25`, `2026.4.26`, `2026.4.27`, `2026.4.29`, and `2026.5.2`. No stable
+`2026.4.16`-`2026.4.19`, `2026.4.28`, `2026.4.30`, `2026.5.0`, or `2026.5.1`
+packages are published on npm.
 
 ```sh
-npm install -g openclaw@latest && (openclaw plugins update gc-provider@latest || openclaw plugins install clawhub:gc-provider --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+npm install -g openclaw@latest && (openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If OpenClaw is not installed yet
 
 ```sh
-npm install -g openclaw && openclaw plugins install clawhub:gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+npm install -g openclaw && openclaw plugins install gc-provider@latest && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If OpenClaw is already installed
 
 ```sh
-(openclaw plugins update gc-provider@latest || openclaw plugins install clawhub:gc-provider --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
+(openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
 ### If gc-provider is already installed
@@ -173,10 +173,17 @@ Use this only when `gc-provider` is not already installed:
 openclaw plugins install clawhub:gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
+If OpenClaw prints `missing sha256hash and usable files[] metadata for fallback
+archive verification`, install from npm latest instead:
+
+```sh
+openclaw plugins install gc-provider@latest --force
+```
+
 ### Manual steps
 
 ```sh
-openclaw plugins update gc-provider@latest || openclaw plugins install clawhub:gc-provider --force
+openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force
 openclaw plugins enable gc-provider
 openclaw gateway restart
 openclaw configure --section=model
@@ -196,7 +203,7 @@ If you installed from an unversioned ClawHub source,
 the existing copy is untracked or broken, replace it explicitly:
 
 ```sh
-openclaw plugins install clawhub:gc-provider --force
+openclaw plugins install gc-provider@latest --force
 ```
 
 
@@ -216,6 +223,8 @@ For this plugin, prefer one of these update-friendly tracks:
   ```sh
   openclaw plugins update gc-provider
   ```
+  If ClawHub archive verification reports missing `sha256hash` metadata, use
+  the npm latest track until ClawHub metadata for the package refreshes.
 - **npm latest track:** move any older pinned npm install back to latest with:
   ```sh
   openclaw plugins update gc-provider@latest
@@ -284,7 +293,7 @@ openclaw plugins inspect gc-provider
 - Model reference format: `growthcircle/<model-id>`
 - Default model: `growthcircle/gpt-5.5` for paid/team, `growthcircle/gpt-5.5-free` for free
 - Default thinking level: `medium`
-- OpenClaw compatibility: `2026.4.15+` (`2026.4.29+` recommended)
+- OpenClaw compatibility: `2026.4.15+` (`2026.5.2` tested latest, `2026.4.29+` recommended)
 - Source repo: `https://github.com/Growth-Circle/gc-provider`
 - npm: `https://www.npmjs.com/package/gc-provider`
 
