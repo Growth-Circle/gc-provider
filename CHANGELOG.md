@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.12
+
+- Checked OpenClaw `2026.5.7` compatibility and updated the plugin SDK test
+  target.
+- Added compiled `dist/` runtime output to the npm package so OpenClaw
+  `2026.5.7+` can load installed packages that declare TypeScript source
+  entries.
+
 ## 0.1.11
 
 - Checked OpenClaw `2026.5.2` compatibility and updated the plugin SDK test
