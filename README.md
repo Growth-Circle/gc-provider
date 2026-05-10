@@ -53,45 +53,6 @@ To get an API key:
 5. Generate an API key and store it securely. GrowthCircle only shows the key
    once, so it cannot be read again after you leave the page.
 
-
-## Image Generation
-
-`gc-provider` also registers GrowthCircle as an OpenClaw image-generation
-provider. OpenClaw's built-in `image_generate` tool can target it with an
-image-generation model ref such as:
-
-```text
-growthcircle/gpt-image-2
-```
-
-The implementation uses GrowthCircle's OpenAI-compatible image routes under
-`https://ai.growthcircle.id/v1`:
-
-- text-to-image: `POST /images/generations`
-- image/reference edit: GrowthCircle documents public `image_urls` on `POST /images/generations`; local OpenClaw `inputImages` are not enabled in this plugin yet because they are buffers, not public `https://` URLs.
-
-Supported request options are mapped from OpenClaw's `image_generate` contract:
-`prompt`, `count`, `size`/`aspectRatio` (sent as GrowthCircle concrete
-`size`, for example `1024x1024` or `1536x1024`), `quality`, `outputFormat`,
-`background`, and OpenAI provider options. Reference-image editing is intentionally disabled until OpenClaw local
-input images can be converted into GrowthCircle-compatible public `image_urls`. The default image model is tier-aware: free keys use
-`growthcircle/gpt-image-2-free`, paid keys use `growthcircle/gpt-image-2`,
-and team/patungan keys use `growthcircle/gc-image-pro`. Known team variants
-include `gc-image-pro`, `gc-image-pro-square`, `gc-image-pro-landscape`, and
-`gc-image-pro-portrait`.
-
-Example config override:
-
-```yaml
-agents:
-  defaults:
-    imageGenerationModel: growthcircle/gc-image-pro # team/patungan
-    # free: growthcircle/gpt-image-2-free
-    # paid: growthcircle/gpt-image-2
-```
-
-Use the same `GROWTHCIRCLE_API_KEY` credential as text inference.
-
 ## Tier Model Catalogs
 
 The catalogs below were verified from GrowthCircle `/v1/models` and are exposed

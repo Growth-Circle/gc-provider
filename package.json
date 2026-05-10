@@ -57,11 +57,6 @@
     "build": {
       "openclawVersion": "2026.5.7",
       "pluginSdkVersion": "2026.5.7"
-    },
-    "contracts": {
-      "imageGenerationProviders": [
-        "growthcircle"
-      ]
     }
   },
   "devDependencies": {
