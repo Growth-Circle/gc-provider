@@ -13,10 +13,16 @@ export const DEFAULT_MODEL_ID = "gpt-5.5";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
 export const DEFAULT_FREE_MODEL_ID = `${DEFAULT_MODEL_ID}${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
-export const DEFAULT_IMAGE_MODEL_ID = "gpt-image-2";
+export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
 export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}`;
-export const DEFAULT_FREE_IMAGE_MODEL_ID = `${DEFAULT_IMAGE_MODEL_ID}${FREE_MODEL_SUFFIX}`;
+export const DEFAULT_FREE_IMAGE_MODEL_ID = "gpt-image-2-free";
 export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
+export const TEAM_IMAGE_MODEL_IDS = [
+    DEFAULT_IMAGE_MODEL_ID,
+    "gc-image-pro-square",
+    "gc-image-pro-landscape",
+    "gc-image-pro-portrait",
+];
 export const FREE_TEXT_MODEL_IDS = [
     "MiniMax-M2.7",
     "MiniMax-M2.7-highspeed",
@@ -172,7 +178,7 @@ export function buildGrowthCircleImageGenerationProvider() {
         id: PROVIDER_ID,
         label: "GrowthCircle.id",
         defaultModel: DEFAULT_IMAGE_MODEL_ID,
-        models: [DEFAULT_IMAGE_MODEL_ID, DEFAULT_FREE_IMAGE_MODEL_ID],
+        models: [...TEAM_IMAGE_MODEL_IDS, DEFAULT_FREE_IMAGE_MODEL_ID],
         isConfigured: ({ agentDir }) => isProviderApiKeyConfigured({
             provider: PROVIDER_ID,
             agentDir,
@@ -288,19 +294,41 @@ function normalizeGrowthCircleImageModel(modelRef, apiKey) {
     const trimmed = modelRef?.trim() || growthCircleDefaultImageModelRefForApiKey(apiKey);
     const modelId = trimmed.startsWith(`${PROVIDER_ID}/`) ? trimmed.slice(PROVIDER_ID.length + 1) : trimmed;
     if (isGrowthCircleFreeApiKey(apiKey))
-        return toGrowthCircleFreeModelId(stripGrowthCircleFreeModelSuffix(modelId));
-    return stripGrowthCircleFreeModelSuffix(modelId) || DEFAULT_IMAGE_MODEL_ID;
+        return DEFAULT_FREE_IMAGE_MODEL_ID;
+    if (modelId === DEFAULT_FREE_IMAGE_MODEL_ID)
+        return DEFAULT_IMAGE_MODEL_ID;
+    if (modelId === "gpt-image-2")
+        return DEFAULT_IMAGE_MODEL_ID;
+    return modelId || DEFAULT_IMAGE_MODEL_ID;
 }
 function resolveGrowthCircleImageSize(req) {
-    const aspectRatio = req.aspectRatio?.trim();
-    if (aspectRatio && /^\d+:\d+$/u.test(aspectRatio))
-        return aspectRatio;
     const size = req.size?.trim();
-    if (size && /^\d+:\d+$/u.test(size))
-        return size;
     if (size && /^\d+x\d+$/iu.test(size))
         return size;
-    return "1:1";
+    const aspectRatio = req.aspectRatio?.trim() || (size && /^\d+:\d+$/u.test(size) ? size : undefined);
+    switch (aspectRatio) {
+        case "2:3":
+            return "1024x1536";
+        case "3:2":
+            return "1536x1024";
+        case "3:4":
+            return "1024x1365";
+        case "4:3":
+            return "1365x1024";
+        case "4:5":
+            return "1024x1280";
+        case "5:4":
+            return "1280x1024";
+        case "9:16":
+            return "1024x1820";
+        case "16:9":
+            return "1820x1024";
+        case "21:9":
+            return "1792x768";
+        case "1:1":
+        default:
+            return "1024x1024";
+    }
 }
 function extractGrowthCircleTaskId(payload) {
     for (const value of candidateRecords(payload)) {

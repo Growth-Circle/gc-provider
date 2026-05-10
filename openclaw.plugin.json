@@ -101,7 +101,10 @@
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5",
-          "growthcircle/gpt-image-2"
+          "growthcircle/gc-image-pro",
+          "growthcircle/gc-image-pro-square",
+          "growthcircle/gc-image-pro-landscape",
+          "growthcircle/gc-image-pro-portrait"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.5"
@@ -132,7 +135,10 @@
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5",
-          "growthcircle/gpt-image-2"
+          "growthcircle/gc-image-pro",
+          "growthcircle/gc-image-pro-square",
+          "growthcircle/gc-image-pro-landscape",
+          "growthcircle/gc-image-pro-portrait"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.5"
@@ -929,7 +935,15 @@
         "gc-paid",
         "gc-team"
       ],
-      "baseUrl": "https://ai.growthcircle.id/v1"
+      "baseUrl": "https://ai.growthcircle.id/v1",
+      "defaultModel": "gc-image-pro",
+      "models": [
+        "gc-image-pro",
+        "gc-image-pro-square",
+        "gc-image-pro-landscape",
+        "gc-image-pro-portrait",
+        "gpt-image-2-free"
+      ]
     }
   }
 }
