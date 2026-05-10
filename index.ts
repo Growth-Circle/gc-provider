@@ -14,6 +14,7 @@ import {
   KNOWN_TEXT_MODEL_REFS,
   PAID_TEXT_MODEL_REFS,
   TEAM_TEXT_MODEL_REFS,
+  buildGrowthCircleImageGenerationProvider,
   PLUGIN_DESCRIPTION,
   PLUGIN_ID,
   PLUGIN_NAME,
@@ -151,6 +152,7 @@ export default definePluginEntry({
     };
 
     api.registerProvider(providerRegistration);
+    api.registerImageGenerationProvider(buildGrowthCircleImageGenerationProvider());
   },
 });
 
@@ -173,6 +175,7 @@ export {
   PROVIDER_ID,
   PROVIDER_LABEL,
   TEAM_TEXT_MODEL_REFS,
+  buildGrowthCircleImageGenerationProvider,
   applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
   normalizeGrowthCircleModels,

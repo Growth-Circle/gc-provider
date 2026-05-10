@@ -39,7 +39,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -57,7 +58,8 @@
           "growthcircle/gpt-5.3-codex-spark-free",
           "growthcircle/gpt-5.4-free",
           "growthcircle/gpt-5.4-mini-free",
-          "growthcircle/gpt-5.5-free"
+          "growthcircle/gpt-5.5-free",
+          "growthcircle/gpt-image-2-free"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.5-free"
@@ -78,7 +80,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -97,7 +100,8 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
-          "growthcircle/gpt-5.5"
+          "growthcircle/gpt-5.5",
+          "growthcircle/gpt-image-2"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.5"
@@ -118,7 +122,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -126,7 +131,8 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
-          "growthcircle/gpt-5.5"
+          "growthcircle/gpt-5.5",
+          "growthcircle/gpt-image-2"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.5"
@@ -907,6 +913,23 @@
     },
     "discovery": {
       "growthcircle": "runtime"
+    }
+  },
+  "contracts": {
+    "imageGenerationProviders": [
+      "growthcircle"
+    ]
+  },
+  "imageGenerationProviderMetadata": {
+    "growthcircle": {
+      "label": "GrowthCircle.id",
+      "authAliases": [
+        "growthcircle",
+        "gc-free",
+        "gc-paid",
+        "gc-team"
+      ],
+      "baseUrl": "https://ai.growthcircle.id/v1"
     }
   }
 }
