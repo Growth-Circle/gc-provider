@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Added GrowthCircle image-generation provider support for OpenClaw's built-in
+  `image_generate` text-to-image flow through OpenAI-compatible
+  `/images/generations`.
+- Added tier-aware image-generation defaults: free keys use
+  `growthcircle/gpt-image-2-free`, paid keys use `growthcircle/gpt-image-2`,
+  and team/patungan keys use `growthcircle/gc-image-pro`.
+- Added provider manifest contract metadata and tests for image model
+  filtering/capabilities.
+- Mapped ratio-like image sizes such as `1:1` to concrete GrowthCircle sizes
+  such as `1024x1024` before sending requests.
+
 ## 0.1.12
 
 - Checked OpenClaw `2026.5.7` compatibility and updated the plugin SDK test

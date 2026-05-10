@@ -1,7 +1,7 @@
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
 import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
-import { BASE_URL, ENV_VAR, FREE_TEXT_MODEL_REFS, PAID_TEXT_MODEL_REFS, TEAM_TEXT_MODEL_REFS, PLUGIN_DESCRIPTION, PLUGIN_ID, PLUGIN_NAME, PROVIDER_ID, PROVIDER_LABEL, applyGrowthCircleDefaultsForTier, fetchGrowthCircleModels, growthCircleDefaultModelRefForTier, resolveDynamicGrowthCircleModel, resolveGrowthCircleDefaultThinkingLevel, resolveGrowthCircleThinkingProfile, supportsGrowthCircleXHighThinking, } from "./src/provider.js";
+import { BASE_URL, ENV_VAR, FREE_TEXT_MODEL_REFS, PAID_TEXT_MODEL_REFS, TEAM_TEXT_MODEL_REFS, PLUGIN_DESCRIPTION, PLUGIN_ID, PLUGIN_NAME, PROVIDER_ID, PROVIDER_LABEL, applyGrowthCircleDefaultsForTier, buildGrowthCircleImageGenerationProvider, fetchGrowthCircleModels, growthCircleDefaultModelRefForTier, resolveDynamicGrowthCircleModel, resolveGrowthCircleDefaultThinkingLevel, resolveGrowthCircleThinkingProfile, supportsGrowthCircleXHighThinking, } from "./src/provider.js";
 function createGrowthCircleAuthMethod(params) {
     const defaultModelRef = growthCircleDefaultModelRefForTier(params.tier);
     return createProviderApiKeyAuthMethod({
@@ -22,7 +22,7 @@ function createGrowthCircleAuthMethod(params) {
             choiceHint: params.hint,
             groupId: "growthcircle",
             groupLabel: PROVIDER_LABEL,
-            onboardingScopes: ["text-inference"],
+            onboardingScopes: ["text-inference", "image-generation"],
             modelAllowlist: {
                 allowedKeys: params.allowedKeys,
                 initialSelections: [defaultModelRef],
@@ -106,6 +106,7 @@ export default definePluginEntry({
             }),
         };
         api.registerProvider(providerRegistration);
+        api.registerImageGenerationProvider(buildGrowthCircleImageGenerationProvider());
     },
 });
-export { BASE_URL, DEFAULT_MODEL, DEFAULT_FREE_MODEL, DEFAULT_FREE_MODEL_REF, DEFAULT_MODEL_ID, DEFAULT_MODEL_REF, DEFAULT_MODEL_LIMITS, ENV_VAR, FREE_TEXT_MODEL_REFS, FALLBACK_MODEL_LIMITS, KNOWN_TEXT_MODEL_REFS, PAID_TEXT_MODEL_REFS, PLUGIN_DESCRIPTION, PLUGIN_ID, PLUGIN_NAME, PROVIDER_ID, PROVIDER_LABEL, TEAM_TEXT_MODEL_REFS, applyGrowthCircleDefaultsForTier, fetchGrowthCircleModels, normalizeGrowthCircleModels, resolveDynamicGrowthCircleModel, resolveGrowthCircleDefaultThinkingLevel, resolveGrowthCircleThinkingProfile, supportsGrowthCircleXHighThinking, } from "./src/provider.js";
+export { BASE_URL, DEFAULT_MODEL, DEFAULT_FREE_MODEL, DEFAULT_FREE_IMAGE_MODEL_REF, DEFAULT_FREE_MODEL_REF, DEFAULT_IMAGE_MODEL_ID, DEFAULT_IMAGE_MODEL_REF, DEFAULT_MODEL_ID, DEFAULT_MODEL_REF, DEFAULT_MODEL_LIMITS, DEFAULT_TEAM_IMAGE_MODEL_REF, ENV_VAR, FREE_TEXT_MODEL_REFS, FALLBACK_MODEL_LIMITS, IMAGE_MODEL_REFS, KNOWN_TEXT_MODEL_REFS, PAID_TEXT_MODEL_REFS, PLUGIN_DESCRIPTION, PLUGIN_ID, PLUGIN_NAME, PROVIDER_ID, PROVIDER_LABEL, TEAM_TEXT_MODEL_REFS, applyGrowthCircleDefaultsForTier, buildGrowthCircleImageGenerationProvider, fetchGrowthCircleModels, growthCircleDefaultImageModelRefForTier, normalizeGrowthCircleImageModelIds, normalizeGrowthCircleModels, resolveDynamicGrowthCircleModel, resolveGrowthCircleDefaultThinkingLevel, resolveGrowthCircleThinkingProfile, supportsGrowthCircleXHighThinking, } from "./src/provider.js";

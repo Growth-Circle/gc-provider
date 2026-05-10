@@ -3,18 +3,26 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   BASE_URL,
+  DEFAULT_FREE_IMAGE_MODEL_REF,
   DEFAULT_FREE_MODEL_REF,
+  DEFAULT_IMAGE_MODEL_ID,
+  DEFAULT_IMAGE_MODEL_REF,
   DEFAULT_MODEL_ID,
   DEFAULT_MODEL_LIMITS,
   DEFAULT_MODEL_REF,
+  DEFAULT_TEAM_IMAGE_MODEL_REF,
   FREE_TEXT_MODEL_REFS,
   GROWTHCIRCLE_OPENAI_COMPAT,
+  IMAGE_MODEL_REFS,
   PAID_TEXT_MODEL_REFS,
   TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaults,
   applyGrowthCircleDefaultsForTier,
+  buildGrowthCircleImageGenerationProvider,
   fetchGrowthCircleModels,
+  growthCircleDefaultImageModelRefForTier,
   growthCircleModelRefsForTier,
+  normalizeGrowthCircleImageModelIds,
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
@@ -26,8 +34,9 @@ const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL("../openclaw.plugin.json", import.meta.url)), "utf8"),
 ) as {
   providerAuthEnvVars?: unknown;
+  contracts?: { imageGenerationProviders?: string[] };
   setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
-  providerAuthChoices: Array<{ choiceId: string }>;
+  providerAuthChoices: Array<{ choiceId: string; onboardingScopes?: string[] }>;
   providerRequest?: {
     providers?: Record<string, { family?: string; openAICompletions?: { supportsStreamingUsage?: boolean } }>;
   };
@@ -47,6 +56,11 @@ describe("GrowthCircle.id model catalog", () => {
       "growthcircle-paid-api-key",
       "growthcircle-team-api-key",
     ]);
+    expect(manifest.providerAuthChoices.map((choice) => choice.onboardingScopes)).toEqual([
+      ["text-inference", "image-generation"],
+      ["text-inference", "image-generation"],
+      ["text-inference", "image-generation"],
+    ]);
     expect(manifest.providerRequest?.providers?.growthcircle?.family).toBe(
       "growthcircle-openai-compatible",
     );
@@ -58,6 +72,7 @@ describe("GrowthCircle.id model catalog", () => {
       api: "openai-completions",
     });
     expect(manifest.modelCatalog?.discovery?.growthcircle).toBe("runtime");
+    expect(manifest.contracts?.imageGenerationProviders).toEqual(["growthcircle"]);
     expect(
       manifest.modelCatalog?.providers?.growthcircle?.models?.find((model) => model.id === DEFAULT_MODEL_ID),
     ).toMatchObject({
@@ -183,6 +198,62 @@ describe("GrowthCircle.id model catalog", () => {
     ]);
   });
 
+  it("extracts GrowthCircle image models separately from the text catalog", () => {
+    const body = {
+      data: [
+        {
+          id: DEFAULT_IMAGE_MODEL_ID,
+          owned_by: "growthcircle",
+          unit_type: "image",
+          architecture: { output_modalities: ["image"] },
+        },
+        {
+          id: "sora-2",
+          owned_by: "growthcircle",
+          unit_type: "video_task",
+          architecture: { output_modalities: ["video"] },
+        },
+        {
+          id: "external-image",
+          owned_by: "openai",
+          unit_type: "image",
+          architecture: { output_modalities: ["image"] },
+        },
+        {
+          id: "unavailable-image",
+          owned_by: "growthcircle",
+          unit_type: "image",
+          available_for_current_key: false,
+          architecture: { output_modalities: ["image"] },
+        },
+        {
+          id: DEFAULT_IMAGE_MODEL_ID,
+          owned_by: "growthcircle",
+          unit_type: "image",
+          architecture: { output_modalities: ["image"] },
+        },
+      ],
+    };
+
+    expect(normalizeGrowthCircleModels(body).map((model) => model.id)).toEqual([]);
+    expect(normalizeGrowthCircleImageModelIds(body)).toEqual([DEFAULT_IMAGE_MODEL_ID]);
+  });
+
+  it("registers an OpenAI-compatible image generation provider", () => {
+    const provider = buildGrowthCircleImageGenerationProvider();
+
+    expect(provider).toMatchObject({
+      id: "growthcircle",
+      label: "GrowthCircle.id",
+      defaultModel: DEFAULT_IMAGE_MODEL_ID,
+      models: IMAGE_MODEL_REFS.map((modelRef) => modelRef.replace("growthcircle/", "")),
+      capabilities: {
+        generate: { maxCount: 4, supportsSize: true, supportsAspectRatio: true },
+        edit: { enabled: false, maxCount: 4, supportsSize: true, supportsAspectRatio: true },
+      },
+    });
+  });
+
   it("fetches /models with bearer auth without exposing the key in errors", async () => {
     const fetchFn = vi.fn(async () =>
       Response.json({
@@ -263,6 +334,7 @@ describe("GrowthCircle.id model catalog", () => {
     expect(config.agents?.defaults?.model).toEqual({
       primary: DEFAULT_MODEL_REF,
     });
+    expect(config.agents?.defaults?.imageGenerationModel).toBe(DEFAULT_IMAGE_MODEL_REF);
     expect(config.agents?.defaults?.thinkingDefault).toBe("medium");
     expect(config.models?.providers?.growthcircle?.models[0]).toMatchObject({
       id: DEFAULT_MODEL_ID,
@@ -275,6 +347,15 @@ describe("GrowthCircle.id model catalog", () => {
     expect(applyGrowthCircleDefaultsForTier({}, "free").agents?.defaults?.model).toEqual({
       primary: DEFAULT_FREE_MODEL_REF,
     });
+    expect(applyGrowthCircleDefaultsForTier({}, "free").agents?.defaults?.imageGenerationModel).toBe(
+      DEFAULT_FREE_IMAGE_MODEL_REF,
+    );
+    expect(growthCircleDefaultImageModelRefForTier("free")).toBe(DEFAULT_FREE_IMAGE_MODEL_REF);
+    expect(growthCircleDefaultImageModelRefForTier("paid")).toBe(DEFAULT_IMAGE_MODEL_REF);
+    expect(growthCircleDefaultImageModelRefForTier("team")).toBe(DEFAULT_TEAM_IMAGE_MODEL_REF);
+    expect(applyGrowthCircleDefaultsForTier({}, "team").agents?.defaults?.imageGenerationModel).toBe(
+      DEFAULT_TEAM_IMAGE_MODEL_REF,
+    );
     expect(growthCircleModelRefsForTier("free")).toEqual(FREE_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);

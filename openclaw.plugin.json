@@ -39,7 +39,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -78,7 +79,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -118,7 +120,8 @@
       "cliOption": "--growthcircle-api-key <key>",
       "cliDescription": "GrowthCircle.id API key.",
       "onboardingScopes": [
-        "text-inference"
+        "text-inference",
+        "image-generation"
       ],
       "modelAllowlist": {
         "allowedKeys": [
@@ -908,5 +911,10 @@
     "discovery": {
       "growthcircle": "runtime"
     }
+  },
+  "contracts": {
+    "imageGenerationProviders": [
+      "growthcircle"
+    ]
   }
 }

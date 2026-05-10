@@ -1,3 +1,4 @@
+import { createOpenAiCompatibleImageGenerationProvider } from "openclaw/plugin-sdk/image-generation";
 import { applyProviderConfigWithDefaultModelPreset } from "openclaw/plugin-sdk/provider-onboard";
 export const PLUGIN_ID = "gc-provider";
 export const PLUGIN_NAME = "GrowthCircle.id Provider";
@@ -11,6 +12,43 @@ export const DEFAULT_MODEL_ID = "gpt-5.5";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
 export const DEFAULT_FREE_MODEL_ID = `${DEFAULT_MODEL_ID}${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
+export const DEFAULT_IMAGE_MODEL_ID = "gpt-image-2";
+export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}`;
+export const DEFAULT_FREE_IMAGE_MODEL_ID = `${DEFAULT_IMAGE_MODEL_ID}${FREE_MODEL_SUFFIX}`;
+export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
+export const DEFAULT_TEAM_IMAGE_MODEL_ID = "gc-image-pro";
+export const DEFAULT_TEAM_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_TEAM_IMAGE_MODEL_ID}`;
+export const IMAGE_MODEL_IDS = [
+    DEFAULT_IMAGE_MODEL_ID,
+    DEFAULT_FREE_IMAGE_MODEL_ID,
+    DEFAULT_TEAM_IMAGE_MODEL_ID,
+    "gc-image-pro-square",
+    "gc-image-pro-landscape",
+    "gc-image-pro-portrait",
+    "gpt-image-1",
+    "gpt-image-1-mini",
+];
+export const IMAGE_MODEL_REFS = IMAGE_MODEL_IDS.map((modelId) => `${PROVIDER_ID}/${modelId}`);
+const DEFAULT_IMAGE_SIZE = "1024x1024";
+const DEFAULT_IMAGE_TIMEOUT_MS = 180_000;
+const MAX_IMAGE_RESULTS = 4;
+const IMAGE_SIZES = [
+    "1:1",
+    "16:9",
+    "9:16",
+    "4:3",
+    "3:4",
+    "256x256",
+    "512x512",
+    "1024x1024",
+    "1024x1536",
+    "1536x1024",
+    "2048x2048",
+    "2048x1152",
+    "3840x2160",
+    "2160x3840",
+];
+const IMAGE_ASPECT_RATIOS = ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"];
 export const FREE_TEXT_MODEL_IDS = [
     "MiniMax-M2.7",
     "MiniMax-M2.7-highspeed",
@@ -132,6 +170,85 @@ export function normalizeGrowthCircleModels(body, options = {}) {
         return true;
     });
 }
+export function normalizeGrowthCircleImageModelIds(body) {
+    const modelIds = extractModelItems(body)
+        .map((model) => {
+        if (typeof model === "string")
+            return model.trim() || null;
+        if (!isRecord(model))
+            return null;
+        const object = model;
+        const id = readString(object.id);
+        if (!id || !isGrowthCircleImageModel(object))
+            return null;
+        return id;
+    })
+        .filter((id) => id !== null);
+    const seen = new Set();
+    return modelIds.filter((modelId) => {
+        if (seen.has(modelId))
+            return false;
+        seen.add(modelId);
+        return true;
+    });
+}
+export function buildGrowthCircleImageGenerationProvider() {
+    return createOpenAiCompatibleImageGenerationProvider({
+        id: PROVIDER_ID,
+        label: PROVIDER_LABEL,
+        defaultModel: DEFAULT_IMAGE_MODEL_ID,
+        models: IMAGE_MODEL_IDS,
+        capabilities: {
+            generate: {
+                maxCount: MAX_IMAGE_RESULTS,
+                supportsSize: true,
+                supportsAspectRatio: true,
+                supportsResolution: false,
+            },
+            edit: {
+                enabled: false,
+                maxCount: MAX_IMAGE_RESULTS,
+                supportsSize: true,
+                supportsAspectRatio: true,
+                supportsResolution: false,
+            },
+            geometry: { sizes: [...IMAGE_SIZES], aspectRatios: [...IMAGE_ASPECT_RATIOS] },
+            output: {
+                qualities: ["low", "medium", "high", "auto"],
+                formats: ["png", "jpeg", "webp"],
+                backgrounds: ["transparent", "opaque", "auto"],
+            },
+        },
+        defaultBaseUrl: BASE_URL,
+        providerConfigKey: PROVIDER_ID,
+        useConfiguredRequest: true,
+        defaultTimeoutMs: DEFAULT_IMAGE_TIMEOUT_MS,
+        resolveCount: ({ req }) => clampImageCount(req.count),
+        buildGenerateRequest: ({ req, model, count }) => {
+            const body = {
+                model,
+                prompt: req.prompt,
+                n: count,
+                size: resolveGrowthCircleImageSize(req),
+            };
+            appendGrowthCircleImageOptions(body, req);
+            return { kind: "json", body };
+        },
+        buildEditRequest: () => {
+            throw new Error("GrowthCircle.id image reference edits require public image_urls on /images/generations; OpenClaw local inputImages are not mapped yet.");
+        },
+        response: {
+            defaultMimeType: "image/png",
+            fileNamePrefix: "growthcircle-image",
+            sniffMimeType: true,
+        },
+        missingApiKeyError: `GrowthCircle.id image generation requires ${ENV_VAR} or an auth profile.`,
+        failureLabels: {
+            generate: "GrowthCircle.id image generation failed",
+            edit: "GrowthCircle.id image edit failed",
+        },
+    });
+}
 export function resolveDynamicGrowthCircleModel(modelId) {
     const model = createModelDefinition({ id: modelId });
     return {
@@ -147,6 +264,13 @@ export function growthCircleDefaultModelRefForApiKey(apiKey) {
 }
 export function growthCircleDefaultModelRefForTier(tier) {
     return tier === "free" ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+}
+export function growthCircleDefaultImageModelRefForTier(tier) {
+    if (tier === "free")
+        return DEFAULT_FREE_IMAGE_MODEL_REF;
+    if (tier === "team")
+        return DEFAULT_TEAM_IMAGE_MODEL_REF;
+    return DEFAULT_IMAGE_MODEL_REF;
 }
 export function growthCircleModelRefsForTier(tier) {
     if (tier === "free")
@@ -176,8 +300,10 @@ export function resolveGrowthCircleThinkingProfile(params) {
     };
 }
 export function applyGrowthCircleDefaults(cfg, options = {}) {
-    const defaultModel = options.freeModels ? DEFAULT_FREE_MODEL : DEFAULT_MODEL;
-    const defaultModelRef = options.freeModels ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+    const tier = options.tier ?? (options.freeModels ? "free" : "paid");
+    const defaultModel = tier === "free" ? DEFAULT_FREE_MODEL : DEFAULT_MODEL;
+    const defaultModelRef = growthCircleDefaultModelRefForTier(tier);
+    const defaultImageModelRef = growthCircleDefaultImageModelRefForTier(tier);
     const withModel = applyProviderConfigWithDefaultModelPreset(cfg, {
         providerId: PROVIDER_ID,
         api: "openai-completions",
@@ -192,19 +318,27 @@ export function applyGrowthCircleDefaults(cfg, options = {}) {
             ...withModel.agents,
             defaults: {
                 ...withModel.agents?.defaults,
+                imageGenerationModel: withModel.agents?.defaults?.imageGenerationModel ?? defaultImageModelRef,
                 thinkingDefault: withModel.agents?.defaults?.thinkingDefault ?? "medium",
             },
         },
     };
 }
 export function applyGrowthCircleDefaultsForApiKey(cfg, apiKey) {
+    const tier = isGrowthCircleApiKeyForTier(apiKey, "free")
+        ? "free"
+        : isGrowthCircleApiKeyForTier(apiKey, "team")
+            ? "team"
+            : "paid";
     return applyGrowthCircleDefaults(cfg, {
-        freeModels: isGrowthCircleFreeApiKey(apiKey),
+        freeModels: tier === "free",
+        tier,
     });
 }
 export function applyGrowthCircleDefaultsForTier(cfg, tier) {
     return applyGrowthCircleDefaults(cfg, {
         freeModels: tier === "free",
+        tier,
     });
 }
 function extractModelItems(body) {
@@ -266,6 +400,74 @@ function isGrowthCircleTextModel(model) {
     if (outputModalities && !outputModalities.some((modality) => modality.toLowerCase() === "text"))
         return false;
     return true;
+}
+function isGrowthCircleImageModel(model) {
+    const owner = readString(model.owned_by) ?? readString(model.ownedBy);
+    if (owner && !isGrowthCircleOwner(owner))
+        return false;
+    const availableForCurrentKey = model.available_for_current_key ?? model.availableForCurrentKey;
+    if (availableForCurrentKey === false)
+        return false;
+    const unitType = readString(model.unit_type) ?? readString(model.unitType);
+    if (unitType && !["image", "image_task"].includes(unitType.toLowerCase()))
+        return false;
+    const outputModalities = readOutputModalities(model);
+    if (outputModalities && !outputModalities.some((modality) => modality.toLowerCase() === "image"))
+        return false;
+    return Boolean(unitType || outputModalities);
+}
+function clampImageCount(count) {
+    if (typeof count !== "number" || !Number.isFinite(count))
+        return 1;
+    return Math.max(1, Math.min(MAX_IMAGE_RESULTS, Math.trunc(count)));
+}
+function resolveGrowthCircleImageSize(req) {
+    return mapGrowthCircleImageSize(req.size ?? req.aspectRatio) ?? DEFAULT_IMAGE_SIZE;
+}
+function mapGrowthCircleImageSize(value) {
+    if (!value)
+        return undefined;
+    const normalized = value.trim();
+    if (!normalized)
+        return undefined;
+    if (/^\d+x\d+$/u.test(normalized))
+        return normalized;
+    switch (normalized) {
+        case "1:1":
+            return "1024x1024";
+        case "16:9":
+        case "3:2":
+            return "1536x1024";
+        case "9:16":
+        case "2:3":
+            return "1024x1536";
+        case "4:3":
+            return "1536x1024";
+        case "3:4":
+            return "1024x1536";
+        default:
+            return normalized;
+    }
+}
+function appendGrowthCircleImageOptions(target, req) {
+    const openai = req.providerOptions?.openai;
+    const background = openai?.background ?? req.background;
+    const entries = {
+        quality: req.quality,
+        output_format: req.outputFormat,
+        background,
+        moderation: openai?.moderation,
+        output_compression: openai?.outputCompression,
+        user: openai?.user,
+    };
+    for (const [key, value] of Object.entries(entries)) {
+        if (value === undefined)
+            continue;
+        if (target instanceof FormData)
+            target.set(key, String(value));
+        else
+            target[key] = value;
+    }
 }
 function normalizeModelIdForTier(modelId, options) {
     if (!modelId)

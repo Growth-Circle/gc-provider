@@ -3,14 +3,19 @@ import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-aut
 import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
 import {
   BASE_URL,
+  DEFAULT_FREE_IMAGE_MODEL_REF,
   DEFAULT_FREE_MODEL,
   DEFAULT_FREE_MODEL_REF,
+  DEFAULT_IMAGE_MODEL_ID,
+  DEFAULT_IMAGE_MODEL_REF,
   DEFAULT_MODEL,
   DEFAULT_MODEL_ID,
   DEFAULT_MODEL_LIMITS,
+  DEFAULT_TEAM_IMAGE_MODEL_REF,
   ENV_VAR,
   FALLBACK_MODEL_LIMITS,
   FREE_TEXT_MODEL_REFS,
+  IMAGE_MODEL_REFS,
   KNOWN_TEXT_MODEL_REFS,
   PAID_TEXT_MODEL_REFS,
   TEAM_TEXT_MODEL_REFS,
@@ -20,8 +25,11 @@ import {
   PROVIDER_ID,
   PROVIDER_LABEL,
   applyGrowthCircleDefaultsForTier,
+  buildGrowthCircleImageGenerationProvider,
   fetchGrowthCircleModels,
+  growthCircleDefaultImageModelRefForTier,
   growthCircleDefaultModelRefForTier,
+  normalizeGrowthCircleImageModelIds,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
   resolveGrowthCircleThinkingProfile,
@@ -54,7 +62,7 @@ function createGrowthCircleAuthMethod(params: {
       choiceHint: params.hint,
       groupId: "growthcircle",
       groupLabel: PROVIDER_LABEL,
-      onboardingScopes: ["text-inference"],
+      onboardingScopes: ["text-inference", "image-generation"],
       modelAllowlist: {
         allowedKeys: params.allowedKeys,
         initialSelections: [defaultModelRef],
@@ -151,6 +159,7 @@ export default definePluginEntry({
     };
 
     api.registerProvider(providerRegistration);
+    api.registerImageGenerationProvider(buildGrowthCircleImageGenerationProvider());
   },
 });
 
@@ -158,13 +167,18 @@ export {
   BASE_URL,
   DEFAULT_MODEL,
   DEFAULT_FREE_MODEL,
+  DEFAULT_FREE_IMAGE_MODEL_REF,
   DEFAULT_FREE_MODEL_REF,
+  DEFAULT_IMAGE_MODEL_ID,
+  DEFAULT_IMAGE_MODEL_REF,
   DEFAULT_MODEL_ID,
   DEFAULT_MODEL_REF,
   DEFAULT_MODEL_LIMITS,
+  DEFAULT_TEAM_IMAGE_MODEL_REF,
   ENV_VAR,
   FREE_TEXT_MODEL_REFS,
   FALLBACK_MODEL_LIMITS,
+  IMAGE_MODEL_REFS,
   KNOWN_TEXT_MODEL_REFS,
   PAID_TEXT_MODEL_REFS,
   PLUGIN_DESCRIPTION,
@@ -174,7 +188,10 @@ export {
   PROVIDER_LABEL,
   TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaultsForTier,
+  buildGrowthCircleImageGenerationProvider,
   fetchGrowthCircleModels,
+  growthCircleDefaultImageModelRefForTier,
+  normalizeGrowthCircleImageModelIds,
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
