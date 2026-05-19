@@ -155,6 +155,18 @@ type FetchGrowthCircleModelsOptions = {
   timeoutMs?: number;
 };
 
+type GrowthCircleImageGenerationProvider = ImageGenerationProvider & {
+  capabilities: ImageGenerationProvider["capabilities"] & {
+    output?: {
+      formats: string[];
+    };
+  };
+};
+
+type GrowthCircleImageGenerationRequest = ImageGenerationRequest & {
+  outputFormat?: string;
+};
+
 type NormalizeGrowthCircleModelsOptions = {
   freeModels?: boolean;
 };
@@ -274,7 +286,7 @@ export function growthCircleImageModelRefForTier(tier: GrowthCircleKeyTier): str
 }
 
 export function buildGrowthCircleImageGenerationProvider(): ImageGenerationProvider {
-  return {
+  const provider: GrowthCircleImageGenerationProvider = {
     id: PROVIDER_ID,
     label: "GrowthCircle.id",
     defaultModel: DEFAULT_IMAGE_MODEL_ID,
@@ -333,6 +345,7 @@ export function buildGrowthCircleImageGenerationProvider(): ImageGenerationProvi
       };
     },
   };
+  return provider;
 }
 
 async function createGrowthCircleImageTask(params: {
@@ -346,7 +359,8 @@ async function createGrowthCircleImageTask(params: {
     n: params.req.count ?? 1,
     size: resolveGrowthCircleImageSize(params.req),
   };
-  if (params.req.outputFormat) body.response_format = params.req.outputFormat === "jpeg" ? "url" : params.req.outputFormat;
+  const outputFormat = (params.req as GrowthCircleImageGenerationRequest).outputFormat;
+  if (outputFormat) body.response_format = outputFormat === "jpeg" ? "url" : outputFormat;
 
   const response = await fetch(`${BASE_URL}/images/generations`, {
     method: "POST",

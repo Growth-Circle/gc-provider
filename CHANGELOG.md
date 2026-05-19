@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.15
+
+- Checked OpenClaw `2026.5.18` compatibility and updated the plugin SDK test
+  target.
+- Added explicit `openclaw.runtimeExtensions` metadata so managed package
+  installs load the compiled `dist/index.js` runtime entry on newer OpenClaw
+  hosts.
+- Raised the declared OpenClaw install floor to `2026.5.4` because earlier
+  ClawHub installers download the legacy ZIP archive while validating the
+  npm-pack SHA-256, which can produce archive integrity mismatch errors.
+
 ## 0.1.12
 
 - Checked OpenClaw `2026.5.7` compatibility and updated the plugin SDK test

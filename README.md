@@ -126,24 +126,22 @@ latest package if there is no tracked install yet.
 
 ### Recommended Upgrade Path
 
-The plugin supports OpenClaw `2026.4.15` or newer. OpenClaw `2026.5.7` is the
-current tested SDK target, and `2026.4.29` or newer is recommended because older
-`2026.4.24` builds can fall back to loading the full OpenClaw model catalog
-during the `/model` allowlist prompt, which is slower and can show unrelated
-providers.
+The current package supports OpenClaw `2026.5.4` or newer. OpenClaw `2026.5.18`
+is the current tested SDK target.
+
+The `2026.5.4` floor is intentional for ClawHub installs. Earlier OpenClaw
+builds download the legacy ClawHub ZIP archive while validating the npm-pack
+SHA-256, which can fail with an archive integrity mismatch. Upgrade OpenClaw
+before installing the latest `gc-provider`.
 
 Compatibility has been checked against the declared minimum and latest stable
-npm releases. The supported stable range currently spans `2026.4.15`,
-`2026.4.20`, `2026.4.21`, `2026.4.22`, `2026.4.23`, `2026.4.24`,
-`2026.4.25`, `2026.4.26`, `2026.4.27`, `2026.4.29`, `2026.5.2`,
-`2026.5.3`, `2026.5.4`, `2026.5.5`, `2026.5.6`, and `2026.5.7`. No stable
-`2026.4.16`-`2026.4.19`, `2026.4.28`, `2026.4.30`, `2026.5.0`, or
-`2026.5.1` packages are published on npm.
+npm releases. The supported stable range currently spans `2026.5.4`,
+`2026.5.5`, `2026.5.6`, `2026.5.7`, `2026.5.12`, and `2026.5.18`.
 
-OpenClaw `2026.5.7+` validates installed plugin packages more strictly. The
-npm package includes compiled runtime output in `dist/` while retaining
-`index.ts` and `src/` for source-linked inspection and older compatibility
-paths.
+The npm package includes compiled runtime output in `dist/` while retaining
+`index.ts` and `src/` for source-linked inspection. The package also declares
+`openclaw.runtimeExtensions` so managed installs load `./dist/index.js`
+explicitly on newer OpenClaw hosts.
 
 ```sh
 npm install -g openclaw@latest && (openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
@@ -299,7 +297,7 @@ openclaw plugins inspect gc-provider
 - Model reference format: `growthcircle/<model-id>`
 - Default model: `growthcircle/gpt-5.5` for paid/team, `growthcircle/gpt-5.5-free` for free
 - Default thinking level: `medium`
-- OpenClaw compatibility: `2026.4.15+` (`2026.5.7` tested latest, `2026.4.29+` recommended)
+- OpenClaw compatibility: `2026.5.4+` (`2026.5.18` tested latest)
 - Source repo: `https://github.com/Growth-Circle/gc-provider`
 - npm: `https://www.npmjs.com/package/gc-provider`
 

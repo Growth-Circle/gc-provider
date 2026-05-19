@@ -25,6 +25,9 @@ import {
 const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL("../openclaw.plugin.json", import.meta.url)), "utf8"),
 ) as {
+  version: string;
+  extensions: string[];
+  runtimeExtensions?: string[];
   providerAuthEnvVars?: unknown;
   setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
   providerAuthChoices: Array<{ choiceId: string }>;
@@ -37,8 +40,41 @@ const manifest = JSON.parse(
   };
 };
 
+const packageJson = JSON.parse(
+  readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"),
+) as {
+  openclaw: {
+    extensions: string[];
+    runtimeExtensions?: string[];
+    compat?: {
+      pluginApi?: string;
+      minGatewayVersion?: string;
+    };
+    build?: {
+      openclawVersion?: string;
+      pluginSdkVersion?: string;
+    };
+  };
+};
+
 describe("GrowthCircle.id model catalog", () => {
+  it("declares compiled runtime entry metadata for managed package installs", () => {
+    expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
+    expect(packageJson.openclaw.runtimeExtensions).toEqual(["./dist/index.js"]);
+    expect(packageJson.openclaw.compat).toEqual({
+      pluginApi: ">=2026.5.4",
+      minGatewayVersion: "2026.5.4",
+    });
+    expect(packageJson.openclaw.build).toEqual({
+      openclawVersion: "2026.5.18",
+      pluginSdkVersion: "2026.5.18",
+    });
+  });
+
   it("declares only tier-specific setup auth choices in the manifest", () => {
+    expect(manifest.version).toBe("0.1.15");
+    expect(manifest.extensions).toEqual(["./index.ts"]);
+    expect(manifest.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(manifest.setup.providers[0].authMethods).toEqual(["free-api-key", "paid-api-key", "team-api-key"]);
     expect(manifest.setup.providers[0].envVars).toEqual(["GROWTHCIRCLE_API_KEY"]);
     expect(manifest.providerAuthEnvVars).toBeUndefined();

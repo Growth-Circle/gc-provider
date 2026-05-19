@@ -174,7 +174,7 @@ export function growthCircleImageModelRefForTier(tier) {
     return tier === "free" ? DEFAULT_FREE_IMAGE_MODEL_REF : DEFAULT_IMAGE_MODEL_REF;
 }
 export function buildGrowthCircleImageGenerationProvider() {
-    return {
+    const provider = {
         id: PROVIDER_ID,
         label: "GrowthCircle.id",
         defaultModel: DEFAULT_IMAGE_MODEL_ID,
@@ -232,6 +232,7 @@ export function buildGrowthCircleImageGenerationProvider() {
             };
         },
     };
+    return provider;
 }
 async function createGrowthCircleImageTask(params) {
     const body = {
@@ -240,8 +241,9 @@ async function createGrowthCircleImageTask(params) {
         n: params.req.count ?? 1,
         size: resolveGrowthCircleImageSize(params.req),
     };
-    if (params.req.outputFormat)
-        body.response_format = params.req.outputFormat === "jpeg" ? "url" : params.req.outputFormat;
+    const outputFormat = params.req.outputFormat;
+    if (outputFormat)
+        body.response_format = outputFormat === "jpeg" ? "url" : outputFormat;
     const response = await fetch(`${BASE_URL}/images/generations`, {
         method: "POST",
         headers: {
