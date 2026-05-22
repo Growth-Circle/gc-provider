@@ -1,282 +1,85 @@
-> **Production safety:** Jangan pernah menghapus data atau memformat VM/disk production tanpa persetujuan eksplisit dari Rama. Untuk migrasi storage, ikuti `docs/PRODUCTION_DISK_SAFETY.md`.
-
 # gc-provider
 
-OpenClaw model-provider plugin for GrowthCircle.id.
+OpenClaw provider plugin for GrowthCircle.id.
 
 <p>
-  <img src="https://raw.githubusercontent.com/Growth-Circle/gc-provider/main/assets/growthcircle-provider-preview.png" alt="GrowthCircle.id landing page preview" width="920" />
+  <img src="https://raw.githubusercontent.com/Growth-Circle/gc-provider/main/assets/growthcircle-provider-preview.png" alt="GrowthCircle.id provider preview" width="920" />
 </p>
 
-It registers `GrowthCircle.id` as provider `growthcircle` and uses the OpenAI-compatible endpoint:
+`gc-provider` registers GrowthCircle.id as the OpenClaw provider
+`growthcircle` and sends requests to the OpenAI-compatible endpoint:
 
 ```text
 https://ai.growthcircle.id/v1
 ```
 
-Model discovery is auth-aware. During setup, choose the matching GrowthCircle
-key tier: Free (`gc-free`), Paid (`gc-paid`), or Team (`gc-team`). The plugin
-calls `/models` with the configured API key, so each tier can expose a different
-text model catalog without separate provider ids. OpenClaw's model wizard only
-shows GrowthCircle text-inference models; image, video, audio, music, and
-unavailable models returned by the catalog are filtered out. Free-tier model ids
-use the required `-free` suffix, for example `growthcircle/gpt-5.5-free`.
+The plugin reads the GrowthCircle model catalog with the API key configured in
+OpenClaw. Free, Paid, and Team keys can expose different models. The OpenClaw
+model picker is scoped to GrowthCircle text-inference models, so image, video,
+audio, music, unavailable, and non-GrowthCircle models are not added to the
+chat model list.
 
-## Required Credential
+## Requirements
 
-This provider requires a GrowthCircle API key. Configure it through the
-OpenClaw setup wizard or set:
+- OpenClaw `2026.5.4` or newer.
+- A GrowthCircle API key with one of these prefixes:
+  - `gc-free`
+  - `gc-paid`
+  - `gc-team`
+
+Configure the key in the OpenClaw setup flow, or set it as an environment
+variable:
 
 ```sh
 GROWTHCIRCLE_API_KEY=<your-growthcircle-key>
 ```
 
-Supported key prefixes are `gc-free`, `gc-paid`, and `gc-team`.
+To create a key:
 
-Registry credential metadata:
-
-```yaml
-metadata:
-  openclaw:
-    requires:
-      env:
-        - GROWTHCIRCLE_API_KEY
-    primaryEnv: GROWTHCIRCLE_API_KEY
-```
-
-To get an API key:
-
-1. Sign in at <https://growthcircle.id/app/ai> with your email.
-2. Open the magic link sent to your email.
-3. Go to **AI Console**.
-4. Open the **Key** tab.
-5. Generate an API key and store it securely. GrowthCircle only shows the key
-   once, so it cannot be read again after you leave the page.
-
-## Tier Model Catalogs
-
-The catalogs below were verified from GrowthCircle `/v1/models` and are exposed
-as GrowthCircle text-inference model refs in OpenClaw.
-
-Free keys expose:
-
-```text
-growthcircle/MiniMax-M2.7-free
-growthcircle/MiniMax-M2.7-highspeed-free
-growthcircle/claude-haiku-4-5-20251001-free
-growthcircle/claude-opus-4-6-free
-growthcircle/claude-opus-4-7-free
-growthcircle/claude-sonnet-4-6-free
-growthcircle/gemini-2.5-flash-free
-growthcircle/gemini-2.5-pro-free
-growthcircle/gemini-3-flash-preview-free
-growthcircle/gemini-3.1-pro-preview-free
-growthcircle/gpt-5.3-codex-free
-growthcircle/gpt-5.3-codex-spark-free
-growthcircle/gpt-5.4-free
-growthcircle/gpt-5.4-mini-free
-growthcircle/gpt-5.5-free
-```
-
-Paid keys expose:
-
-```text
-growthcircle/MiniMax-M2.7
-growthcircle/MiniMax-M2.7-highspeed
-growthcircle/claude-3-5-haiku-latest
-growthcircle/claude-haiku-4-5-20251001
-growthcircle/claude-opus-4-6
-growthcircle/claude-opus-4-7
-growthcircle/claude-sonnet-4-6
-growthcircle/gemini-2.5-flash
-growthcircle/gemini-2.5-pro
-growthcircle/gemini-3-flash-preview
-growthcircle/gemini-3.1-pro-preview
-growthcircle/gpt-5.3-codex
-growthcircle/gpt-5.3-codex-spark
-growthcircle/gpt-5.4
-growthcircle/gpt-5.4-mini
-growthcircle/gpt-5.5
-```
-
-Team keys expose:
-
-```text
-growthcircle/gpt-5.3-codex
-growthcircle/gpt-5.3-codex-spark
-growthcircle/gpt-5.4
-growthcircle/gpt-5.4-mini
-growthcircle/gpt-5.5
-```
+1. Sign in at <https://growthcircle.id/app/ai>.
+2. Open **AI Console**.
+3. Open the **Key** tab.
+4. Generate a key and store it securely. GrowthCircle only shows the key once.
 
 ## Install
 
-After installation, the model configuration wizard will show
-`GrowthCircle.id` / `growthcircle` in the provider list.
+### Recommended OpenClaw Command
 
-### One Command
-
-Use this whether `gc-provider` is new or was installed before. It first moves
-tracked npm installs back to the registry `latest` line, then installs the npm
-latest package if there is no tracked install yet.
+Use this for a new install or an existing install. It updates an existing
+tracked package first. If there is no tracked install yet, it installs the npm
+latest package.
 
 ```sh
 (openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
 ```
 
-### Recommended Upgrade Path
+### ClawHub
 
-The current package supports OpenClaw `2026.5.4` or newer. OpenClaw `2026.5.20`
-is the current tested SDK target.
-
-The `2026.5.4` floor is intentional for ClawHub installs. Earlier OpenClaw
-builds download the legacy ClawHub ZIP archive while validating the npm-pack
-SHA-256, which can fail with an archive integrity mismatch. Upgrade OpenClaw
-before installing the latest `gc-provider`.
-
-Compatibility has been checked against the declared minimum and latest stable
-npm releases. The supported stable range currently spans `2026.5.4`,
-`2026.5.5`, `2026.5.6`, `2026.5.7`, `2026.5.12`, `2026.5.18`, and
-`2026.5.20`.
-
-The npm package includes compiled runtime output in `dist/` while retaining
-`index.ts` and `src/` for source-linked inspection. The package also declares
-`openclaw.runtimeExtensions` so managed installs load `./dist/index.js`
-explicitly on newer OpenClaw hosts.
+Use the unpinned ClawHub track when you want OpenClaw to follow newer ClawHub
+releases:
 
 ```sh
-npm install -g openclaw@latest && (openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
-```
-
-### If OpenClaw is not installed yet
-
-```sh
-npm install -g openclaw && openclaw plugins install gc-provider@latest && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
-```
-
-### If OpenClaw is already installed
-
-```sh
-(openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force) && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
-```
-
-### If gc-provider is already installed
-
-```sh
-openclaw plugins update gc-provider@latest && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
-```
-
-Use this same command when upgrading from an older version. After the gateway
-restarts, reopen the model wizard so OpenClaw refreshes the GrowthCircle model
-catalog for the current API key.
-
-### Fresh ClawHub Install Only
-
-Use this only when `gc-provider` is not already installed:
-
-```sh
-openclaw plugins install clawhub:gc-provider && openclaw plugins enable gc-provider && openclaw gateway restart && openclaw configure --section=model
-```
-
-If OpenClaw prints `missing sha256hash and usable files[] metadata for fallback
-archive verification`, install from npm latest instead:
-
-```sh
-openclaw plugins install gc-provider@latest --force
-```
-
-### Manual steps
-
-```sh
-openclaw plugins update gc-provider@latest || openclaw plugins install gc-provider@latest --force
+openclaw plugins install clawhub:gc-provider
 openclaw plugins enable gc-provider
 openclaw gateway restart
 openclaw configure --section=model
 ```
 
-### `plugin already exists`
+### npm
 
-If OpenClaw prints `plugin already exists`, the plugin is already present in
-`~/.openclaw/extensions/gc-provider`. Do not rerun a plain install command. Use:
-
-```sh
-openclaw plugins update gc-provider@latest
-```
-
-If you installed from an unversioned ClawHub source,
-`openclaw plugins update gc-provider` also follows newer ClawHub releases. If
-the existing copy is untracked or broken, replace it explicitly:
+Use the npm package directly when ClawHub is not available, or when an
+environment standardizes on npm package specs:
 
 ```sh
 openclaw plugins install gc-provider@latest --force
-```
-
-
-### Keeping gc-provider Updated
-
-OpenClaw does not silently self-update plugins. Updates are operator-controlled
-so OpenClaw can preserve install records, run package checks, and surface
-integrity or safety warnings.
-
-For this plugin, prefer one of these update-friendly tracks:
-
-- **ClawHub latest track:** install without a version or `--pin`:
-  ```sh
-  openclaw plugins install clawhub:gc-provider
-  ```
-  Then update later with:
-  ```sh
-  openclaw plugins update gc-provider
-  ```
-  If ClawHub archive verification reports missing `sha256hash` metadata, use
-  the npm latest track until ClawHub metadata for the package refreshes.
-- **npm latest track:** move any older pinned npm install back to latest with:
-  ```sh
-  openclaw plugins update gc-provider@latest
-  ```
-
-To update all tracked plugins on a schedule or during maintenance:
-
-```sh
-openclaw plugins update --all && openclaw gateway restart
-```
-
-If you run `openclaw update` for OpenClaw itself, recent OpenClaw versions also
-run a post-core plugin update sync for tracked plugin installs.
-
-### Plugin allowlist warning
-
-If OpenClaw prints `plugins.allow is empty`, set an explicit allowlist that
-includes every non-bundled plugin you trust. For a fresh install that only needs
-this provider, use:
-
-```sh
-openclaw config set plugins.allow '["gc-provider"]' --strict-json
+openclaw plugins enable gc-provider
 openclaw gateway restart
+openclaw configure --section=model
 ```
 
-If you already use other non-bundled plugins, include them in the same JSON
-array instead of replacing the list with only `gc-provider`.
+### Local Source
 
-After configuration, you can verify the key-specific model catalog:
-
-```sh
-openclaw models list --provider growthcircle
-```
-
-The `/model` picker allowlist is provider-scoped to GrowthCircle text models.
-The live model catalog remains key-aware: keys with different GrowthCircle
-plans can expose different subsets after the gateway refreshes provider auth.
-
-The paid/team onboarding default is `growthcircle/gpt-5.5`; the free onboarding
-default is `growthcircle/gpt-5.5-free`. All GrowthCircle text models use
-conservative metadata (`contextWindow: 256000`, `maxTokens: 36000`) and
-`agents.defaults.thinkingDefault: "medium"` when no thinking default already
-exists.
-
-## Local Development Install
-
-From this repository:
+For development from this repository:
 
 ```sh
 npm install
@@ -284,22 +87,260 @@ npm test
 npm run typecheck
 openclaw plugins install -l .
 openclaw plugins enable gc-provider
-openclaw plugins inspect gc-provider
+openclaw gateway restart
+openclaw configure --section=model
 ```
+
+## Update
+
+OpenClaw does not silently update executable plugins. Update the plugin through
+the same source used for the install, then restart the gateway. To preview a
+tracked update first:
+
+```sh
+openclaw plugins update gc-provider --dry-run
+```
+
+### Update a Tracked Install
+
+Use this when OpenClaw already knows where the installed package came from:
+
+```sh
+openclaw plugins update gc-provider
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+### Update from npm latest
+
+Use this when the plugin was installed from npm, or when an older install was
+pinned to a specific npm version:
+
+```sh
+openclaw plugins update gc-provider@latest
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+### Update from ClawHub latest
+
+If the plugin was installed from `clawhub:gc-provider` without a pinned version:
+
+```sh
+openclaw plugins update gc-provider
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+For a fresh ClawHub replacement install:
+
+```sh
+openclaw plugins install clawhub:gc-provider --force
+openclaw plugins enable gc-provider
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+### Update from Local Source
+
+Use this for a checkout of this repository:
+
+```sh
+npm install
+npm run build
+openclaw plugins install -l . --force
+openclaw plugins enable gc-provider
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+### Update All Plugins
+
+```sh
+openclaw plugins update --all
+openclaw gateway restart
+```
+
+Recent OpenClaw versions may also run plugin update checks after `openclaw
+update`, depending on how the plugin was installed.
+
+### Repair a Broken or Untracked Install
+
+If OpenClaw says `plugin already exists`, use update first:
+
+```sh
+openclaw plugins update gc-provider@latest
+```
+
+If the local copy is untracked or broken, replace it explicitly:
+
+```sh
+openclaw plugins install gc-provider@latest --force
+openclaw plugins enable gc-provider
+openclaw gateway restart
+openclaw configure --section=model
+```
+
+## Verify
+
+After install or update, check the configured GrowthCircle catalog:
+
+```sh
+openclaw models list --provider growthcircle
+```
+
+The paid and team default model is:
+
+```text
+growthcircle/gpt-5.5
+```
+
+The free default model is:
+
+```text
+growthcircle/gpt-5.5-free
+```
+
+Free-tier model ids use the `-free` suffix. For example:
+
+```text
+growthcircle/MiniMax-M2.7-free
+growthcircle/gpt-5.5-free
+```
+
+If OpenClaw prints `plugins.allow is empty`, add this provider to the plugin
+allowlist:
+
+```sh
+openclaw config set plugins.allow '["gc-provider"]' --strict-json
+openclaw gateway restart
+```
+
+If other non-bundled plugins are already in use, include them in the same JSON
+array instead of replacing the list with only `gc-provider`.
+
+## Model Catalog
+
+GrowthCircle's `/v1/models` endpoint is the source of truth at runtime. The
+lists below are the text-inference models currently seeded into OpenClaw setup
+for each key tier.
+
+### Free
+
+```text
+growthcircle/gpt-5.3-codex-free
+growthcircle/gpt-5.4-free
+growthcircle/gpt-5.4-mini-free
+growthcircle/gpt-5.5-free
+growthcircle/claude-haiku-4-5-20251001-free
+growthcircle/claude-opus-4-6-free
+growthcircle/claude-opus-4-7-free
+growthcircle/claude-sonnet-4-6-free
+growthcircle/gemini-2.5-flash-free
+growthcircle/gemini-2.5-flash-lite-free
+growthcircle/gemini-2.5-pro-free
+growthcircle/gemini-3-flash-preview-free
+growthcircle/gemini-3-pro-preview-free
+growthcircle/gemini-3.1-pro-preview-free
+growthcircle/MiniMax-M2.7-free
+growthcircle/MiniMax-M2.7-highspeed-free
+```
+
+### Paid
+
+```text
+growthcircle/gpt-5.3-codex
+growthcircle/gpt-5.3-codex-spark
+growthcircle/gpt-5.4
+growthcircle/gpt-5.4-mini
+growthcircle/gpt-5.5
+growthcircle/claude-3-5-haiku-latest
+growthcircle/claude-haiku-4-5-20251001
+growthcircle/claude-haiku-4-5-20251001-thinking
+growthcircle/claude-opus-4-5-20251101
+growthcircle/claude-opus-4-5-20251101-thinking
+growthcircle/claude-opus-4-6
+growthcircle/claude-opus-4-6-thinking
+growthcircle/claude-opus-4-7
+growthcircle/claude-sonnet-4-5-20250929
+growthcircle/claude-sonnet-4-5-20250929-thinking
+growthcircle/claude-sonnet-4-6
+growthcircle/claude-sonnet-4-6-thinking
+growthcircle/deepseek-ocr
+growthcircle/deepseek-r1-0528
+growthcircle/deepseek-r1-250528
+growthcircle/deepseek-v3-0324
+growthcircle/deepseek-v3.1-terminus
+growthcircle/deepseek-v3.2
+growthcircle/deepseek-v3.2-exp
+growthcircle/deepseek-v4-flash
+growthcircle/deepseek-v4-pro
+growthcircle/gemini-2.0-flash
+growthcircle/gemini-2.5-flash
+growthcircle/gemini-2.5-flash-nothinking
+growthcircle/gemini-2.5-flash-thinking
+growthcircle/gemini-2.5-flash-lite
+growthcircle/gemini-2.5-pro
+growthcircle/gemini-2.5-pro-nothinking
+growthcircle/gemini-2.5-pro-thinking
+growthcircle/gemini-3-flash-preview
+growthcircle/gemini-3-flash-preview-nothinking
+growthcircle/gemini-3-flash-preview-thinking
+growthcircle/gemini-3-pro-preview
+growthcircle/gemini-3-pro-preview-thinking
+growthcircle/gemini-3.1-flash-lite-preview
+growthcircle/gemini-3.1-pro-preview
+growthcircle/gemini-3.1-pro-preview-thinking
+growthcircle/gemini-3.5-flash
+growthcircle/glm-4.6
+growthcircle/glm-4.7
+growthcircle/glm-5
+growthcircle/glm-5.1
+growthcircle/kimi-k2-instruct
+growthcircle/kimi-k2-thinking
+growthcircle/kimi-k2.5
+growthcircle/MiniMax-M2.7
+growthcircle/MiniMax-M2.7-highspeed
+```
+
+### Team
+
+```text
+growthcircle/gpt-5.3-codex
+growthcircle/gpt-5.3-codex-spark
+growthcircle/gpt-5.4
+growthcircle/gpt-5.4-mini
+growthcircle/gpt-5.5
+```
+
+## Compatibility
+
+- Minimum OpenClaw version: `2026.5.4`
+- Tested OpenClaw SDK target: `2026.5.20`
+- Runtime entry: `./dist/index.js`
+- Source entry: `./index.ts`
+
+The `2026.5.4` floor is intentional for ClawHub installs. Older OpenClaw builds
+can download the legacy ClawHub ZIP archive while validating npm-pack metadata,
+which may produce archive integrity errors. Upgrade OpenClaw before installing
+the latest `gc-provider`.
 
 ## Provider Details
 
 - Plugin id: `gc-provider`
+- Runtime id: `gc-provider`
 - Provider id: `growthcircle`
 - Display name: `GrowthCircle.id`
 - API mode: `openai-completions`
 - Base URL: `https://ai.growthcircle.id/v1`
 - API key env var: `GROWTHCIRCLE_API_KEY`
-- Model reference format: `growthcircle/<model-id>`
-- Default model: `growthcircle/gpt-5.5` for paid/team, `growthcircle/gpt-5.5-free` for free
+- Model ref format: `growthcircle/<model-id>`
 - Default thinking level: `medium`
-- OpenClaw compatibility: `2026.5.4+` (`2026.5.20` tested latest)
-- Source repo: `https://github.com/Growth-Circle/gc-provider`
-- npm: `https://www.npmjs.com/package/gc-provider`
+- npm package: <https://www.npmjs.com/package/gc-provider>
+- Source: <https://github.com/Growth-Circle/gc-provider>
 
-Do not commit API keys. Rotate any key used for public demos or shared testing.
+## Security
+
+Do not commit GrowthCircle API keys. Keep local keys in ignored files such as
+`.env.local`, or configure them through OpenClaw's auth flow. Rotate any key
+that was used in a shared demo, CI log, screenshot, or support thread.

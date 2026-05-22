@@ -1,7 +1,7 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": [
     "./index.ts"
@@ -47,25 +47,40 @@
       ],
       "modelAllowlist": {
         "allowedKeys": [
-          "growthcircle/MiniMax-M2.7-free",
-          "growthcircle/MiniMax-M2.7-highspeed-free",
+          "growthcircle/gpt-5.3-codex-free",
+          "growthcircle/gpt-5.4-free",
+          "growthcircle/gpt-5.4-mini-free",
+          "growthcircle/gpt-5.5-free",
           "growthcircle/claude-haiku-4-5-20251001-free",
           "growthcircle/claude-opus-4-6-free",
           "growthcircle/claude-opus-4-7-free",
           "growthcircle/claude-sonnet-4-6-free",
           "growthcircle/gemini-2.5-flash-free",
+          "growthcircle/gemini-2.5-flash-lite-free",
           "growthcircle/gemini-2.5-pro-free",
           "growthcircle/gemini-3-flash-preview-free",
+          "growthcircle/gemini-3-pro-preview-free",
           "growthcircle/gemini-3.1-pro-preview-free",
+          "growthcircle/MiniMax-M2.7-free",
+          "growthcircle/MiniMax-M2.7-highspeed-free"
+        ],
+        "initialSelections": [
           "growthcircle/gpt-5.3-codex-free",
-          "growthcircle/gpt-5.3-codex-spark-free",
           "growthcircle/gpt-5.4-free",
           "growthcircle/gpt-5.4-mini-free",
           "growthcircle/gpt-5.5-free",
-          "growthcircle/gpt-image-2-free"
-        ],
-        "initialSelections": [
-          "growthcircle/gpt-5.5-free"
+          "growthcircle/claude-haiku-4-5-20251001-free",
+          "growthcircle/claude-opus-4-6-free",
+          "growthcircle/claude-opus-4-7-free",
+          "growthcircle/claude-sonnet-4-6-free",
+          "growthcircle/gemini-2.5-flash-free",
+          "growthcircle/gemini-2.5-flash-lite-free",
+          "growthcircle/gemini-2.5-pro-free",
+          "growthcircle/gemini-3-flash-preview-free",
+          "growthcircle/gemini-3-pro-preview-free",
+          "growthcircle/gemini-3.1-pro-preview-free",
+          "growthcircle/MiniMax-M2.7-free",
+          "growthcircle/MiniMax-M2.7-highspeed-free"
         ],
         "message": "GrowthCircle.id free models in /model picker (multi-select)"
       }
@@ -88,29 +103,112 @@
       ],
       "modelAllowlist": {
         "allowedKeys": [
-          "growthcircle/MiniMax-M2.7",
-          "growthcircle/MiniMax-M2.7-highspeed",
-          "growthcircle/claude-3-5-haiku-latest",
-          "growthcircle/claude-haiku-4-5-20251001",
-          "growthcircle/claude-opus-4-6",
-          "growthcircle/claude-opus-4-7",
-          "growthcircle/claude-sonnet-4-6",
-          "growthcircle/gemini-2.5-flash",
-          "growthcircle/gemini-2.5-pro",
-          "growthcircle/gemini-3-flash-preview",
-          "growthcircle/gemini-3.1-pro-preview",
           "growthcircle/gpt-5.3-codex",
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5",
-          "growthcircle/gc-image-pro",
-          "growthcircle/gc-image-pro-square",
-          "growthcircle/gc-image-pro-landscape",
-          "growthcircle/gc-image-pro-portrait"
+          "growthcircle/claude-3-5-haiku-latest",
+          "growthcircle/claude-haiku-4-5-20251001",
+          "growthcircle/claude-haiku-4-5-20251001-thinking",
+          "growthcircle/claude-opus-4-5-20251101",
+          "growthcircle/claude-opus-4-5-20251101-thinking",
+          "growthcircle/claude-opus-4-6",
+          "growthcircle/claude-opus-4-6-thinking",
+          "growthcircle/claude-opus-4-7",
+          "growthcircle/claude-sonnet-4-5-20250929",
+          "growthcircle/claude-sonnet-4-5-20250929-thinking",
+          "growthcircle/claude-sonnet-4-6",
+          "growthcircle/claude-sonnet-4-6-thinking",
+          "growthcircle/deepseek-ocr",
+          "growthcircle/deepseek-r1-0528",
+          "growthcircle/deepseek-r1-250528",
+          "growthcircle/deepseek-v3-0324",
+          "growthcircle/deepseek-v3.1-terminus",
+          "growthcircle/deepseek-v3.2",
+          "growthcircle/deepseek-v3.2-exp",
+          "growthcircle/deepseek-v4-flash",
+          "growthcircle/deepseek-v4-pro",
+          "growthcircle/gemini-2.0-flash",
+          "growthcircle/gemini-2.5-flash",
+          "growthcircle/gemini-2.5-flash-nothinking",
+          "growthcircle/gemini-2.5-flash-thinking",
+          "growthcircle/gemini-2.5-flash-lite",
+          "growthcircle/gemini-2.5-pro",
+          "growthcircle/gemini-2.5-pro-nothinking",
+          "growthcircle/gemini-2.5-pro-thinking",
+          "growthcircle/gemini-3-flash-preview",
+          "growthcircle/gemini-3-flash-preview-nothinking",
+          "growthcircle/gemini-3-flash-preview-thinking",
+          "growthcircle/gemini-3-pro-preview",
+          "growthcircle/gemini-3-pro-preview-thinking",
+          "growthcircle/gemini-3.1-flash-lite-preview",
+          "growthcircle/gemini-3.1-pro-preview",
+          "growthcircle/gemini-3.1-pro-preview-thinking",
+          "growthcircle/gemini-3.5-flash",
+          "growthcircle/glm-4.6",
+          "growthcircle/glm-4.7",
+          "growthcircle/glm-5",
+          "growthcircle/glm-5.1",
+          "growthcircle/kimi-k2-instruct",
+          "growthcircle/kimi-k2-thinking",
+          "growthcircle/kimi-k2.5",
+          "growthcircle/MiniMax-M2.7",
+          "growthcircle/MiniMax-M2.7-highspeed"
         ],
         "initialSelections": [
-          "growthcircle/gpt-5.5"
+          "growthcircle/gpt-5.3-codex",
+          "growthcircle/gpt-5.3-codex-spark",
+          "growthcircle/gpt-5.4",
+          "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.5",
+          "growthcircle/claude-3-5-haiku-latest",
+          "growthcircle/claude-haiku-4-5-20251001",
+          "growthcircle/claude-haiku-4-5-20251001-thinking",
+          "growthcircle/claude-opus-4-5-20251101",
+          "growthcircle/claude-opus-4-5-20251101-thinking",
+          "growthcircle/claude-opus-4-6",
+          "growthcircle/claude-opus-4-6-thinking",
+          "growthcircle/claude-opus-4-7",
+          "growthcircle/claude-sonnet-4-5-20250929",
+          "growthcircle/claude-sonnet-4-5-20250929-thinking",
+          "growthcircle/claude-sonnet-4-6",
+          "growthcircle/claude-sonnet-4-6-thinking",
+          "growthcircle/deepseek-ocr",
+          "growthcircle/deepseek-r1-0528",
+          "growthcircle/deepseek-r1-250528",
+          "growthcircle/deepseek-v3-0324",
+          "growthcircle/deepseek-v3.1-terminus",
+          "growthcircle/deepseek-v3.2",
+          "growthcircle/deepseek-v3.2-exp",
+          "growthcircle/deepseek-v4-flash",
+          "growthcircle/deepseek-v4-pro",
+          "growthcircle/gemini-2.0-flash",
+          "growthcircle/gemini-2.5-flash",
+          "growthcircle/gemini-2.5-flash-nothinking",
+          "growthcircle/gemini-2.5-flash-thinking",
+          "growthcircle/gemini-2.5-flash-lite",
+          "growthcircle/gemini-2.5-pro",
+          "growthcircle/gemini-2.5-pro-nothinking",
+          "growthcircle/gemini-2.5-pro-thinking",
+          "growthcircle/gemini-3-flash-preview",
+          "growthcircle/gemini-3-flash-preview-nothinking",
+          "growthcircle/gemini-3-flash-preview-thinking",
+          "growthcircle/gemini-3-pro-preview",
+          "growthcircle/gemini-3-pro-preview-thinking",
+          "growthcircle/gemini-3.1-flash-lite-preview",
+          "growthcircle/gemini-3.1-pro-preview",
+          "growthcircle/gemini-3.1-pro-preview-thinking",
+          "growthcircle/gemini-3.5-flash",
+          "growthcircle/glm-4.6",
+          "growthcircle/glm-4.7",
+          "growthcircle/glm-5",
+          "growthcircle/glm-5.1",
+          "growthcircle/kimi-k2-instruct",
+          "growthcircle/kimi-k2-thinking",
+          "growthcircle/kimi-k2.5",
+          "growthcircle/MiniMax-M2.7",
+          "growthcircle/MiniMax-M2.7-highspeed"
         ],
         "message": "GrowthCircle.id paid models in /model picker (multi-select)"
       }
@@ -137,13 +235,13 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
-          "growthcircle/gpt-5.5",
-          "growthcircle/gc-image-pro",
-          "growthcircle/gc-image-pro-square",
-          "growthcircle/gc-image-pro-landscape",
-          "growthcircle/gc-image-pro-portrait"
+          "growthcircle/gpt-5.5"
         ],
         "initialSelections": [
+          "growthcircle/gpt-5.3-codex",
+          "growthcircle/gpt-5.3-codex-spark",
+          "growthcircle/gpt-5.4",
+          "growthcircle/gpt-5.4-mini",
           "growthcircle/gpt-5.5"
         ],
         "message": "GrowthCircle.id team models in /model picker (multi-select)"
@@ -171,246 +269,6 @@
         "baseUrl": "https://ai.growthcircle.id/v1",
         "api": "openai-completions",
         "models": [
-          {
-            "id": "MiniMax-M2.7",
-            "name": "MiniMax-M2.7",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "MiniMax-M2.7-highspeed",
-            "name": "MiniMax-M2.7-highspeed",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "claude-haiku-4-5-20251001",
-            "name": "claude-haiku-4-5-20251001",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "claude-opus-4-6",
-            "name": "claude-opus-4-6",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "claude-opus-4-7",
-            "name": "claude-opus-4-7",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "claude-sonnet-4-6",
-            "name": "claude-sonnet-4-6",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gemini-2.5-flash",
-            "name": "gemini-2.5-flash",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gemini-2.5-pro",
-            "name": "gemini-2.5-pro",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gemini-3-flash-preview",
-            "name": "gemini-3-flash-preview",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gemini-3.1-pro-preview",
-            "name": "gemini-3.1-pro-preview",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
           {
             "id": "gpt-5.3-codex",
             "name": "gpt-5.3-codex",
@@ -557,8 +415,8 @@
             }
           },
           {
-            "id": "MiniMax-M2.7-free",
-            "name": "MiniMax-M2.7-free",
+            "id": "claude-haiku-4-5-20251001",
+            "name": "claude-haiku-4-5-20251001",
             "api": "openai-completions",
             "input": [
               "text"
@@ -581,13 +439,1166 @@
             }
           },
           {
-            "id": "MiniMax-M2.7-highspeed-free",
-            "name": "MiniMax-M2.7-highspeed-free",
+            "id": "claude-haiku-4-5-20251001-thinking",
+            "name": "claude-haiku-4-5-20251001-thinking",
             "api": "openai-completions",
             "input": [
               "text"
             ],
             "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-5-20251101",
+            "name": "claude-opus-4-5-20251101",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-5-20251101-thinking",
+            "name": "claude-opus-4-5-20251101-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-6",
+            "name": "claude-opus-4-6",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-6-thinking",
+            "name": "claude-opus-4-6-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-opus-4-7",
+            "name": "claude-opus-4-7",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-5-20250929",
+            "name": "claude-sonnet-4-5-20250929",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-5-20250929-thinking",
+            "name": "claude-sonnet-4-5-20250929-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-6",
+            "name": "claude-sonnet-4-6",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "claude-sonnet-4-6-thinking",
+            "name": "claude-sonnet-4-6-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-ocr",
+            "name": "deepseek-ocr",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-r1-0528",
+            "name": "deepseek-r1-0528",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-r1-250528",
+            "name": "deepseek-r1-250528",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v3-0324",
+            "name": "deepseek-v3-0324",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v3.1-terminus",
+            "name": "deepseek-v3.1-terminus",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v3.2",
+            "name": "deepseek-v3.2",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v3.2-exp",
+            "name": "deepseek-v3.2-exp",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v4-flash",
+            "name": "deepseek-v4-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "deepseek-v4-pro",
+            "name": "deepseek-v4-pro",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.0-flash",
+            "name": "gemini-2.0-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash",
+            "name": "gemini-2.5-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash-nothinking",
+            "name": "gemini-2.5-flash-nothinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash-thinking",
+            "name": "gemini-2.5-flash-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-flash-lite",
+            "name": "gemini-2.5-flash-lite",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-pro",
+            "name": "gemini-2.5-pro",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-pro-nothinking",
+            "name": "gemini-2.5-pro-nothinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-2.5-pro-thinking",
+            "name": "gemini-2.5-pro-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-flash-preview",
+            "name": "gemini-3-flash-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-flash-preview-nothinking",
+            "name": "gemini-3-flash-preview-nothinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-flash-preview-thinking",
+            "name": "gemini-3-flash-preview-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-pro-preview",
+            "name": "gemini-3-pro-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3-pro-preview-thinking",
+            "name": "gemini-3-pro-preview-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.1-flash-lite-preview",
+            "name": "gemini-3.1-flash-lite-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.1-pro-preview",
+            "name": "gemini-3.1-pro-preview",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.1-pro-preview-thinking",
+            "name": "gemini-3.1-pro-preview-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gemini-3.5-flash",
+            "name": "gemini-3.5-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "glm-4.6",
+            "name": "glm-4.6",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "glm-4.7",
+            "name": "glm-4.7",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "glm-5",
+            "name": "glm-5",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "glm-5.1",
+            "name": "glm-5.1",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "kimi-k2-instruct",
+            "name": "kimi-k2-instruct",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "kimi-k2-thinking",
+            "name": "kimi-k2-thinking",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "kimi-k2.5",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "MiniMax-M2.7",
+            "name": "MiniMax-M2.7",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "MiniMax-M2.7-highspeed",
+            "name": "MiniMax-M2.7-highspeed",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.3-codex-free",
+            "name": "gpt-5.3-codex-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4-free",
+            "name": "gpt-5.4-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.4-mini-free",
+            "name": "gpt-5.4-mini-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.5-free",
+            "name": "GPT-5.5 Free",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
             "contextWindow": 256000,
             "maxTokens": 36000,
             "cost": {
@@ -725,6 +1736,30 @@
             }
           },
           {
+            "id": "gemini-2.5-flash-lite-free",
+            "name": "gemini-2.5-flash-lite-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
             "id": "gemini-2.5-pro-free",
             "name": "gemini-2.5-pro-free",
             "api": "openai-completions",
@@ -773,6 +1808,30 @@
             }
           },
           {
+            "id": "gemini-3-pro-preview-free",
+            "name": "gemini-3-pro-preview-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
             "id": "gemini-3.1-pro-preview-free",
             "name": "gemini-3.1-pro-preview-free",
             "api": "openai-completions",
@@ -797,8 +1856,8 @@
             }
           },
           {
-            "id": "gpt-5.3-codex-free",
-            "name": "gpt-5.3-codex-free",
+            "id": "MiniMax-M2.7-free",
+            "name": "MiniMax-M2.7-free",
             "api": "openai-completions",
             "input": [
               "text"
@@ -821,86 +1880,13 @@
             }
           },
           {
-            "id": "gpt-5.3-codex-spark-free",
-            "name": "gpt-5.3-codex-spark-free",
+            "id": "MiniMax-M2.7-highspeed-free",
+            "name": "MiniMax-M2.7-highspeed-free",
             "api": "openai-completions",
             "input": [
               "text"
             ],
             "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gpt-5.4-free",
-            "name": "gpt-5.4-free",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gpt-5.4-mini-free",
-            "name": "gpt-5.4-mini-free",
-            "api": "openai-completions",
-            "input": [
-              "text"
-            ],
-            "reasoning": false,
-            "contextWindow": 256000,
-            "maxTokens": 36000,
-            "cost": {
-              "input": 0,
-              "output": 0,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "compat": {
-              "supportsDeveloperRole": true,
-              "supportsReasoningEffort": true,
-              "supportsStrictMode": true,
-              "supportsUsageInStreaming": true,
-              "maxTokensField": "max_completion_tokens"
-            }
-          },
-          {
-            "id": "gpt-5.5-free",
-            "name": "GPT-5.5 Free",
-            "api": "openai-completions",
-            "input": [
-              "text",
-              "image"
-            ],
-            "reasoning": true,
             "contextWindow": 256000,
             "maxTokens": 36000,
             "cost": {

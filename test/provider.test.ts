@@ -30,7 +30,13 @@ const manifest = JSON.parse(
   runtimeExtensions?: string[];
   providerAuthEnvVars?: unknown;
   setup: { providers: Array<{ authMethods: string[]; envVars: string[] }> };
-  providerAuthChoices: Array<{ choiceId: string }>;
+  providerAuthChoices: Array<{
+    choiceId: string;
+    modelAllowlist?: {
+      allowedKeys?: string[];
+      initialSelections?: string[];
+    };
+  }>;
   providerRequest?: {
     providers?: Record<string, { family?: string; openAICompletions?: { supportsStreamingUsage?: boolean } }>;
   };
@@ -58,9 +64,13 @@ const packageJson = JSON.parse(
   };
 };
 
+function modelIdFromRef(ref: string): string {
+  return ref.slice(ref.indexOf("/") + 1);
+}
+
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.16");
+    expect(packageJson.version).toBe("0.1.17");
     expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
     expect(packageJson.openclaw.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(packageJson.openclaw.compat).toEqual({
@@ -85,6 +95,30 @@ describe("GrowthCircle.id model catalog", () => {
       "growthcircle-paid-api-key",
       "growthcircle-team-api-key",
     ]);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-free-api-key")
+        ?.modelAllowlist?.allowedKeys,
+    ).toEqual(FREE_TEXT_MODEL_REFS);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-paid-api-key")
+        ?.modelAllowlist?.allowedKeys,
+    ).toEqual(PAID_TEXT_MODEL_REFS);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-team-api-key")
+        ?.modelAllowlist?.allowedKeys,
+    ).toEqual(TEAM_TEXT_MODEL_REFS);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-free-api-key")
+        ?.modelAllowlist?.initialSelections,
+    ).toEqual(FREE_TEXT_MODEL_REFS);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-paid-api-key")
+        ?.modelAllowlist?.initialSelections,
+    ).toEqual(PAID_TEXT_MODEL_REFS);
+    expect(
+      manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-team-api-key")
+        ?.modelAllowlist?.initialSelections,
+    ).toEqual(TEAM_TEXT_MODEL_REFS);
     expect(manifest.providerRequest?.providers?.growthcircle?.family).toBe(
       "growthcircle-openai-compatible",
     );
@@ -102,6 +136,10 @@ describe("GrowthCircle.id model catalog", () => {
       id: DEFAULT_MODEL_ID,
       compat: GROWTHCIRCLE_OPENAI_COMPAT,
     });
+    expect(manifest.modelCatalog?.providers?.growthcircle?.models?.map((model) => model.id)).toEqual([
+      ...PAID_TEXT_MODEL_REFS.map(modelIdFromRef),
+      ...FREE_TEXT_MODEL_REFS.map(modelIdFromRef),
+    ]);
   });
 
   it("normalizes OpenAI-compatible /models responses", () => {
@@ -316,6 +354,39 @@ describe("GrowthCircle.id model catalog", () => {
     expect(growthCircleModelRefsForTier("free")).toEqual(FREE_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
+  });
+
+  it("seeds the configured provider catalog and /model allowlist with all tier text models", () => {
+    const freeConfig = applyGrowthCircleDefaultsForTier({}, "free");
+    const paidConfig = applyGrowthCircleDefaultsForTier({}, "paid");
+    const teamConfig = applyGrowthCircleDefaultsForTier({}, "team");
+
+    expect(Object.keys(freeConfig.agents?.defaults?.models ?? {})).toEqual(
+      expect.arrayContaining(FREE_TEXT_MODEL_REFS),
+    );
+    expect(Object.keys(paidConfig.agents?.defaults?.models ?? {})).toEqual(
+      expect.arrayContaining(PAID_TEXT_MODEL_REFS),
+    );
+    expect(Object.keys(teamConfig.agents?.defaults?.models ?? {})).toEqual(
+      expect.arrayContaining(TEAM_TEXT_MODEL_REFS),
+    );
+
+    expect(
+      freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id),
+    ).toEqual(expect.arrayContaining(FREE_TEXT_MODEL_REFS.map(modelIdFromRef)));
+    expect(
+      paidConfig.models?.providers?.growthcircle?.models?.map((model) => model.id),
+    ).toEqual(expect.arrayContaining(PAID_TEXT_MODEL_REFS.map(modelIdFromRef)));
+    expect(
+      teamConfig.models?.providers?.growthcircle?.models?.map((model) => model.id),
+    ).toEqual(expect.arrayContaining(TEAM_TEXT_MODEL_REFS.map(modelIdFromRef)));
+
+    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
+      "MiniMax-M2.7-free",
+    );
+    expect(paidConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
+      "MiniMax-M2.7",
+    );
   });
 
   it("exposes medium as the GrowthCircle reasoning default", () => {

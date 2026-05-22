@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.17
+
+- Updated the README for public-facing installation, update, repair, and
+  verification flows across OpenClaw, ClawHub, npm, and local source installs.
+- Seeded the OpenClaw setup allowlist, provider defaults, and manifest catalog
+  preview with the current GrowthCircle Free and Paid text model catalogs,
+  including MiniMax models for both tiers.
+- Kept image, video, audio, music, unavailable, and non-GrowthCircle models out
+  of the chat model picker while preserving runtime `/v1/models` discovery as
+  the source of truth.
+
 ## 0.1.16
 
 - Checked OpenClaw `2026.5.20` compatibility and updated the plugin SDK test

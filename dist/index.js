@@ -25,7 +25,7 @@ function createGrowthCircleAuthMethod(params) {
             onboardingScopes: ["text-inference"],
             modelAllowlist: {
                 allowedKeys: params.allowedKeys,
-                initialSelections: [defaultModelRef],
+                initialSelections: params.allowedKeys,
                 message: `${PROVIDER_LABEL} ${params.tier} models in /model picker (multi-select)`,
             },
             modelSelection: {

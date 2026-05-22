@@ -10,7 +10,10 @@ import type {
 } from "openclaw/plugin-sdk/plugin-entry";
 import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
 import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { applyProviderConfigWithDefaultModelPreset } from "openclaw/plugin-sdk/provider-onboard";
+import {
+  applyProviderConfigWithModelCatalogPreset,
+  ensureModelAllowlistEntry,
+} from "openclaw/plugin-sdk/provider-onboard";
 
 export const PLUGIN_ID = "gc-provider";
 export const PLUGIN_NAME = "GrowthCircle.id Provider";
@@ -36,40 +39,77 @@ export const TEAM_IMAGE_MODEL_IDS = [
 ] as const;
 
 export const FREE_TEXT_MODEL_IDS = [
-  "MiniMax-M2.7",
-  "MiniMax-M2.7-highspeed",
+  "gpt-5.3-codex",
+  "gpt-5.4",
+  "gpt-5.4-mini",
+  DEFAULT_MODEL_ID,
   "claude-haiku-4-5-20251001",
   "claude-opus-4-6",
   "claude-opus-4-7",
   "claude-sonnet-4-6",
   "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
   "gemini-2.5-pro",
   "gemini-3-flash-preview",
+  "gemini-3-pro-preview",
   "gemini-3.1-pro-preview",
-  "gpt-5.3-codex",
-  "gpt-5.3-codex-spark",
-  "gpt-5.4",
-  "gpt-5.4-mini",
-  DEFAULT_MODEL_ID,
+  "MiniMax-M2.7",
+  "MiniMax-M2.7-highspeed",
 ] as const;
 
 export const PAID_TEXT_MODEL_IDS = [
-  "MiniMax-M2.7",
-  "MiniMax-M2.7-highspeed",
-  "claude-3-5-haiku-latest",
-  "claude-haiku-4-5-20251001",
-  "claude-opus-4-6",
-  "claude-opus-4-7",
-  "claude-sonnet-4-6",
-  "gemini-2.5-flash",
-  "gemini-2.5-pro",
-  "gemini-3-flash-preview",
-  "gemini-3.1-pro-preview",
   "gpt-5.3-codex",
   "gpt-5.3-codex-spark",
   "gpt-5.4",
   "gpt-5.4-mini",
   DEFAULT_MODEL_ID,
+  "claude-3-5-haiku-latest",
+  "claude-haiku-4-5-20251001",
+  "claude-haiku-4-5-20251001-thinking",
+  "claude-opus-4-5-20251101",
+  "claude-opus-4-5-20251101-thinking",
+  "claude-opus-4-6",
+  "claude-opus-4-6-thinking",
+  "claude-opus-4-7",
+  "claude-sonnet-4-5-20250929",
+  "claude-sonnet-4-5-20250929-thinking",
+  "claude-sonnet-4-6",
+  "claude-sonnet-4-6-thinking",
+  "deepseek-ocr",
+  "deepseek-r1-0528",
+  "deepseek-r1-250528",
+  "deepseek-v3-0324",
+  "deepseek-v3.1-terminus",
+  "deepseek-v3.2",
+  "deepseek-v3.2-exp",
+  "deepseek-v4-flash",
+  "deepseek-v4-pro",
+  "gemini-2.0-flash",
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-nothinking",
+  "gemini-2.5-flash-thinking",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-pro",
+  "gemini-2.5-pro-nothinking",
+  "gemini-2.5-pro-thinking",
+  "gemini-3-flash-preview",
+  "gemini-3-flash-preview-nothinking",
+  "gemini-3-flash-preview-thinking",
+  "gemini-3-pro-preview",
+  "gemini-3-pro-preview-thinking",
+  "gemini-3.1-flash-lite-preview",
+  "gemini-3.1-pro-preview",
+  "gemini-3.1-pro-preview-thinking",
+  "gemini-3.5-flash",
+  "glm-4.6",
+  "glm-4.7",
+  "glm-5",
+  "glm-5.1",
+  "kimi-k2-instruct",
+  "kimi-k2-thinking",
+  "kimi-k2.5",
+  "MiniMax-M2.7",
+  "MiniMax-M2.7-highspeed",
 ] as const;
 
 export const TEAM_TEXT_MODEL_IDS = [
@@ -279,6 +319,20 @@ export function growthCircleModelRefsForTier(tier: GrowthCircleKeyTier): string[
   if (tier === "free") return [...FREE_TEXT_MODEL_REFS];
   if (tier === "team") return [...TEAM_TEXT_MODEL_REFS];
   return [...PAID_TEXT_MODEL_REFS];
+}
+
+function growthCircleModelIdsForTier(tier: GrowthCircleKeyTier): readonly string[] {
+  if (tier === "free") return FREE_TEXT_MODEL_IDS_WITH_SUFFIX;
+  if (tier === "team") return TEAM_TEXT_MODEL_IDS;
+  return PAID_TEXT_MODEL_IDS;
+}
+
+function growthCircleCatalogModelIdsForTier(tier: GrowthCircleKeyTier): string[] {
+  const defaultModelId = tier === "free" ? DEFAULT_FREE_MODEL_ID : DEFAULT_MODEL_ID;
+  return [
+    defaultModelId,
+    ...growthCircleModelIdsForTier(tier).filter((modelId) => modelId !== defaultModelId),
+  ];
 }
 
 export function growthCircleImageModelRefForTier(tier: GrowthCircleKeyTier): string {
@@ -625,16 +679,33 @@ export function applyGrowthCircleDefaults(
   cfg: OpenClawConfig,
   options: NormalizeGrowthCircleModelsOptions = {},
 ): OpenClawConfig {
-  const defaultModel = options.freeModels ? DEFAULT_FREE_MODEL : DEFAULT_MODEL;
-  const defaultModelRef = options.freeModels ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
-  const withModel = applyProviderConfigWithDefaultModelPreset(cfg, {
+  const tier: GrowthCircleKeyTier = options.freeModels ? "free" : "paid";
+  return applyGrowthCircleDefaultsWithTierModels(cfg, tier);
+}
+
+function applyGrowthCircleDefaultsWithTierModels(
+  cfg: OpenClawConfig,
+  tier: GrowthCircleKeyTier,
+): OpenClawConfig {
+  const defaultModelRef = growthCircleDefaultModelRefForTier(tier);
+  const modelRefs = growthCircleModelRefsForTier(tier);
+  const catalogModels = growthCircleCatalogModelIdsForTier(tier).map((id) => createModelDefinition({ id }));
+  const withCatalog = applyProviderConfigWithModelCatalogPreset(cfg, {
     providerId: PROVIDER_ID,
     api: "openai-completions",
     baseUrl: BASE_URL,
-    defaultModel,
+    catalogModels,
     aliases: [{ modelRef: defaultModelRef, alias: "GPT" }],
     primaryModelRef: defaultModelRef,
   });
+  const withModel = modelRefs.reduce(
+    (next, modelRef) =>
+      ensureModelAllowlistEntry({
+        cfg: next,
+        modelRef,
+      }),
+    withCatalog,
+  );
 
   return {
     ...withModel,
@@ -655,9 +726,7 @@ export function applyGrowthCircleDefaultsForApiKey(cfg: OpenClawConfig, apiKey: 
 }
 
 export function applyGrowthCircleDefaultsForTier(cfg: OpenClawConfig, tier: GrowthCircleKeyTier): OpenClawConfig {
-  return applyGrowthCircleDefaults(cfg, {
-    freeModels: tier === "free",
-  });
+  return applyGrowthCircleDefaultsWithTierModels(cfg, tier);
 }
 
 function extractModelItems(body: unknown): unknown[] {
