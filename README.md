@@ -126,7 +126,7 @@ latest package if there is no tracked install yet.
 
 ### Recommended Upgrade Path
 
-The current package supports OpenClaw `2026.5.4` or newer. OpenClaw `2026.5.18`
+The current package supports OpenClaw `2026.5.4` or newer. OpenClaw `2026.5.20`
 is the current tested SDK target.
 
 The `2026.5.4` floor is intentional for ClawHub installs. Earlier OpenClaw
@@ -136,7 +136,8 @@ before installing the latest `gc-provider`.
 
 Compatibility has been checked against the declared minimum and latest stable
 npm releases. The supported stable range currently spans `2026.5.4`,
-`2026.5.5`, `2026.5.6`, `2026.5.7`, `2026.5.12`, and `2026.5.18`.
+`2026.5.5`, `2026.5.6`, `2026.5.7`, `2026.5.12`, `2026.5.18`, and
+`2026.5.20`.
 
 The npm package includes compiled runtime output in `dist/` while retaining
 `index.ts` and `src/` for source-linked inspection. The package also declares
@@ -297,7 +298,7 @@ openclaw plugins inspect gc-provider
 - Model reference format: `growthcircle/<model-id>`
 - Default model: `growthcircle/gpt-5.5` for paid/team, `growthcircle/gpt-5.5-free` for free
 - Default thinking level: `medium`
-- OpenClaw compatibility: `2026.5.4+` (`2026.5.18` tested latest)
+- OpenClaw compatibility: `2026.5.4+` (`2026.5.20` tested latest)
 - Source repo: `https://github.com/Growth-Circle/gc-provider`
 - npm: `https://www.npmjs.com/package/gc-provider`
 

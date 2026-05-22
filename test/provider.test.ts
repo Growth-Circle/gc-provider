@@ -43,6 +43,7 @@ const manifest = JSON.parse(
 const packageJson = JSON.parse(
   readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"),
 ) as {
+  version: string;
   openclaw: {
     extensions: string[];
     runtimeExtensions?: string[];
@@ -59,6 +60,7 @@ const packageJson = JSON.parse(
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
+    expect(packageJson.version).toBe("0.1.16");
     expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
     expect(packageJson.openclaw.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(packageJson.openclaw.compat).toEqual({
@@ -66,13 +68,13 @@ describe("GrowthCircle.id model catalog", () => {
       minGatewayVersion: "2026.5.4",
     });
     expect(packageJson.openclaw.build).toEqual({
-      openclawVersion: "2026.5.18",
-      pluginSdkVersion: "2026.5.18",
+      openclawVersion: "2026.5.20",
+      pluginSdkVersion: "2026.5.20",
     });
   });
 
   it("declares only tier-specific setup auth choices in the manifest", () => {
-    expect(manifest.version).toBe("0.1.15");
+    expect(manifest.version).toBe(packageJson.version);
     expect(manifest.extensions).toEqual(["./index.ts"]);
     expect(manifest.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(manifest.setup.providers[0].authMethods).toEqual(["free-api-key", "paid-api-key", "team-api-key"]);
