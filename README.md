@@ -316,7 +316,7 @@ growthcircle/gpt-5.5
 ## Compatibility
 
 - Minimum OpenClaw version: `2026.5.4`
-- Tested OpenClaw SDK target: `2026.5.20`
+- Tested OpenClaw SDK target: `2026.5.22`
 - Runtime entry: `./dist/index.js`
 - Source entry: `./index.ts`
 

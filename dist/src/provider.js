@@ -1,6 +1,5 @@
 import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
 import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { applyProviderConfigWithModelCatalogPreset, ensureModelAllowlistEntry, } from "openclaw/plugin-sdk/provider-onboard";
 export const PLUGIN_ID = "gc-provider";
 export const PLUGIN_NAME = "GrowthCircle.id Provider";
 export const PLUGIN_DESCRIPTION = "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.";
@@ -560,18 +559,11 @@ function applyGrowthCircleDefaultsWithTierModels(cfg, tier) {
     const defaultModelRef = growthCircleDefaultModelRefForTier(tier);
     const modelRefs = growthCircleModelRefsForTier(tier);
     const catalogModels = growthCircleCatalogModelIdsForTier(tier).map((id) => createModelDefinition({ id }));
-    const withCatalog = applyProviderConfigWithModelCatalogPreset(cfg, {
-        providerId: PROVIDER_ID,
-        api: "openai-completions",
-        baseUrl: BASE_URL,
+    const withModel = applyGrowthCircleModelCatalogPreset(cfg, {
+        defaultModelRef,
+        modelRefs,
         catalogModels,
-        aliases: [{ modelRef: defaultModelRef, alias: "GPT" }],
-        primaryModelRef: defaultModelRef,
     });
-    const withModel = modelRefs.reduce((next, modelRef) => ensureModelAllowlistEntry({
-        cfg: next,
-        modelRef,
-    }), withCatalog);
     return {
         ...withModel,
         agents: {
@@ -581,6 +573,84 @@ function applyGrowthCircleDefaultsWithTierModels(cfg, tier) {
                 thinkingDefault: withModel.agents?.defaults?.thinkingDefault ?? "medium",
             },
         },
+    };
+}
+// GrowthCircle refs are already canonical; keeping this merge local avoids
+// expensive manifest-policy normalization per seeded model in OpenClaw 2026.5.22.
+function applyGrowthCircleModelCatalogPreset(cfg, params) {
+    const providers = { ...(cfg.models?.providers ?? {}) };
+    const existingProviderKey = findGrowthCircleProviderKey(providers);
+    const existingProvider = existingProviderKey ? providers[existingProviderKey] : undefined;
+    if (existingProviderKey && existingProviderKey !== PROVIDER_ID)
+        delete providers[existingProviderKey];
+    providers[PROVIDER_ID] = buildGrowthCircleProviderConfig({
+        existingProvider,
+        catalogModels: params.catalogModels,
+    });
+    return {
+        ...cfg,
+        agents: {
+            ...cfg.agents,
+            defaults: {
+                ...cfg.agents?.defaults,
+                models: buildGrowthCircleAgentModelMap({
+                    existingModels: cfg.agents?.defaults?.models,
+                    defaultModelRef: params.defaultModelRef,
+                    modelRefs: params.modelRefs,
+                }),
+                model: {
+                    ...readExistingModelFallbacks(cfg),
+                    primary: params.defaultModelRef,
+                },
+            },
+        },
+        models: {
+            ...cfg.models,
+            mode: cfg.models?.mode ?? "merge",
+            providers,
+        },
+    };
+}
+function findGrowthCircleProviderKey(providers) {
+    return Object.keys(providers).find((key) => key.toLowerCase() === PROVIDER_ID);
+}
+function buildGrowthCircleProviderConfig(params) {
+    const { apiKey, models: existingModelsRaw, ...existingProviderRest } = params.existingProvider ?? {};
+    const existingModels = Array.isArray(existingModelsRaw) ? existingModelsRaw : [];
+    const mergedModels = mergeGrowthCircleCatalogModels(existingModels, params.catalogModels);
+    const normalizedApiKey = typeof apiKey === "string" ? apiKey.trim() : apiKey;
+    return {
+        ...existingProviderRest,
+        baseUrl: BASE_URL,
+        api: "openai-completions",
+        ...(normalizedApiKey ? { apiKey: normalizedApiKey } : {}),
+        models: mergedModels.length > 0 ? mergedModels : params.catalogModels,
+    };
+}
+function mergeGrowthCircleCatalogModels(existingModels, catalogModels) {
+    if (existingModels.length === 0)
+        return catalogModels;
+    const existingIds = new Set(existingModels.map((model) => model.id));
+    return [...existingModels, ...catalogModels.filter((model) => !existingIds.has(model.id))];
+}
+function buildGrowthCircleAgentModelMap(params) {
+    const models = { ...(params.existingModels ?? {}) };
+    const defaultEntry = { ...models[params.defaultModelRef] };
+    models[params.defaultModelRef] = {
+        ...defaultEntry,
+        alias: defaultEntry.alias ?? "GPT",
+    };
+    for (const modelRef of params.modelRefs) {
+        models[modelRef] = { ...models[modelRef] };
+    }
+    return models;
+}
+function readExistingModelFallbacks(cfg) {
+    const model = cfg.agents?.defaults?.model;
+    if (!isRecord(model) || !Array.isArray(model.fallbacks))
+        return {};
+    return {
+        fallbacks: model.fallbacks.filter((fallback) => typeof fallback === "string"),
     };
 }
 export function applyGrowthCircleDefaultsForApiKey(cfg, apiKey) {

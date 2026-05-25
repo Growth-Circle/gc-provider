@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.18
+
+- Checked OpenClaw `2026.5.22` compatibility and updated the plugin SDK test
+  target.
+- Kept the declared OpenClaw install floor at `2026.5.4`; this release expands
+  the tested stable range without dropping existing supported `2026.5.4+`
+  installs.
+
 ## 0.1.17
 
 - Updated the README for public-facing installation, update, repair, and
