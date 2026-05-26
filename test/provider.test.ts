@@ -64,13 +64,15 @@ const packageJson = JSON.parse(
   };
 };
 
+const readme = readFileSync(fileURLToPath(new URL("../README.md", import.meta.url)), "utf8");
+
 function modelIdFromRef(ref: string): string {
   return ref.slice(ref.indexOf("/") + 1);
 }
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.18");
+    expect(packageJson.version).toBe("0.1.19");
     expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
     expect(packageJson.openclaw.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(packageJson.openclaw.compat).toEqual({
@@ -81,6 +83,21 @@ describe("GrowthCircle.id model catalog", () => {
       openclawVersion: "2026.5.22",
       pluginSdkVersion: "2026.5.22",
     });
+  });
+
+  it("documents repair-safe ClawHub update and uninstall recovery commands", () => {
+    expect(readme).toContain(
+      "(openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force)",
+    );
+    expect(readme).toContain("openclaw plugins uninstall gc-provider --dry-run");
+    expect(readme).toContain("openclaw plugins uninstall gc-provider --force");
+    expect(readme).toContain(
+      "openclaw plugins install clawhub:gc-provider --force\nopenclaw plugins uninstall gc-provider --force",
+    );
+    expect(readme).not.toContain("openclaw plugins update gc-provider@latest");
+    expect(readme).not.toContain(
+      "openclaw plugins install clawhub:gc-provider\nopenclaw plugins enable gc-provider",
+    );
   });
 
   it("declares only tier-specific setup auth choices in the manifest", () => {

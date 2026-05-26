@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.19
+
+- Reworked the public install, update, repair, and uninstall commands around
+  OpenClaw's plugin-id based update flow.
+- Added a repair-safe ClawHub command that handles tracked installs, fresh
+  installs, and stale `~/.openclaw/extensions/gc-provider` folders without
+  asking users to delete the plugin directory manually.
+
 ## 0.1.18
 
 - Checked OpenClaw `2026.5.22` compatibility and updated the plugin SDK test
