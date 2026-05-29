@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.21
+
+- Checked OpenClaw `2026.5.27` compatibility and updated the plugin SDK test
+  target.
+- Kept the declared OpenClaw install floor at `2026.5.4`; this release expands
+  the tested stable range without dropping existing supported `2026.5.4+`
+  installs.
+
 ## 0.1.20
 
 - Added DeepSeek v4 Flash and Pro to the seeded Free model catalog with the

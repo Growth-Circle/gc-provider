@@ -713,7 +713,7 @@ function applyGrowthCircleDefaultsWithTierModels(
 }
 
 // GrowthCircle refs are already canonical; keeping this merge local avoids
-// expensive manifest-policy normalization per seeded model in OpenClaw 2026.5.22.
+// expensive manifest-policy normalization per seeded model in recent OpenClaw builds.
 function applyGrowthCircleModelCatalogPreset(
   cfg: OpenClawConfig,
   params: {
