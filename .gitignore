@@ -1,6 +1,8 @@
 node_modules/
 coverage/
 .openclaw/
+__pycache__/
+*.py[cod]
 *.tgz
 .env
 .env.*

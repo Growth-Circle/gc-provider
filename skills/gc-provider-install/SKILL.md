@@ -1,6 +1,6 @@
 ---
 name: gc-provider-install
-description: Install, repair, or manually configure the GrowthCircle.id gc-provider for OpenClaw and Hermes. Use this whenever a user asks to connect GrowthCircle AI Console keys, install gc-provider, configure GrowthCircle as an OpenAI-compatible provider, migrate from Hermes to OpenClaw, verify GrowthCircle model discovery, or troubleshoot GrowthCircle free/paid/team model access.
+description: Install, repair, or configure the GrowthCircle.id gc-provider for OpenClaw and Hermes Agent. Use this whenever a user asks to connect GrowthCircle AI Console keys, install gc-provider, install the Hermes GrowthCircle model-provider plugin, configure GrowthCircle as an OpenAI-compatible provider, migrate from Hermes to OpenClaw, verify GrowthCircle model discovery, or troubleshoot GrowthCircle free/paid/team model access.
 metadata:
   growthcircle:
     ai_console_docs: https://d.growc.id/llms/ai-console.md
@@ -8,6 +8,7 @@ metadata:
     provider_id: growthcircle
     endpoint: https://ai.growthcircle.id/v1
     openclaw_min_version: "2026.5.4"
+    hermes_plugin_path: hermes/plugins/model-providers/growthcircle
 ---
 
 # GC Provider Install
@@ -38,15 +39,17 @@ Use these public sources before inventing behavior:
   model IDs returned by that team key.
 - Do not map a Team/Patungan key to Free/Paid fallback IDs. If the team model is
   missing, fail closed and ask the operator to check the team package.
-- Prefer `gc-provider` in OpenClaw. Use a manual OpenAI-compatible provider only
-  for Hermes or as a temporary fallback before the native plugin is installed.
+- Prefer the native `gc-provider` artifact for each runtime: OpenClaw uses the
+  OpenClaw code plugin, and Hermes uses the `model-provider` plugin under
+  `hermes/plugins/model-providers/growthcircle`.
+- Use a manual OpenAI-compatible provider in Hermes only as a temporary fallback
+  when the native Hermes plugin cannot be installed.
 
 ## Workflow
 
 1. Identify the target runtime.
-   - OpenClaw: install or update the native `gc-provider` plugin.
-   - Hermes: configure GrowthCircle manually as an OpenAI-compatible provider,
-     because `gc-provider` is an OpenClaw plugin.
+   - OpenClaw: install or update the native OpenClaw `gc-provider` plugin.
+   - Hermes: install the native Hermes Agent `model-provider` plugin.
    - Hermes to OpenClaw migration: keep the skill under
      `skills/gc-provider-install/SKILL.md`, migrate skills, then install the
      native OpenClaw plugin after migration.
@@ -64,14 +67,14 @@ Use these public sources before inventing behavior:
 4. Install or configure.
    - For OpenClaw, use the update-or-install command in
      `references/install-guide.md`.
-   - For Hermes, use the manual OpenAI-compatible provider notes in
+   - For Hermes, use the native Hermes plugin notes in
      `references/install-guide.md`.
 
 5. Verify.
    - OpenClaw: check plugin state, restart gateway, and list GrowthCircle
      models.
-   - Hermes: send a small chat/completion request with the configured base URL,
-     key, and a model returned by `/v1/models`.
+   - Hermes: run `hermes doctor`, open `hermes model`, then send a small
+     request with provider `growthcircle` and a model returned by `/v1/models`.
 
 ## OpenClaw Quick Path
 
@@ -96,8 +99,34 @@ openclaw gateway restart
 
 ## Hermes Quick Path
 
-Hermes can use GrowthCircle through a manual OpenAI-compatible provider
-configuration:
+Install the native Hermes Agent model-provider plugin:
+
+```sh
+npx --yes gc-provider@latest gc-provider-install-hermes
+```
+
+This is the publish path for Hermes for now: the Hermes plugin is distributed
+inside the npm package and installed into
+`$HERMES_HOME/plugins/model-providers/growthcircle`.
+
+Keep the API key in the environment or Hermes secret mechanism:
+
+```sh
+export GROWTHCIRCLE_API_KEY="<growthcircle-ai-key>"
+curl https://ai.growthcircle.id/v1/models \
+  -H "Authorization: Bearer $GROWTHCIRCLE_API_KEY"
+```
+
+Then verify Hermes sees the provider and can run a short request:
+
+```sh
+hermes doctor
+hermes model
+hermes -z "Reply with one short sentence." --provider growthcircle -m model-id-from-v1-models
+```
+
+Manual OpenAI-compatible provider configuration is only a fallback when the
+native Hermes plugin cannot be installed:
 
 ```yaml
 providers:
@@ -108,14 +137,6 @@ providers:
       - model-id-from-v1-models
 provider: growthcircle
 model: model-id-from-v1-models
-```
-
-Keep the API key in the environment or Hermes secret mechanism:
-
-```sh
-export GROWTHCIRCLE_API_KEY="<growthcircle-ai-key>"
-curl https://ai.growthcircle.id/v1/models \
-  -H "Authorization: Bearer $GROWTHCIRCLE_API_KEY"
 ```
 
 If the user is migrating Hermes to OpenClaw, do not treat Hermes plugins as
@@ -148,7 +169,8 @@ When helping a user:
 
 - Give commands in the order they should be run.
 - Redact secrets in examples.
-- State whether the path is OpenClaw-native or Hermes-manual.
+- State whether the path is OpenClaw-native, Hermes-native, or Hermes-manual
+  fallback.
 - Include verification commands, not only install commands.
 - If the user asks for a one-shot fix, execute the install/update and
   verification when you have shell access.

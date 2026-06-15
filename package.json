@@ -1,7 +1,7 @@
 {
   "name": "gc-provider",
-  "version": "0.1.25",
-  "description": "OpenClaw provider plugin for GrowthCircle.id models.",
+  "version": "0.1.26",
+  "description": "OpenClaw and Hermes Agent provider plugins for GrowthCircle.id models.",
   "type": "module",
   "license": "MIT",
   "author": "Growth Circle",
@@ -16,14 +16,23 @@
   "keywords": [
     "openclaw",
     "openclaw-plugin",
+    "hermes-agent",
+    "hermes-plugin",
     "provider",
     "models",
     "growthcircle"
   ],
+  "bin": {
+    "gc-provider-install-hermes": "scripts/install-hermes-plugin.sh"
+  },
   "files": [
     "index.ts",
     "dist",
     "src",
+    "hermes/plugins/model-providers/growthcircle/__init__.py",
+    "hermes/plugins/model-providers/growthcircle/plugin.yaml",
+    "hermes/plugins/model-providers/growthcircle/README.md",
+    "scripts/install-hermes-plugin.sh",
     "README.md",
     "SKILL.md",
     "CHANGELOG.md",
@@ -34,8 +43,9 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "test:hermes": "python3 -m py_compile hermes/plugins/model-providers/growthcircle/__init__.py",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run typecheck && npm test"
+    "prepublishOnly": "npm run typecheck && npm test && npm run test:hermes"
   },
   "openclaw": {
     "extensions": [

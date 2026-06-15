@@ -50,6 +50,8 @@ const packageJson = JSON.parse(
   readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"),
 ) as {
   version: string;
+  files?: string[];
+  bin?: Record<string, string>;
   openclaw: {
     extensions: string[];
     runtimeExtensions?: string[];
@@ -65,6 +67,18 @@ const packageJson = JSON.parse(
 };
 
 const readme = readFileSync(fileURLToPath(new URL("../README.md", import.meta.url)), "utf8");
+const hermesProvider = readFileSync(
+  fileURLToPath(new URL("../hermes/plugins/model-providers/growthcircle/__init__.py", import.meta.url)),
+  "utf8",
+);
+const hermesPluginYaml = readFileSync(
+  fileURLToPath(new URL("../hermes/plugins/model-providers/growthcircle/plugin.yaml", import.meta.url)),
+  "utf8",
+);
+const hermesInstaller = readFileSync(
+  fileURLToPath(new URL("../scripts/install-hermes-plugin.sh", import.meta.url)),
+  "utf8",
+);
 
 function modelIdFromRef(ref: string): string {
   return ref.slice(ref.indexOf("/") + 1);
@@ -72,7 +86,18 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.25");
+    expect(packageJson.version).toBe("0.1.26");
+    expect(packageJson.files).toEqual(
+      expect.arrayContaining([
+        "hermes/plugins/model-providers/growthcircle/__init__.py",
+        "hermes/plugins/model-providers/growthcircle/plugin.yaml",
+        "hermes/plugins/model-providers/growthcircle/README.md",
+        "scripts/install-hermes-plugin.sh",
+      ]),
+    );
+    expect(packageJson.bin).toEqual({
+      "gc-provider-install-hermes": "scripts/install-hermes-plugin.sh",
+    });
     expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
     expect(packageJson.openclaw.runtimeExtensions).toEqual(["./dist/index.js"]);
     expect(packageJson.openclaw.compat).toEqual({
@@ -83,6 +108,19 @@ describe("GrowthCircle.id model catalog", () => {
       openclawVersion: "2026.6.1",
       pluginSdkVersion: "2026.6.1",
     });
+  });
+
+  it("ships a Hermes Agent model-provider plugin and installer", () => {
+    expect(hermesPluginYaml).toContain("kind: model-provider");
+    expect(hermesPluginYaml).toContain('version: "0.1.26"');
+    expect(hermesProvider).toContain("register_provider(growthcircle)");
+    expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
+    expect(hermesProvider).toContain('base_url=BASE_URL');
+    expect(hermesProvider).toContain('unit_type');
+    expect(hermesProvider).toContain('output_modalities');
+    expect(hermesInstaller).toContain('HERMES_HOME="${HERMES_HOME:-${HOME}/.hermes}"');
+    expect(hermesInstaller).toContain('hermes plugins enable "model-providers/${PLUGIN_NAME}"');
+    expect(hermesInstaller).toContain("BACKUP_DIR=");
   });
 
   it("documents repair-safe ClawHub update and uninstall recovery commands", () => {

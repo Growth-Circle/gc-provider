@@ -1,27 +1,33 @@
 # gc-provider
 
-OpenClaw provider plugin for GrowthCircle.id.
+OpenClaw and Hermes Agent provider plugins for GrowthCircle.id.
 
 <p>
   <img src="https://raw.githubusercontent.com/Growth-Circle/gc-provider/main/assets/growthcircle-provider-preview.png" alt="GrowthCircle.id provider preview" width="920" />
 </p>
 
-`gc-provider` registers GrowthCircle.id as the OpenClaw provider
-`growthcircle` and sends requests to the OpenAI-compatible endpoint:
+`gc-provider` registers GrowthCircle.id as provider `growthcircle` and sends
+requests to the OpenAI-compatible endpoint:
 
 ```text
 https://ai.growthcircle.id/v1
 ```
 
-The plugin reads the GrowthCircle model catalog with the API key configured in
-OpenClaw. Free, Paid, and Team keys can expose different models. The OpenClaw
-model picker is scoped to GrowthCircle text-inference models, so image, video,
-audio, music, unavailable, and non-GrowthCircle models are not added to the
-chat model list.
+The package ships two provider artifacts:
+
+- OpenClaw plugin: `index.ts`, `dist/`, and `openclaw.plugin.json`.
+- Hermes Agent plugin: `hermes/plugins/model-providers/growthcircle`.
+
+Both paths read the GrowthCircle model catalog with the API key configured in
+the runtime. Free, Paid, and Team keys can expose different models. The model
+picker is scoped to GrowthCircle text-inference models, so image, video, audio,
+music, unavailable, and non-GrowthCircle models are not added to the chat model
+list.
 
 ## Requirements
 
 - OpenClaw `2026.5.4` or newer.
+- Hermes Agent with user plugins enabled when using the Hermes plugin.
 - Node.js `22.19.0` or newer when running the current OpenClaw `latest`
   release line.
 - A GrowthCircle API key with one of these prefixes:
@@ -93,6 +99,71 @@ openclaw plugins install -l .
 openclaw plugins enable gc-provider
 openclaw gateway restart
 openclaw configure --section=model
+```
+
+### Hermes Agent
+
+For Hermes Agent, install the native `model-provider` plugin into
+`$HERMES_HOME/plugins/model-providers/growthcircle`. There is no separate
+Hermes registry publish step for this package right now; the Hermes plugin is
+distributed inside the npm package and installed with `npx`.
+
+1. Install the plugin from npm:
+
+```sh
+npx --yes gc-provider@latest gc-provider-install-hermes
+```
+
+2. Add the GrowthCircle key to your shell, service environment, or Hermes
+   secret mechanism:
+
+```sh
+export GROWTHCIRCLE_API_KEY="<your-growthcircle-key>"
+```
+
+3. Confirm the key can see models:
+
+```sh
+curl https://ai.growthcircle.id/v1/models \
+  -H "Authorization: Bearer $GROWTHCIRCLE_API_KEY"
+```
+
+4. Let Hermes validate the install and open model selection:
+
+```sh
+hermes doctor
+hermes model
+```
+
+5. Smoke test with one model returned by `/v1/models`:
+
+```sh
+hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.5
+```
+
+Use the exact model ids returned by `https://ai.growthcircle.id/v1/models` for
+the same key. Free keys normally use `-free` model ids, for example
+`gpt-5.5-free`.
+
+Local checkout install for development:
+
+```sh
+./scripts/install-hermes-plugin.sh
+```
+
+Update the Hermes plugin later with the same npm command:
+
+```sh
+npx --yes gc-provider@latest gc-provider-install-hermes
+```
+
+The installer backs up the previous local Hermes plugin folder before replacing
+it.
+
+Uninstall:
+
+```sh
+rm -rf "${HERMES_HOME:-$HOME/.hermes}/plugins/model-providers/growthcircle"
 ```
 
 ## Update

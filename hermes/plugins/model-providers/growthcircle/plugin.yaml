@@ -1,0 +1,6 @@
+name: growthcircle
+kind: model-provider
+version: "0.1.26"
+description: GrowthCircle.id OpenAI-compatible model provider for Hermes Agent.
+author: Growth Circle
+homepage: https://github.com/Growth-Circle/gc-provider

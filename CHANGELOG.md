@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.26
+
+- Added a native Hermes Agent `model-provider` plugin for GrowthCircle.id under
+  `hermes/plugins/model-providers/growthcircle`.
+- Added the `gc-provider-install-hermes` installer for copying the Hermes
+  plugin into `$HERMES_HOME/plugins/model-providers/growthcircle` with a backup
+  of any existing local plugin folder.
+- Updated package metadata and docs so the npm package can ship both the
+  OpenClaw plugin and the Hermes Agent plugin artifact.
+- Expanded the Hermes install guide with copy-paste setup, model discovery,
+  update, uninstall, and smoke-test commands.
+
 ## 0.1.25
 
 - Checked OpenClaw `2026.6.1` compatibility and updated the plugin SDK test
