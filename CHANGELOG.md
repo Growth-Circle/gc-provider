@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.27
+
+- Checked OpenClaw `2026.6.6` compatibility and updated the plugin SDK test
+  target.
+- Kept the declared OpenClaw install floor at `2026.5.4`; this release expands
+  the tested stable range without dropping existing supported `2026.5.4+`
+  installs.
+- Kept the Hermes Agent provider artifact and installer in the npm package.
+
 ## 0.1.26
 
 - Added a native Hermes Agent `model-provider` plugin for GrowthCircle.id under

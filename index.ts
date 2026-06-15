@@ -1,4 +1,4 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry, type OpenClawPluginDefinition } from "openclaw/plugin-sdk/plugin-entry";
 import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
 import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
 import {
@@ -69,7 +69,7 @@ function createGrowthCircleAuthMethod(params: {
   });
 }
 
-export default definePluginEntry({
+const growthCirclePlugin: OpenClawPluginDefinition = definePluginEntry({
   id: PLUGIN_ID,
   name: PLUGIN_NAME,
   description: PLUGIN_DESCRIPTION,
@@ -155,6 +155,8 @@ export default definePluginEntry({
     api.registerImageGenerationProvider(buildGrowthCircleImageGenerationProvider());
   },
 });
+
+export default growthCirclePlugin;
 
 export {
   BASE_URL,
