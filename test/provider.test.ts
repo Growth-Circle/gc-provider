@@ -86,7 +86,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.27");
+    expect(packageJson.version).toBe("0.1.28");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -105,17 +105,18 @@ describe("GrowthCircle.id model catalog", () => {
       minGatewayVersion: "2026.5.4",
     });
     expect(packageJson.openclaw.build).toEqual({
-      openclawVersion: "2026.6.6",
-      pluginSdkVersion: "2026.6.6",
+      openclawVersion: "2026.6.9",
+      pluginSdkVersion: "2026.6.9",
     });
   });
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.27"');
+    expect(hermesPluginYaml).toContain('version: "0.1.28"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
+    expect(hermesProvider).toContain('default_aux_model=""');
     expect(hermesProvider).toContain('unit_type');
     expect(hermesProvider).toContain('output_modalities');
     expect(hermesInstaller).toContain('HERMES_HOME="${HERMES_HOME:-${HOME}/.hermes}"');

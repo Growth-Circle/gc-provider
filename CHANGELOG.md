@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.28
+
+- Checked OpenClaw `2026.6.9` compatibility and updated the plugin SDK test
+  target.
+- Checked the Hermes Agent `v0.17.0` model-provider plugin contract and kept
+  the native Hermes provider artifact aligned with the current plugin layout.
+- Kept the declared OpenClaw install floor at `2026.5.4`; this release expands
+  the tested stable range without dropping existing supported `2026.5.4+`
+  installs.
+
 ## 0.1.27
 
 - Checked OpenClaw `2026.6.6` compatibility and updated the plugin SDK test

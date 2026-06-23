@@ -100,6 +100,7 @@ growthcircle = GrowthCircleProfile(
     auth_type="api_key",
     supports_vision=True,
     default_max_tokens=DEFAULT_MAX_TOKENS,
+    default_aux_model="",
     fallback_models=FALLBACK_MODELS,
 )
 

@@ -7,6 +7,10 @@ It registers the provider id `growthcircle` and uses:
 https://ai.growthcircle.id/v1
 ```
 
+This layout follows the Hermes Agent `v0.17.0` model-provider plugin contract:
+`__init__.py` registers a `ProviderProfile`, while `plugin.yaml` lets Hermes
+inspect the plugin as `kind: model-provider`.
+
 ## Install
 
 ```sh
