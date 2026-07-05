@@ -41,9 +41,11 @@ class GrowthCircleProfile(ProviderProfile):
         self,
         *,
         api_key: str | None = None,
+        base_url: str | None = None,
         timeout: float = 8.0,
     ) -> list[str] | None:
-        url = self.models_url or self.base_url.rstrip("/") + "/models"
+        effective_base_url = base_url or self.base_url
+        url = self.models_url or effective_base_url.rstrip("/") + "/models"
         req = urllib.request.Request(url)
         req.add_header("Accept", "application/json")
         req.add_header("User-Agent", "gc-provider-hermes")

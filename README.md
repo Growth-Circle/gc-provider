@@ -422,8 +422,9 @@ growthcircle/gpt-5.5
 ## Compatibility
 
 - Minimum OpenClaw version: `2026.5.4`
-- Tested OpenClaw SDK target: `2026.6.9`
-- Hermes Agent model-provider layout checked against `v0.17.0` (`v2026.6.19`)
+- Tested OpenClaw SDK target: `2026.6.11`
+- Checked skipped stable releases: OpenClaw `2026.6.10` and `2026.6.11`
+- Hermes Agent model-provider layout checked against `v0.18.0` (`v2026.7.1`)
 - Runtime entry: `./dist/index.js`
 - Source entry: `./index.ts`
 

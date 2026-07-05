@@ -86,7 +86,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.28");
+    expect(packageJson.version).toBe("0.1.29");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -105,17 +105,19 @@ describe("GrowthCircle.id model catalog", () => {
       minGatewayVersion: "2026.5.4",
     });
     expect(packageJson.openclaw.build).toEqual({
-      openclawVersion: "2026.6.9",
-      pluginSdkVersion: "2026.6.9",
+      openclawVersion: "2026.6.11",
+      pluginSdkVersion: "2026.6.11",
     });
   });
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.28"');
+    expect(hermesPluginYaml).toContain('version: "0.1.29"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
+    expect(hermesProvider).toContain("base_url: str | None = None");
+    expect(hermesProvider).toContain("effective_base_url = base_url or self.base_url");
     expect(hermesProvider).toContain('default_aux_model=""');
     expect(hermesProvider).toContain('unit_type');
     expect(hermesProvider).toContain('output_modalities');
@@ -125,6 +127,9 @@ describe("GrowthCircle.id model catalog", () => {
   });
 
   it("documents repair-safe ClawHub update and uninstall recovery commands", () => {
+    expect(readme).toContain("Tested OpenClaw SDK target: `2026.6.11`");
+    expect(readme).toContain("OpenClaw `2026.6.10` and `2026.6.11`");
+    expect(readme).toContain("Hermes Agent model-provider layout checked against `v0.18.0` (`v2026.7.1`)");
     expect(readme).toContain(
       "(openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force)",
     );
