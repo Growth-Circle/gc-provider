@@ -86,7 +86,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.29");
+    expect(packageJson.version).toBe("0.1.30");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -112,7 +112,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.29"');
+    expect(hermesPluginYaml).toContain('version: "0.1.30"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
@@ -129,7 +129,7 @@ describe("GrowthCircle.id model catalog", () => {
   it("documents repair-safe ClawHub update and uninstall recovery commands", () => {
     expect(readme).toContain("Tested OpenClaw SDK target: `2026.6.11`");
     expect(readme).toContain("OpenClaw `2026.6.10` and `2026.6.11`");
-    expect(readme).toContain("Hermes Agent model-provider layout checked against `v0.18.0` (`v2026.7.1`)");
+    expect(readme).toContain("Hermes Agent model-provider layout checked against `hermes-agent@0.18.2`");
     expect(readme).toContain(
       "(openclaw plugins update gc-provider || openclaw plugins install clawhub:gc-provider --force)",
     );
@@ -349,8 +349,16 @@ describe("GrowthCircle.id model catalog", () => {
     });
   });
 
-  it("uses OpenClaw GPT-5.5 defaults for the GrowthCircle default model", () => {
+  it("uses OpenClaw GPT-5.6 defaults for the GrowthCircle default model", () => {
     expect(normalizeGrowthCircleModels({ data: [{ id: DEFAULT_MODEL_ID }] })[0]).toMatchObject({
+      id: "gpt-5.6",
+      name: "GPT-5.6",
+      reasoning: true,
+      input: ["text", "image"],
+      contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
+      maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
+    });
+    expect(normalizeGrowthCircleModels({ data: [{ id: "gpt-5.5" }] })[0]).toMatchObject({
       id: "gpt-5.5",
       name: "GPT-5.5",
       reasoning: true,
@@ -366,10 +374,10 @@ describe("GrowthCircle.id model catalog", () => {
       { freeModels: true },
     );
 
-    expect(models.map((model) => model.id)).toEqual(["gpt-5.5-free", "gpt-5.4-free"]);
+    expect(models.map((model) => model.id)).toEqual(["gpt-5.6-free", "gpt-5.4-free"]);
     expect(models[0]).toMatchObject({
-      id: "gpt-5.5-free",
-      name: "GPT-5.5 Free",
+      id: "gpt-5.6-free",
+      name: "GPT-5.6 Free",
       contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
       maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
     });
@@ -469,11 +477,13 @@ describe("GrowthCircle.id model catalog", () => {
   });
 
   it("exposes medium as the GrowthCircle reasoning default", () => {
+    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.6" })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.5" })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: true })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: false })).toBeNull();
+    expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.6" })).toBe(true);
     expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.5" })).toBe(true);
-    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.5" })).toEqual({
+    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.6" })).toEqual({
       levels: [
         { id: "off" },
         { id: "minimal" },

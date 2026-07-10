@@ -7,7 +7,7 @@ It registers the provider id `growthcircle` and uses:
 https://ai.growthcircle.id/v1
 ```
 
-This layout follows the Hermes Agent `v0.18.0` model-provider plugin contract:
+This layout follows the `hermes-agent@0.18.2` model-provider plugin contract:
 `__init__.py` registers a `ProviderProfile`, while `plugin.yaml` lets Hermes
 inspect the plugin as `kind: model-provider`.
 
@@ -44,11 +44,11 @@ hermes model
 Run a direct smoke test with a model returned by `/v1/models`:
 
 ```sh
-hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.5
+hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6
 ```
 
 Free keys must use model ids returned by `/v1/models`, usually with the
-`-free` suffix such as `gpt-5.5-free`.
+`-free` suffix such as `gpt-5.6-free`.
 
 ## Update
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.30
+
+- Added `gpt-5.6` and `gpt-5.6-free` to the seeded GrowthCircle text model
+  catalogs for OpenClaw setup, manifest preview, and Hermes fallback discovery.
+- Updated the paid, team, and free default text model to GPT-5.6 while keeping
+  GPT-5.5 available as a compatibility model with reasoning metadata.
+- Checked npm upstreams: OpenClaw `latest` is still `2026.6.11`, while
+  `hermes-agent` latest is `0.18.2`; kept the OpenClaw SDK target stable and
+  refreshed the Hermes compatibility wording.
+
 ## 0.1.29
 
 - Checked OpenClaw `2026.6.10` and `2026.6.11` compatibility and updated the

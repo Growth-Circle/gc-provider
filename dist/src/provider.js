@@ -8,7 +8,7 @@ export const PROVIDER_LABEL = "GrowthCircle.id";
 export const ENV_VAR = "GROWTHCIRCLE_API_KEY";
 export const BASE_URL = "https://ai.growthcircle.id/v1";
 export const FREE_MODEL_SUFFIX = "-free";
-export const DEFAULT_MODEL_ID = "gpt-5.5";
+export const DEFAULT_MODEL_ID = "gpt-5.6";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
 export const DEFAULT_FREE_MODEL_ID = `${DEFAULT_MODEL_ID}${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
@@ -16,6 +16,7 @@ export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
 export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}`;
 export const DEFAULT_FREE_IMAGE_MODEL_ID = "gpt-image-2-free";
 export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
+const GROWTHCIRCLE_REASONING_MODEL_IDS = new Set(["gpt-5.5", DEFAULT_MODEL_ID]);
 export const TEAM_IMAGE_MODEL_IDS = [
     DEFAULT_IMAGE_MODEL_ID,
     "gc-image-pro-square",
@@ -27,6 +28,7 @@ export const FREE_TEXT_MODEL_IDS = [
     "gpt-5.4",
     "gpt-5.4-mini",
     DEFAULT_MODEL_ID,
+    "gpt-5.5",
     "claude-haiku-4-5-20251001",
     "claude-opus-4-6",
     "claude-opus-4-7",
@@ -49,6 +51,7 @@ export const PAID_TEXT_MODEL_IDS = [
     "gpt-5.4",
     "gpt-5.4-mini",
     DEFAULT_MODEL_ID,
+    "gpt-5.5",
     "claude-3-5-haiku-latest",
     "claude-haiku-4-5-20251001",
     "claude-haiku-4-5-20251001-thinking",
@@ -104,6 +107,7 @@ export const TEAM_TEXT_MODEL_IDS = [
     "gpt-5.4",
     "gpt-5.4-mini",
     DEFAULT_MODEL_ID,
+    "gpt-5.5",
 ];
 export const FREE_TEXT_MODEL_IDS_WITH_SUFFIX = FREE_TEXT_MODEL_IDS.map((modelId) => toGrowthCircleFreeModelId(modelId));
 export const FREE_TEXT_MODEL_REFS = FREE_TEXT_MODEL_IDS_WITH_SUFFIX.map((modelId) => `${PROVIDER_ID}/${modelId}`);
@@ -141,7 +145,7 @@ const BASE_GROWTHCIRCLE_THINKING_LEVELS = [
 ];
 export const DEFAULT_MODEL = {
     id: DEFAULT_MODEL_ID,
-    name: "GPT-5.5",
+    name: "GPT-5.6",
     api: "openai-completions",
     reasoning: true,
     input: ["text", "image"],
@@ -153,7 +157,7 @@ export const DEFAULT_MODEL = {
 export const DEFAULT_FREE_MODEL = {
     ...DEFAULT_MODEL,
     id: DEFAULT_FREE_MODEL_ID,
-    name: "GPT-5.5 Free",
+    name: "GPT-5.6 Free",
 };
 export async function fetchGrowthCircleModels({ apiKey, fetchFn = fetch, timeoutMs = 10_000, }) {
     const response = await fetchFn(`${BASE_URL}/models`, {
@@ -536,13 +540,13 @@ function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export function resolveGrowthCircleDefaultThinkingLevel(params) {
-    if (isDefaultModelId(params.modelId) || params.reasoning) {
+    if (isGrowthCircleReasoningModelId(params.modelId) || params.reasoning) {
         return "medium";
     }
     return null;
 }
 export function supportsGrowthCircleXHighThinking(params) {
-    return isDefaultModelId(params.modelId) ? true : undefined;
+    return isGrowthCircleReasoningModelId(params.modelId) ? true : undefined;
 }
 export function resolveGrowthCircleThinkingProfile(params) {
     const defaultLevel = resolveGrowthCircleDefaultThinkingLevel(params);
@@ -705,7 +709,7 @@ function createModelDefinition(params) {
     return {
         id: params.id,
         name: params.name ?? defaultNameForModel(params.id),
-        reasoning: params.reasoning ?? isDefaultModelId(params.id),
+        reasoning: params.reasoning ?? isGrowthCircleReasoningModelId(params.id),
         input: params.input ?? defaultInputForModel(params.id),
         cost: params.cost ?? { ...ZERO_COST },
         contextWindow: limits.contextWindow,
@@ -743,7 +747,7 @@ function readReasoning(model, modelId) {
         return model.capabilities.some((capability) => typeof capability === "string" &&
             ["reasoning", "reasoning_effort", "thinking"].includes(capability.toLowerCase()));
     }
-    return isDefaultModelId(modelId);
+    return isGrowthCircleReasoningModelId(modelId);
 }
 function readInput(model) {
     const values = readArchitectureModalities(model.architecture, "input") ??
@@ -823,18 +827,20 @@ function isRecord(value) {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 function defaultLimitsForModel(modelId) {
-    return isDefaultModelId(modelId) ? DEFAULT_MODEL_LIMITS : FALLBACK_MODEL_LIMITS;
+    return isGrowthCircleReasoningModelId(modelId) ? DEFAULT_MODEL_LIMITS : FALLBACK_MODEL_LIMITS;
 }
 function defaultNameForModel(modelId) {
-    if (!isDefaultModelId(modelId))
+    const baseModelId = stripGrowthCircleFreeModelSuffix(modelId.trim());
+    if (!isGrowthCircleReasoningModelId(modelId))
         return modelId;
-    return modelId.endsWith(FREE_MODEL_SUFFIX) ? "GPT-5.5 Free" : "GPT-5.5";
+    const displayName = baseModelId.toLowerCase().replace(/^gpt-/u, "GPT-");
+    return modelId.endsWith(FREE_MODEL_SUFFIX) ? `${displayName} Free` : displayName;
 }
 function defaultInputForModel(modelId) {
-    return isDefaultModelId(modelId) ? ["text", "image"] : ["text"];
+    return isGrowthCircleReasoningModelId(modelId) ? ["text", "image"] : ["text"];
 }
-function isDefaultModelId(modelId) {
-    return stripGrowthCircleFreeModelSuffix(modelId.trim().toLowerCase()) === DEFAULT_MODEL_ID;
+function isGrowthCircleReasoningModelId(modelId) {
+    return GROWTHCIRCLE_REASONING_MODEL_IDS.has(stripGrowthCircleFreeModelSuffix(modelId.trim().toLowerCase()));
 }
 function isGrowthCircleOwner(owner) {
     const normalized = owner.toLowerCase().replace(/[^a-z0-9]/g, "");

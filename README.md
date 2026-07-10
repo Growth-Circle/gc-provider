@@ -138,12 +138,12 @@ hermes model
 5. Smoke test with one model returned by `/v1/models`:
 
 ```sh
-hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.5
+hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6
 ```
 
 Use the exact model ids returned by `https://ai.growthcircle.id/v1/models` for
 the same key. Free keys normally use `-free` model ids, for example
-`gpt-5.5-free`.
+`gpt-5.6-free`.
 
 Local checkout install for development:
 
@@ -294,20 +294,20 @@ openclaw models list --provider growthcircle
 The paid and team default model is:
 
 ```text
-growthcircle/gpt-5.5
+growthcircle/gpt-5.6
 ```
 
 The free default model is:
 
 ```text
-growthcircle/gpt-5.5-free
+growthcircle/gpt-5.6-free
 ```
 
 Free-tier model ids use the `-free` suffix. For example:
 
 ```text
 growthcircle/MiniMax-M2.7-free
-growthcircle/gpt-5.5-free
+growthcircle/gpt-5.6-free
 ```
 
 If OpenClaw prints `plugins.allow is empty`, add this provider to the plugin
@@ -333,6 +333,7 @@ for each key tier.
 growthcircle/gpt-5.3-codex-free
 growthcircle/gpt-5.4-free
 growthcircle/gpt-5.4-mini-free
+growthcircle/gpt-5.6-free
 growthcircle/gpt-5.5-free
 growthcircle/claude-haiku-4-5-20251001-free
 growthcircle/claude-opus-4-6-free
@@ -358,6 +359,7 @@ growthcircle/gpt-5.3-codex
 growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini
+growthcircle/gpt-5.6
 growthcircle/gpt-5.5
 growthcircle/claude-3-5-haiku-latest
 growthcircle/claude-haiku-4-5-20251001
@@ -416,6 +418,7 @@ growthcircle/gpt-5.3-codex
 growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini
+growthcircle/gpt-5.6
 growthcircle/gpt-5.5
 ```
 
@@ -424,7 +427,7 @@ growthcircle/gpt-5.5
 - Minimum OpenClaw version: `2026.5.4`
 - Tested OpenClaw SDK target: `2026.6.11`
 - Checked skipped stable releases: OpenClaw `2026.6.10` and `2026.6.11`
-- Hermes Agent model-provider layout checked against `v0.18.0` (`v2026.7.1`)
+- Hermes Agent model-provider layout checked against `hermes-agent@0.18.2`
 - Runtime entry: `./dist/index.js`
 - Source entry: `./index.ts`
 

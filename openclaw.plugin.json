@@ -1,7 +1,7 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": [
     "./index.ts"
@@ -50,6 +50,7 @@
           "growthcircle/gpt-5.3-codex-free",
           "growthcircle/gpt-5.4-free",
           "growthcircle/gpt-5.4-mini-free",
+          "growthcircle/gpt-5.6-free",
           "growthcircle/gpt-5.5-free",
           "growthcircle/claude-haiku-4-5-20251001-free",
           "growthcircle/claude-opus-4-6-free",
@@ -71,6 +72,7 @@
           "growthcircle/gpt-5.3-codex-free",
           "growthcircle/gpt-5.4-free",
           "growthcircle/gpt-5.4-mini-free",
+          "growthcircle/gpt-5.6-free",
           "growthcircle/gpt-5.5-free",
           "growthcircle/claude-haiku-4-5-20251001-free",
           "growthcircle/claude-opus-4-6-free",
@@ -113,6 +115,7 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.6",
           "growthcircle/gpt-5.5",
           "growthcircle/claude-3-5-haiku-latest",
           "growthcircle/claude-haiku-4-5-20251001",
@@ -168,6 +171,7 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.6",
           "growthcircle/gpt-5.5",
           "growthcircle/claude-3-5-haiku-latest",
           "growthcircle/claude-haiku-4-5-20251001",
@@ -243,6 +247,7 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.6",
           "growthcircle/gpt-5.5"
         ],
         "initialSelections": [
@@ -250,6 +255,7 @@
           "growthcircle/gpt-5.3-codex-spark",
           "growthcircle/gpt-5.4",
           "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-5.6",
           "growthcircle/gpt-5.5"
         ],
         "message": "GrowthCircle.id team models in /model picker (multi-select)"
@@ -357,6 +363,31 @@
               "text"
             ],
             "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.6",
+            "name": "GPT-5.6",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
             "contextWindow": 256000,
             "maxTokens": 36000,
             "cost": {
@@ -1606,6 +1637,31 @@
               "text"
             ],
             "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.6-free",
+            "name": "GPT-5.6 Free",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
             "contextWindow": 256000,
             "maxTokens": 36000,
             "cost": {

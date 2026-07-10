@@ -1,6 +1,6 @@
 {
   "name": "gc-provider",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "OpenClaw and Hermes Agent provider plugins for GrowthCircle.id models.",
   "type": "module",
   "license": "MIT",

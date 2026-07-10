@@ -15,10 +15,12 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://ai.growthcircle.id/v1"
 ENV_VAR = "GROWTHCIRCLE_API_KEY"
 FREE_MODEL_SUFFIX = "-free"
-DEFAULT_MODEL_ID = "gpt-5.5"
+DEFAULT_MODEL_ID = "gpt-5.6"
 DEFAULT_MAX_TOKENS = 36_000
 
 FALLBACK_MODELS = (
+    "gpt-5.6",
+    "gpt-5.6-free",
     "gpt-5.5",
     "gpt-5.5-free",
     "gpt-5.4-mini",
