@@ -2,15 +2,20 @@
 
 ## 0.1.32
 
-- Excluded `src/setup/`, `test/`, and `docs/` from the ClawHub artifact. The
-  ClawHub package is the OpenClaw provider plugin, and `index.ts` imports only
-  `src/provider.ts` and `src/image.ts`, so the setup CLI was dead weight there.
-  Shipping a tool that reads an API-key environment variable and writes or
-  deletes files under the user's home also made the artifact resemble config
-  tampering to ClawHub's behavioural scanner, which flagged `0.1.31` as
-  suspicious. The npm package is unchanged and still carries the full CLI,
-  which is where `npx gc-provider` resolves from.
-- No runtime behavior changed for any client.
+- Packaging metadata only. No runtime behavior changed for any client, and no
+  shipped file changed in either distribution channel.
+- Added `src/setup/`, `test/`, `docs/`, and `reports/` to `.clawhubignore`.
+  **These entries are inert today.** ClawHub builds its artifact with
+  `npm pack`, so the contents are governed by `package.json` `files`, not by
+  `.clawhubignore`; verified by downloading the published artifact, whose
+  shasum matches a local `npm pack` and which still contains every
+  `dist/src/setup/**` file. The entries are kept only so the intent is already
+  recorded if ClawHub ever switches to source-tree packaging.
+- Context: ClawHub's behavioural scanner briefly reported `0.1.31` as
+  `suspicious` shortly after publish, then returned to `clean` on its own. The
+  local Plugin Inspector passed with zero findings throughout. The initial
+  release notes for `0.1.32` claimed this release fixed that flag; it did not,
+  and this entry supersedes that claim.
 
 ## 0.1.31
 

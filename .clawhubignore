@@ -8,11 +8,18 @@ coverage/
 dist/
 reports/
 
-# The ClawHub artifact is the OpenClaw provider plugin. index.ts imports only
-# src/provider.ts and src/image.ts, so the setup CLI is dead weight here — and
-# shipping a tool that reads an API-key env var and writes/deletes files under
-# the user's home makes the artifact look like config tampering to a scanner.
-# The CLI is distributed through npm, which is where `npx gc-provider` resolves.
+# INERT AS OF 0.1.32. ClawHub builds its artifact with `npm pack`, so contents
+# are governed by package.json `files`, not by this file — verified by
+# downloading the published artifact (shasum matches a local `npm pack`, and it
+# still contains every dist/src/setup/** file).
+#
+# The entries below record the intent for the day ClawHub packs from the source
+# tree: the ClawHub artifact is the OpenClaw provider plugin, and index.ts
+# imports only src/provider.ts and src/image.ts, so the setup CLI is dead weight
+# there. The CLI is distributed through npm, where `npx gc-provider` resolves.
+#
+# Excluding it from npm is NOT an option: `files` drives both channels, and
+# dropping dist/src/setup would break `npx gc-provider` for everyone.
 src/setup/
 test/
 docs/
