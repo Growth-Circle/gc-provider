@@ -19,9 +19,77 @@ in this repo.
 - Endpoint: `https://ai.growthcircle.id/v1`
 - Main entrypoint: `index.ts`
 - Provider implementation: `src/provider.ts`
+- Image generation: `src/image.ts`
+- Setup CLI: `src/setup/` (bin `gc-provider` -> `dist/src/setup/cli.js`)
 - Manifest: `openclaw.plugin.json`
-- Tests: `test/provider.test.ts`
+- Tests: `test/provider.test.ts`, `test/setup.test.ts`
 - Distribution: npm + ClawHub + GitHub releases
+
+This repository now ships three things, not one:
+
+1. the OpenClaw provider plugin,
+2. the Hermes Agent model-provider plugin,
+3. the `gc-provider setup` CLI that configures other AI coding clients.
+
+## GrowthCircle Endpoint Surface
+
+Verified by probe. Do not assume routes that are not listed here.
+
+| Route | Status |
+| --- | --- |
+| `GET /v1/models` | available |
+| `POST /v1/chat/completions` | available |
+| `POST /v1/responses` | available |
+| `POST /anthropic/v1/messages` | available |
+| `POST /v1/images/generations` | available |
+| `GET /v1/tasks/:id` | available |
+| `POST /anthropic/v1/messages/count_tokens` | **absent** |
+| `POST /v1/embeddings` | **absent** |
+
+Behavior verified 2026-08-07 with a live paid key:
+
+- `/v1/chat/completions` with `tools` works and returns well-formed `tool_calls`.
+- `/v1/responses` works for plain input but **fails whenever `tools` are
+  present** (`invalid params, function is empty (2013)`). This blocks Codex CLI,
+  which always sends tools and which rejects `wire_api = "chat"` since 0.147.0.
+  Fixing this on the server is the single highest-value change for client
+  coverage; the shipped Codex config needs no edit once it lands.
+- `/anthropic/v1/messages` routes correctly and maps ids internally
+  (`claude-sonnet-4-6` -> `claude-sonnet-4-6-commandcode`).
+
+The Anthropic Messages route is why Claude Code works without a proxy. If it
+ever moves, `src/setup/constants.ts` `ANTHROPIC_BASE_URL` and the Claude Code
+adapter must change together.
+
+## Setup CLI Rules
+
+`src/setup/` is a separate subsystem from the OpenClaw plugin. Keep it that way.
+
+- **`src/provider.ts` must never import the OpenClaw runtime.** Type-only
+  imports are fine because they are erased at build time. Anything needing
+  `openclaw/plugin-sdk` at runtime belongs in `src/image.ts`. Breaking this
+  makes `npx gc-provider setup` fail on machines without OpenClaw installed.
+- **Adapters are pure.** They take a read callback and return `FileEdit[]`. No
+  adapter may touch the filesystem, prompt, or print. All I/O lives in
+  `src/setup/cli.ts`. This is what keeps the tests fixture-based and `--dry-run`
+  correct by construction.
+- **Never write an API key into a generated config.** Reference the environment
+  variable instead (`env_key`, `{env:GROWTHCIRCLE_API_KEY}`). Two clients need
+  the key under a second name — Claude Code (`ANTHROPIC_AUTH_TOKEN`) and Trae
+  Agent (`OPENAI_API_KEY`) — surfaced through `Adapter.extraEnv`, never written
+  to a file.
+- **Never reformat a user's file.** Use the helpers in `src/setup/edit/`, which
+  preserve comments, key order, and indentation width. Do not reach for
+  `JSON.parse`/`JSON.stringify` on a config file.
+- **Refuse rather than clobber.** An existing file that will not parse produces
+  a `blocked` FileEdit, not a write.
+- **Stay idempotent.** A second `setup` run with the same catalog must produce
+  zero edits. There is a test asserting this across every adapter.
+
+Adding a client means adding one file under `src/setup/clients/`, registering it
+in `src/setup/registry.ts`, and adding its tests. If a client has no config file
+to write, add it to `MANUAL_CLIENTS` with an honest note instead — do not invent
+an automation path that requires MITM or GUI scripting.
 
 ## Compatibility Policy
 
@@ -72,6 +140,12 @@ Keep these files aligned:
   - runtime catalog normalization
   - defaults and model refs
   - OpenAI-compatible model compat flags
+  - must stay free of OpenClaw runtime imports
+- `src/setup/`
+  - client adapters and the setup CLI
+  - `constants.ts` endpoint URLs and model limits
+- `hermes/plugins/model-providers/growthcircle/plugin.yaml`
+  - version string, asserted by tests
 - `README.md`
   - install/upgrade commands
   - compatibility wording
@@ -149,6 +223,16 @@ Tests should cover:
 - default onboarding config
 - request compatibility metadata
 - compact/safe error handling
+- setup CLI: per-adapter output, idempotency, uninstall round-trip, comment and
+  indentation preservation, and the two cross-cutting invariants (no edits on a
+  second run, no API key in any generated file)
+
+Smoke-test the CLI against a throwaway home rather than your own:
+
+```sh
+npm run build
+HOME=/tmp/gc-fakehome node dist/src/setup/cli.js setup --all --dry-run
+```
 
 ## Release Workflow
 

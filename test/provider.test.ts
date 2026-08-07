@@ -86,7 +86,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.30");
+    expect(packageJson.version).toBe("0.1.31");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -96,6 +96,7 @@ describe("GrowthCircle.id model catalog", () => {
       ]),
     );
     expect(packageJson.bin).toEqual({
+      "gc-provider": "dist/src/setup/cli.js",
       "gc-provider-install-hermes": "scripts/install-hermes-plugin.sh",
     });
     expect(packageJson.openclaw.extensions).toEqual(["./index.ts"]);
@@ -112,7 +113,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.30"');
+    expect(hermesPluginYaml).toContain('version: "0.1.31"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');

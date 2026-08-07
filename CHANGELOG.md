@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.1.31
+
+- Added the `gc-provider` setup CLI: `npx gc-provider setup` detects installed
+  AI coding clients, shows a diff, and writes GrowthCircle provider config after
+  confirmation. Also ships `uninstall` and `status` subcommands.
+- Automated six clients: Codex CLI, Claude Code, Zed, opencode, Kilo Code, and
+  Trae Agent. Documented manual steps for Cline, Roo Code, and Cursor, and the
+  vendor limitations that make Windsurf, Trae IDE, Antigravity, and Kiro
+  impossible to configure.
+- Documented the Anthropic Messages endpoint at
+  `https://ai.growthcircle.id/anthropic`, which lets Claude Code use
+  GrowthCircle without any proxy.
+- The CLI never writes an API key to disk: generated configs reference
+  `GROWTHCIRCLE_API_KEY` by name. Existing config files are merged surgically
+  with comments, key order, and indentation preserved, backed up to
+  `<file>.bak.<timestamp>`, and left untouched when unparseable.
+- Moved the image-generation provider from `src/provider.ts` into `src/image.ts`
+  so `src/provider.ts` no longer imports the OpenClaw runtime. The setup CLI can
+  now run on machines without OpenClaw installed. No public export changed.
+- Added `jsonc-parser` and `yaml` as runtime dependencies, used only by the
+  setup CLI so that comment-bearing config files survive editing.
+- Verified against live paid and free keys: live `/models` discovery, free-tier
+  `-free` suffixing, and tool calling over `/v1/chat/completions`. Documented
+  one confirmed server-side gap: `/v1/responses` fails when a request carries
+  `tools`, which blocks Codex CLI until `ai.growthcircle.id` is fixed. The Codex
+  config shipped here is the only form Codex accepts and will work unchanged
+  once that is resolved.
+
 ## 0.1.30
 
 - Added `gpt-5.6` and `gpt-5.6-free` to the seeded GrowthCircle text model

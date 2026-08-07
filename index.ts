@@ -14,7 +14,6 @@ import {
   KNOWN_TEXT_MODEL_REFS,
   PAID_TEXT_MODEL_REFS,
   TEAM_TEXT_MODEL_REFS,
-  buildGrowthCircleImageGenerationProvider,
   PLUGIN_DESCRIPTION,
   PLUGIN_ID,
   PLUGIN_NAME,
@@ -28,6 +27,7 @@ import {
   resolveGrowthCircleThinkingProfile,
   supportsGrowthCircleXHighThinking,
 } from "./src/provider.js";
+import { buildGrowthCircleImageGenerationProvider } from "./src/image.js";
 
 function createGrowthCircleAuthMethod(params: {
   tier: "free" | "paid" | "team";
@@ -177,7 +177,6 @@ export {
   PROVIDER_ID,
   PROVIDER_LABEL,
   TEAM_TEXT_MODEL_REFS,
-  buildGrowthCircleImageGenerationProvider,
   applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
   normalizeGrowthCircleModels,
@@ -186,3 +185,4 @@ export {
   resolveGrowthCircleThinkingProfile,
   supportsGrowthCircleXHighThinking,
 } from "./src/provider.js";
+export { buildGrowthCircleImageGenerationProvider } from "./src/image.js";

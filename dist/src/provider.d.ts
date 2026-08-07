@@ -1,5 +1,4 @@
 import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-model-types";
-import type { ImageGenerationProvider } from "openclaw/plugin-sdk/image-generation";
 import type { OpenClawConfig, ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
 export declare const PLUGIN_ID = "gc-provider";
 export declare const PLUGIN_NAME = "GrowthCircle.id Provider";
@@ -63,7 +62,6 @@ export declare function growthCircleDefaultImageModelRefForApiKey(apiKey: unknow
 export declare function growthCircleDefaultModelRefForTier(tier: GrowthCircleKeyTier): string;
 export declare function growthCircleModelRefsForTier(tier: GrowthCircleKeyTier): string[];
 export declare function growthCircleImageModelRefForTier(tier: GrowthCircleKeyTier): string;
-export declare function buildGrowthCircleImageGenerationProvider(): ImageGenerationProvider;
 export declare function resolveGrowthCircleDefaultThinkingLevel(params: {
     modelId: string;
     reasoning?: boolean;
@@ -78,7 +76,9 @@ export declare function resolveGrowthCircleThinkingProfile(params: {
 export declare function applyGrowthCircleDefaults(cfg: OpenClawConfig, options?: NormalizeGrowthCircleModelsOptions): OpenClawConfig;
 export declare function applyGrowthCircleDefaultsForApiKey(cfg: OpenClawConfig, apiKey: unknown): OpenClawConfig;
 export declare function applyGrowthCircleDefaultsForTier(cfg: OpenClawConfig, tier: GrowthCircleKeyTier): OpenClawConfig;
+export declare function readString(raw: unknown): string | undefined;
 export declare function isGrowthCircleFreeApiKey(apiKey: unknown): boolean;
 export declare function isGrowthCircleApiKeyForTier(apiKey: unknown, tier: GrowthCircleKeyTier): boolean;
 export declare function toGrowthCircleFreeModelId(modelId: string): string;
+export declare function isRecord(value: unknown): value is Record<string, unknown>;
 export {};

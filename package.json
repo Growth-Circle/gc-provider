@@ -1,7 +1,7 @@
 {
   "name": "gc-provider",
-  "version": "0.1.30",
-  "description": "OpenClaw and Hermes Agent provider plugins for GrowthCircle.id models.",
+  "version": "0.1.31",
+  "description": "GrowthCircle.id model provider for OpenClaw and Hermes Agent, plus a one-command setup CLI for Codex, Claude Code, Zed, opencode, Kilo and Trae Agent.",
   "type": "module",
   "license": "MIT",
   "author": "Growth Circle",
@@ -20,9 +20,18 @@
     "hermes-plugin",
     "provider",
     "models",
-    "growthcircle"
+    "growthcircle",
+    "codex",
+    "claude-code",
+    "zed",
+    "opencode",
+    "kilo",
+    "trae-agent",
+    "openai-compatible",
+    "cli"
   ],
   "bin": {
+    "gc-provider": "dist/src/setup/cli.js",
     "gc-provider-install-hermes": "scripts/install-hermes-plugin.sh"
   },
   "files": [
@@ -83,5 +92,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1",
+    "yaml": "^2.9.0"
   }
 }
