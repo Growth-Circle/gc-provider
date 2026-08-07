@@ -6,3 +6,13 @@ assets/
 *.tar.gz
 coverage/
 dist/
+reports/
+
+# The ClawHub artifact is the OpenClaw provider plugin. index.ts imports only
+# src/provider.ts and src/image.ts, so the setup CLI is dead weight here — and
+# shipping a tool that reads an API-key env var and writes/deletes files under
+# the user's home makes the artifact look like config tampering to a scanner.
+# The CLI is distributed through npm, which is where `npx gc-provider` resolves.
+src/setup/
+test/
+docs/

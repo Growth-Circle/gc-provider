@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.32
+
+- Excluded `src/setup/`, `test/`, and `docs/` from the ClawHub artifact. The
+  ClawHub package is the OpenClaw provider plugin, and `index.ts` imports only
+  `src/provider.ts` and `src/image.ts`, so the setup CLI was dead weight there.
+  Shipping a tool that reads an API-key environment variable and writes or
+  deletes files under the user's home also made the artifact resemble config
+  tampering to ClawHub's behavioural scanner, which flagged `0.1.31` as
+  suspicious. The npm package is unchanged and still carries the full CLI,
+  which is where `npx gc-provider` resolves from.
+- No runtime behavior changed for any client.
+
 ## 0.1.31
 
 - Added the `gc-provider` setup CLI: `npx gc-provider setup` detects installed
