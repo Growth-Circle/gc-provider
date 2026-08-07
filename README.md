@@ -149,7 +149,7 @@ CLI says which it chose.
 
 ```console
 $ npx gc-provider setup codex
-GrowthCircle.id  tier=paid  models=54  live catalog from GrowthCircle.id
+GrowthCircle.id  tier=paid  models=64  live catalog from GrowthCircle.id
 default model: gpt-5.6
 
 Codex CLI  create ~/.codex/growthcircle.config.toml
@@ -803,7 +803,7 @@ lists below are the text-inference models currently seeded for each key tier.
 ### Free
 
 ```text
-growthcircle/gpt-5.3-codex-free
+growthcircle/gpt-5.3-codex-spark-free
 growthcircle/gpt-5.4-free
 growthcircle/gpt-5.4-mini-free
 growthcircle/gpt-5.6-free
@@ -823,18 +823,20 @@ growthcircle/gemini-3.1-pro-preview-free
 growthcircle/MiniMax-M2.7-free
 growthcircle/MiniMax-M3-free
 growthcircle/MiniMax-M2.7-highspeed-free
+growthcircle/mimo-v2.5-free
+growthcircle/mimo-v2.5-pro-free
 ```
 
 ### Paid
 
 ```text
-growthcircle/gpt-5.3-codex
 growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini
 growthcircle/gpt-5.6
 growthcircle/gpt-5.5
 growthcircle/claude-3-5-haiku-latest
+growthcircle/claude-fable-5
 growthcircle/claude-haiku-4-5-20251001
 growthcircle/claude-haiku-4-5-20251001-thinking
 growthcircle/claude-opus-4-5-20251101
@@ -842,17 +844,24 @@ growthcircle/claude-opus-4-5-20251101-thinking
 growthcircle/claude-opus-4-6
 growthcircle/claude-opus-4-6-thinking
 growthcircle/claude-opus-4-7
+growthcircle/claude-opus-4-8
+growthcircle/claude-opus-5
 growthcircle/claude-sonnet-4-5-20250929
 growthcircle/claude-sonnet-4-5-20250929-thinking
 growthcircle/claude-sonnet-4-6
 growthcircle/claude-sonnet-4-6-thinking
+growthcircle/claude-sonnet-5
 growthcircle/deepseek-ocr
+growthcircle/deepseek-r1
 growthcircle/deepseek-r1-0528
 growthcircle/deepseek-r1-250528
+growthcircle/deepseek-v3
 growthcircle/deepseek-v3-0324
+growthcircle/deepseek-v3.1
 growthcircle/deepseek-v3.1-terminus
 growthcircle/deepseek-v3.2
 growthcircle/deepseek-v3.2-exp
+growthcircle/deepseek-v3.2-think
 growthcircle/deepseek-v4-flash
 growthcircle/deepseek-v4-pro
 growthcircle/gemini-2.0-flash
@@ -872,10 +881,13 @@ growthcircle/gemini-3.1-flash-lite-preview
 growthcircle/gemini-3.1-pro-preview
 growthcircle/gemini-3.1-pro-preview-thinking
 growthcircle/gemini-3.5-flash
+growthcircle/gemini-3.5-flash-lite
+growthcircle/gemini-omni-flash-preview
 growthcircle/glm-4.6
 growthcircle/glm-4.7
 growthcircle/glm-5
 growthcircle/glm-5.1
+growthcircle/glm-5.2
 growthcircle/kimi-k2-instruct
 growthcircle/kimi-k2-thinking
 growthcircle/kimi-k2.5
@@ -887,7 +899,6 @@ growthcircle/MiniMax-M2.7-highspeed
 ### Team
 
 ```text
-growthcircle/gpt-5.3-codex
 growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.1.33
+
+- Synced the bundled model catalog with what `ai.growthcircle.id` actually
+  serves, verified against live paid and free keys. The bundled lists now match
+  the live catalog exactly: paid 64 models, free 22.
+- Removed `gpt-5.3-codex` from every tier. It no longer exists upstream —
+  `/v1/models` does not return it and calling it is rejected as an unknown
+  model — so the previous lists advertised a model that could not be used.
+- Added the models that had appeared upstream but were missing here: Claude
+  Opus 5, Sonnet 5, Opus 4.8 and Fable 5; DeepSeek R1, V3, V3.1 and V3.2-think;
+  Gemini 3.5 Flash Lite and Omni Flash Preview; GLM 5.2; and on the free tier,
+  GPT-5.3 Codex Spark, MiMo v2.5 and MiMo v2.5 Pro.
+- Internal routing variants (`gpt-5.6-sol`, `gpt-5.6-terra`) are deliberately
+  excluded; they are backend aliases of `gpt-5.6`, not separate user choices.
+- Regenerated the manifest allowlists, the manifest model catalog, and the
+  README catalog tables from the same source so the four cannot drift apart.
+
+This only affects the fallback path used when no API key is set. Runtime
+`/models` discovery was already authoritative and unaffected.
+
 ## 0.1.32
 
 - Packaging metadata only. No runtime behavior changed for any client, and no
