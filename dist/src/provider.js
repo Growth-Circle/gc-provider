@@ -44,6 +44,12 @@ export const FREE_TEXT_MODEL_IDS = [
     "MiniMax-M2.7-highspeed",
     "mimo-v2.5",
     "mimo-v2.5-pro",
+    "laguna-s-2.1",
+    "qwen3.7-flash",
+    "gpt-5.6-luna",
+    "muse-spark-1.2-contributor",
+    "step-3.5-flash",
+    "hy3",
 ];
 export const PAID_TEXT_MODEL_IDS = [
     "gpt-5.3-codex-spark",
@@ -110,6 +116,12 @@ export const PAID_TEXT_MODEL_IDS = [
     "MiniMax-M2.7",
     "MiniMax-M3",
     "MiniMax-M2.7-highspeed",
+    "qwen3.7-flash",
+    "gpt-5.6-luna",
+    "muse-spark-1.2-contributor",
+    "step-3.5-flash",
+    "mimo-v2.5",
+    "hy3",
 ];
 export const TEAM_TEXT_MODEL_IDS = [
     "gpt-5.3-codex-spark",

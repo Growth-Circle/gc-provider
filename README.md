@@ -825,6 +825,12 @@ growthcircle/MiniMax-M3-free
 growthcircle/MiniMax-M2.7-highspeed-free
 growthcircle/mimo-v2.5-free
 growthcircle/mimo-v2.5-pro-free
+growthcircle/laguna-s-2.1-free
+growthcircle/qwen3.7-flash-free
+growthcircle/gpt-5.6-luna-free
+growthcircle/muse-spark-1.2-contributor-free
+growthcircle/step-3.5-flash-free
+growthcircle/hy3-free
 ```
 
 ### Paid
@@ -894,6 +900,12 @@ growthcircle/kimi-k2.5
 growthcircle/MiniMax-M2.7
 growthcircle/MiniMax-M3
 growthcircle/MiniMax-M2.7-highspeed
+growthcircle/qwen3.7-flash
+growthcircle/gpt-5.6-luna
+growthcircle/muse-spark-1.2-contributor
+growthcircle/step-3.5-flash
+growthcircle/mimo-v2.5
+growthcircle/hy3
 ```
 
 ### Team

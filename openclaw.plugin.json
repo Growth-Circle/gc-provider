@@ -1,7 +1,7 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.33",
+  "version": "0.1.34",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": [
     "./index.ts"
@@ -68,7 +68,13 @@
           "growthcircle/MiniMax-M3-free",
           "growthcircle/MiniMax-M2.7-highspeed-free",
           "growthcircle/mimo-v2.5-free",
-          "growthcircle/mimo-v2.5-pro-free"
+          "growthcircle/mimo-v2.5-pro-free",
+          "growthcircle/laguna-s-2.1-free",
+          "growthcircle/qwen3.7-flash-free",
+          "growthcircle/gpt-5.6-luna-free",
+          "growthcircle/muse-spark-1.2-contributor-free",
+          "growthcircle/step-3.5-flash-free",
+          "growthcircle/hy3-free"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.3-codex-spark-free",
@@ -92,7 +98,13 @@
           "growthcircle/MiniMax-M3-free",
           "growthcircle/MiniMax-M2.7-highspeed-free",
           "growthcircle/mimo-v2.5-free",
-          "growthcircle/mimo-v2.5-pro-free"
+          "growthcircle/mimo-v2.5-pro-free",
+          "growthcircle/laguna-s-2.1-free",
+          "growthcircle/qwen3.7-flash-free",
+          "growthcircle/gpt-5.6-luna-free",
+          "growthcircle/muse-spark-1.2-contributor-free",
+          "growthcircle/step-3.5-flash-free",
+          "growthcircle/hy3-free"
         ],
         "message": "GrowthCircle.id free models in /model picker (multi-select)"
       }
@@ -178,7 +190,13 @@
           "growthcircle/kimi-k2.5",
           "growthcircle/MiniMax-M2.7",
           "growthcircle/MiniMax-M3",
-          "growthcircle/MiniMax-M2.7-highspeed"
+          "growthcircle/MiniMax-M2.7-highspeed",
+          "growthcircle/qwen3.7-flash",
+          "growthcircle/gpt-5.6-luna",
+          "growthcircle/muse-spark-1.2-contributor",
+          "growthcircle/step-3.5-flash",
+          "growthcircle/mimo-v2.5",
+          "growthcircle/hy3"
         ],
         "initialSelections": [
           "growthcircle/gpt-5.3-codex-spark",
@@ -244,7 +262,13 @@
           "growthcircle/kimi-k2.5",
           "growthcircle/MiniMax-M2.7",
           "growthcircle/MiniMax-M3",
-          "growthcircle/MiniMax-M2.7-highspeed"
+          "growthcircle/MiniMax-M2.7-highspeed",
+          "growthcircle/qwen3.7-flash",
+          "growthcircle/gpt-5.6-luna",
+          "growthcircle/muse-spark-1.2-contributor",
+          "growthcircle/step-3.5-flash",
+          "growthcircle/mimo-v2.5",
+          "growthcircle/hy3"
         ],
         "message": "GrowthCircle.id paid models in /model picker (multi-select)"
       }
@@ -1844,6 +1868,150 @@
             }
           },
           {
+            "id": "qwen3.7-flash",
+            "name": "qwen3.7-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.6-luna",
+            "name": "gpt-5.6-luna",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "muse-spark-1.2-contributor",
+            "name": "muse-spark-1.2-contributor",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "step-3.5-flash",
+            "name": "step-3.5-flash",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "mimo-v2.5",
+            "name": "mimo-v2.5",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "hy3",
+            "name": "hy3",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
             "id": "gpt-5.3-codex-spark-free",
             "name": "gpt-5.3-codex-spark-free",
             "api": "openai-completions",
@@ -2352,6 +2520,150 @@
           {
             "id": "mimo-v2.5-pro-free",
             "name": "mimo-v2.5-pro-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "laguna-s-2.1-free",
+            "name": "laguna-s-2.1-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "qwen3.7-flash-free",
+            "name": "qwen3.7-flash-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-5.6-luna-free",
+            "name": "gpt-5.6-luna-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "muse-spark-1.2-contributor-free",
+            "name": "muse-spark-1.2-contributor-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "step-3.5-flash-free",
+            "name": "step-3.5-flash-free",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "hy3-free",
+            "name": "hy3-free",
             "api": "openai-completions",
             "input": [
               "text"

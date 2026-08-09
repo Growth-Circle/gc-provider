@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.34
+
+- Added the new CommandCode-backed GrowthCircle models to the fallback Free and
+  Paid catalogs. Free ids use `-free`; Paid ids do not.
+- Kept `laguna-s-2.1-free` Free-only and left every new model out of Team.
+- Synced OpenClaw manifest, Hermes fallback models, and README catalog metadata.
+
 ## 0.1.33
 
 - Synced the bundled model catalog with what `ai.growthcircle.id` actually

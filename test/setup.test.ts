@@ -297,7 +297,7 @@ describe("codex adapter", () => {
 
   it("honours CODEX_HOME", () => {
     vi.stubEnv("CODEX_HOME", "/custom/codex");
-    expect(codexProfilePath(makeContext())).toBe("/custom/codex/growthcircle.config.toml");
+    expect(codexProfilePath(makeContext())).toBe(join("/custom/codex", "growthcircle.config.toml"));
   });
 });
 

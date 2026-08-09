@@ -33,6 +33,19 @@ FALLBACK_MODELS = (
     "gemini-2.5-flash-free",
     "MiniMax-M3",
     "MiniMax-M3-free",
+    "laguna-s-2.1-free",
+    "qwen3.7-flash",
+    "qwen3.7-flash-free",
+    "gpt-5.6-luna",
+    "gpt-5.6-luna-free",
+    "muse-spark-1.2-contributor",
+    "muse-spark-1.2-contributor-free",
+    "step-3.5-flash",
+    "step-3.5-flash-free",
+    "mimo-v2.5",
+    "mimo-v2.5-free",
+    "hy3",
+    "hy3-free",
 )
 
 

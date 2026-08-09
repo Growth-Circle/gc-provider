@@ -86,7 +86,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.33");
+    expect(packageJson.version).toBe("0.1.34");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -113,7 +113,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.33"');
+    expect(hermesPluginYaml).toContain('version: "0.1.34"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
@@ -136,8 +136,8 @@ describe("GrowthCircle.id model catalog", () => {
     );
     expect(readme).toContain("openclaw plugins uninstall gc-provider --dry-run");
     expect(readme).toContain("openclaw plugins uninstall gc-provider --force");
-    expect(readme).toContain(
-      "openclaw plugins install clawhub:gc-provider --force\nopenclaw plugins uninstall gc-provider --force",
+    expect(readme).toMatch(
+      /openclaw plugins install clawhub:gc-provider --force\r?\nopenclaw plugins uninstall gc-provider --force/,
     );
     expect(readme).not.toContain("openclaw plugins update gc-provider@latest");
     expect(readme).not.toContain(
@@ -424,6 +424,14 @@ describe("GrowthCircle.id model catalog", () => {
     expect(growthCircleModelRefsForTier("free")).toEqual(FREE_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
+    expect(FREE_TEXT_MODEL_REFS).toContain("growthcircle/laguna-s-2.1-free");
+    expect(PAID_TEXT_MODEL_REFS).not.toContain("growthcircle/laguna-s-2.1");
+    expect(TEAM_TEXT_MODEL_REFS).not.toContain("growthcircle/laguna-s-2.1");
+    for (const model of ["qwen3.7-flash", "gpt-5.6-luna", "muse-spark-1.2-contributor", "step-3.5-flash", "deepseek-v4-flash", "mimo-v2.5", "hy3"]) {
+      expect(PAID_TEXT_MODEL_REFS).toContain(`growthcircle/${model}`);
+      expect(FREE_TEXT_MODEL_REFS).toContain(`growthcircle/${model}-free`);
+      expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}`);
+    }
   });
 
   it("seeds the configured provider catalog and /model allowlist with all tier text models", () => {
