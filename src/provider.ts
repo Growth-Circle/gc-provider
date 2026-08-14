@@ -15,15 +15,20 @@ export const PROVIDER_LABEL = "GrowthCircle.id";
 export const ENV_VAR = "GROWTHCIRCLE_API_KEY";
 export const BASE_URL = "https://ai.growthcircle.id/v1";
 export const FREE_MODEL_SUFFIX = "-free";
-export const DEFAULT_MODEL_ID = "gpt-5.6";
+export const DEFAULT_MODEL_ID = "gpt-5.6-sol";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
-export const DEFAULT_FREE_MODEL_ID = `${DEFAULT_MODEL_ID}${FREE_MODEL_SUFFIX}`;
+export const DEFAULT_FREE_MODEL_ID = `MiniMax-M3${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
 export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
 export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}`;
 export const DEFAULT_FREE_IMAGE_MODEL_ID = "gpt-image-2-free";
 export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
-const GROWTHCIRCLE_REASONING_MODEL_IDS = new Set(["gpt-5.5", DEFAULT_MODEL_ID]);
+const GROWTHCIRCLE_REASONING_MODEL_IDS = new Set([
+  "gpt-5.5",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
+]);
 export const TEAM_IMAGE_MODEL_IDS = [
   DEFAULT_IMAGE_MODEL_ID,
   "gc-image-pro-square",
@@ -32,41 +37,25 @@ export const TEAM_IMAGE_MODEL_IDS = [
 ] as const;
 
 export const FREE_TEXT_MODEL_IDS = [
-  "gpt-5.3-codex-spark",
-  "gpt-5.4",
-  "gpt-5.4-mini",
-  DEFAULT_MODEL_ID,
-  "gpt-5.5",
-  "claude-haiku-4-5-20251001",
-  "claude-opus-4-6",
-  "claude-opus-4-7",
-  "claude-sonnet-4-6",
-  "deepseek-v4-flash",
-  "deepseek-v4-pro",
-  "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-pro",
-  "gemini-3-flash-preview",
-  "gemini-3-pro-preview",
-  "gemini-3.1-pro-preview",
-  "MiniMax-M2.7",
-  "MiniMax-M3",
-  "MiniMax-M2.7-highspeed",
-  "mimo-v2.5",
-  "mimo-v2.5-pro",
   "laguna-s-2.1",
   "qwen3.7-flash",
   "gpt-5.6-luna",
   "muse-spark-1.2-contributor",
   "step-3.5-flash",
+  "deepseek-v4-flash",
+  "mimo-v2.5",
   "hy3",
+  "Step-3.7-Flash",
+  "MiniMax-M2.5",
+  "MiniMax-M2.7",
+  "MiniMax-M3",
 ] as const;
 
 export const PAID_TEXT_MODEL_IDS = [
-  "gpt-5.3-codex-spark",
   "gpt-5.4",
   "gpt-5.4-mini",
   DEFAULT_MODEL_ID,
+  "gpt-5.6-terra",
   "gpt-5.5",
   "claude-3-5-haiku-latest",
   "claude-fable-5",
@@ -136,7 +125,6 @@ export const PAID_TEXT_MODEL_IDS = [
 ] as const;
 
 export const TEAM_TEXT_MODEL_IDS = [
-  "gpt-5.3-codex-spark",
   "gpt-5.4",
   "gpt-5.4-mini",
   DEFAULT_MODEL_ID,
@@ -194,7 +182,7 @@ const BASE_GROWTHCIRCLE_THINKING_LEVELS = [
 
 export const DEFAULT_MODEL: ModelDefinitionConfig = {
   id: DEFAULT_MODEL_ID,
-  name: "GPT-5.6",
+  name: "GPT-5.6-sol",
   api: "openai-completions",
   reasoning: true,
   input: ["text", "image"],
@@ -207,7 +195,7 @@ export const DEFAULT_MODEL: ModelDefinitionConfig = {
 export const DEFAULT_FREE_MODEL: ModelDefinitionConfig = {
   ...DEFAULT_MODEL,
   id: DEFAULT_FREE_MODEL_ID,
-  name: "GPT-5.6 Free",
+  name: "MiniMax-M3 Free",
 };
 
 type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>;
@@ -350,6 +338,10 @@ function growthCircleCatalogModelIdsForTier(tier: GrowthCircleKeyTier): string[]
     defaultModelId,
     ...growthCircleModelIdsForTier(tier).filter((modelId) => modelId !== defaultModelId),
   ];
+}
+
+export function growthCircleFallbackModelsForTier(tier: GrowthCircleKeyTier): ModelDefinitionConfig[] {
+  return growthCircleCatalogModelIdsForTier(tier).map((id) => createModelDefinition({ id }));
 }
 
 export function growthCircleImageModelRefForTier(tier: GrowthCircleKeyTier): string {

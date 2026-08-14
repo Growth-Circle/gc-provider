@@ -22,6 +22,8 @@ import {
   applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
   growthCircleDefaultModelRefForTier,
+  growthCircleFallbackModelsForTier,
+  isGrowthCircleApiKeyForTier,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
   resolveGrowthCircleThinkingProfile,
@@ -110,13 +112,20 @@ const growthCirclePlugin: OpenClawPluginDefinition = definePluginEntry({
         run: async (ctx) => {
           const { apiKey } = ctx.resolveProviderApiKey(PROVIDER_ID);
           if (!apiKey) return null;
+          const tier = isGrowthCircleApiKeyForTier(apiKey, "free")
+            ? "free"
+            : isGrowthCircleApiKeyForTier(apiKey, "team")
+              ? "team"
+              : "paid";
 
           return {
             provider: {
               baseUrl: BASE_URL,
               apiKey,
               api: "openai-completions",
-              models: await fetchGrowthCircleModels({ apiKey }),
+              models: await fetchGrowthCircleModels({ apiKey }).catch(() =>
+                growthCircleFallbackModelsForTier(tier),
+              ),
             },
           };
         },
@@ -179,6 +188,8 @@ export {
   TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
+  growthCircleFallbackModelsForTier,
+  isGrowthCircleApiKeyForTier,
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.35
+
+- Replaced the retired bare `gpt-5.6` default with `gpt-5.6-sol` for Paid and
+  Team onboarding, and `MiniMax-M3-free` for Free onboarding.
+- Reduced the bundled Free fallback to the 12 models currently enabled by the
+  GrowthCircle pricing, allowlist, and gateway routes.
+- Kept `gpt-5.6-luna` on the CLIProxyAPI route for both Free and Paid keys.
+- Added a verified bundled fallback when live `/v1/models` discovery fails.
+- Synced the OpenClaw manifest, Hermes fallback, generated distribution, and
+  documentation with the corrected tier catalogs.
+
 ## 0.1.34
 
 - Added the new CommandCode-backed GrowthCircle models to the fallback Free and

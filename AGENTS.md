@@ -4,7 +4,7 @@ SERVER INI ADALAH SERVER PRODUCTION ACTIVE DAN DIPAKAI OLEH RIBUAN MEMBER. Janga
 
 # gc-provider Agent Guide
 
-Last updated: 2026-07-10
+Last updated: 2026-08-14
 
 This repository publishes the GrowthCircle.id provider plugin for OpenClaw. Use
 this file as the canonical operating guide for AI agents and maintainers working
@@ -156,8 +156,8 @@ Do not bump one of these without checking the rest.
 
 ## GrowthCircle Model Rules
 
-- Paid/team default model: `growthcircle/gpt-5.6`
-- Free default model: `growthcircle/gpt-5.6-free`
+- Paid/team default model: `growthcircle/gpt-5.6-sol`
+- Free default model: `growthcircle/MiniMax-M3-free`
 - Free-tier model ids must use the `-free` suffix.
 - Keep model refs tier-specific:
   - free: `FREE_TEXT_MODEL_REFS`

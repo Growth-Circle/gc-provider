@@ -1,6 +1,6 @@
 {
   "name": "gc-provider",
-  "version": "0.1.34",
+  "version": "0.1.35",
   "description": "GrowthCircle.id model provider for OpenClaw and Hermes Agent, plus a one-command setup CLI for Codex, Claude Code, Zed, opencode, Kilo and Trae Agent.",
   "type": "module",
   "license": "MIT",

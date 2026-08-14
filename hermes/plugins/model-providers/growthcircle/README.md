@@ -44,11 +44,11 @@ hermes model
 Run a direct smoke test with a model returned by `/v1/models`:
 
 ```sh
-hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6
+hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6-sol
 ```
 
 Free keys must use model ids returned by `/v1/models`, usually with the
-`-free` suffix such as `gpt-5.6-free`.
+`-free` suffix such as `gpt-5.6-luna-free`.
 
 ## Update
 

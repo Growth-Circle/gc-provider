@@ -97,7 +97,7 @@ curl https://ai.growthcircle.id/v1/models \
 ```
 
 The key tier decides the model list. Free keys use `-free` model ids, for
-example `gpt-5.6-free`.
+example `gpt-5.6-luna-free`.
 
 ---
 
@@ -150,14 +150,14 @@ CLI says which it chose.
 ```console
 $ npx gc-provider setup codex
 GrowthCircle.id  tier=paid  models=64  live catalog from GrowthCircle.id
-default model: gpt-5.6
+default model: gpt-5.6-sol
 
 Codex CLI  create ~/.codex/growthcircle.config.toml
-  · profile "growthcircle" -> gpt-5.6
+  · profile "growthcircle" -> gpt-5.6-sol
   · wire_api = "responses" (GrowthCircle.id serves /v1/responses)
   · key read from $GROWTHCIRCLE_API_KEY, not stored in this file
   + # Managed by gc-provider. Regenerate: npx gc-provider setup
-  + model = "gpt-5.6"
+  + model = "gpt-5.6-sol"
   + model_provider = "growthcircle"
   + [model_providers.growthcircle]
   + base_url = "https://ai.growthcircle.id/v1"
@@ -192,7 +192,7 @@ To make GrowthCircle the default for every Codex session instead, add these two
 lines to the **top** of `~/.codex/config.toml`, above the first `[table]` header:
 
 ```toml
-model = "gpt-5.6"
+model = "gpt-5.6-sol"
 model_provider = "growthcircle"
 ```
 
@@ -340,7 +340,7 @@ Writes `provider.growthcircle` into `~/.config/opencode/opencode.json`, using
 opencode
 ```
 
-Run `/models` and pick `growthcircle/gpt-5.6`.
+Run `/models` and pick `growthcircle/gpt-5.6-sol`.
 
 **Update**
 
@@ -370,7 +370,7 @@ unresolved.
 
 **Use**
 
-Select `growthcircle/gpt-5.6` in the Kilo model picker.
+Select `growthcircle/gpt-5.6-sol` in the Kilo model picker.
 
 **Update**
 
@@ -445,7 +445,7 @@ internal state.
 2. **API Provider** → `OpenAI Compatible`.
 3. **Base URL** → `https://ai.growthcircle.id/v1`
 4. **API Key** → your GrowthCircle key.
-5. **Model ID** → `gpt-5.6` (or `gpt-5.6-free` on a free key).
+5. **Model ID** → `gpt-5.6-sol` (or `MiniMax-M3-free` on a free key).
 6. Save.
 
 **Update** Reopen the same panel and change the Model ID. Cline can re-fetch the
@@ -464,7 +464,7 @@ Identical to Cline — Roo also stores provider settings in VS Code state.
 2. **API Provider** → `OpenAI Compatible`.
 3. **Base URL** → `https://ai.growthcircle.id/v1`
 4. **API Key** → your GrowthCircle key.
-5. **Model** → `gpt-5.6`.
+5. **Model** → `gpt-5.6-sol`.
 
 **Update** Change the model in the same panel.
 
@@ -480,7 +480,7 @@ Works, but with real limitations you should know before switching.
 2. Scroll to the **OpenAI** section.
 3. Enable **Override OpenAI Base URL** → `https://ai.growthcircle.id/v1`
 4. **OpenAI API Key** → your GrowthCircle key.
-5. Add a custom model name, for example `gpt-5.6`.
+5. Add a custom model name, for example `gpt-5.6-sol`.
 6. Click **Verify**.
 
 **Known limitations, all on Cursor's side:**
@@ -686,8 +686,8 @@ openclaw gateway restart
 openclaw models list --provider growthcircle
 ```
 
-The paid and team default model is `growthcircle/gpt-5.6`; the free default is
-`growthcircle/gpt-5.6-free`.
+The paid and team default model is `growthcircle/gpt-5.6-sol`; the free default is
+`growthcircle/MiniMax-M3-free`.
 
 If OpenClaw prints `plugins.allow is empty`, add this provider to the plugin
 allowlist:
@@ -720,7 +720,7 @@ hermes model
 Smoke test with a model returned by `/v1/models`:
 
 ```sh
-hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6
+hermes -z "Reply with one short sentence." --provider growthcircle -m gpt-5.6-sol
 ```
 
 Local checkout install for development:
@@ -803,43 +803,27 @@ lists below are the text-inference models currently seeded for each key tier.
 ### Free
 
 ```text
-growthcircle/gpt-5.3-codex-spark-free
-growthcircle/gpt-5.4-free
-growthcircle/gpt-5.4-mini-free
-growthcircle/gpt-5.6-free
-growthcircle/gpt-5.5-free
-growthcircle/claude-haiku-4-5-20251001-free
-growthcircle/claude-opus-4-6-free
-growthcircle/claude-opus-4-7-free
-growthcircle/claude-sonnet-4-6-free
-growthcircle/deepseek-v4-flash-free
-growthcircle/deepseek-v4-pro-free
-growthcircle/gemini-2.5-flash-free
-growthcircle/gemini-2.5-flash-lite-free
-growthcircle/gemini-2.5-pro-free
-growthcircle/gemini-3-flash-preview-free
-growthcircle/gemini-3-pro-preview-free
-growthcircle/gemini-3.1-pro-preview-free
-growthcircle/MiniMax-M2.7-free
-growthcircle/MiniMax-M3-free
-growthcircle/MiniMax-M2.7-highspeed-free
-growthcircle/mimo-v2.5-free
-growthcircle/mimo-v2.5-pro-free
 growthcircle/laguna-s-2.1-free
 growthcircle/qwen3.7-flash-free
 growthcircle/gpt-5.6-luna-free
 growthcircle/muse-spark-1.2-contributor-free
 growthcircle/step-3.5-flash-free
+growthcircle/deepseek-v4-flash-free
+growthcircle/mimo-v2.5-free
 growthcircle/hy3-free
+growthcircle/Step-3.7-Flash-free
+growthcircle/MiniMax-M2.5-free
+growthcircle/MiniMax-M2.7-free
+growthcircle/MiniMax-M3-free
 ```
 
 ### Paid
 
 ```text
-growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini
-growthcircle/gpt-5.6
+growthcircle/gpt-5.6-sol
+growthcircle/gpt-5.6-terra
 growthcircle/gpt-5.5
 growthcircle/claude-3-5-haiku-latest
 growthcircle/claude-fable-5
@@ -911,10 +895,9 @@ growthcircle/hy3
 ### Team
 
 ```text
-growthcircle/gpt-5.3-codex-spark
 growthcircle/gpt-5.4
 growthcircle/gpt-5.4-mini
-growthcircle/gpt-5.6
+growthcircle/gpt-5.6-sol
 growthcircle/gpt-5.5
 ```
 

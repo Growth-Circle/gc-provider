@@ -15,6 +15,7 @@ import {
   applyGrowthCircleDefaultsForTier,
   fetchGrowthCircleModels,
   growthCircleModelRefsForTier,
+  growthCircleFallbackModelsForTier,
   normalizeGrowthCircleModels,
   resolveDynamicGrowthCircleModel,
   resolveGrowthCircleDefaultThinkingLevel,
@@ -80,13 +81,28 @@ const hermesInstaller = readFileSync(
   "utf8",
 );
 
+const EXPECTED_FREE_TEXT_MODEL_REFS = [
+  "growthcircle/laguna-s-2.1-free",
+  "growthcircle/qwen3.7-flash-free",
+  "growthcircle/gpt-5.6-luna-free",
+  "growthcircle/muse-spark-1.2-contributor-free",
+  "growthcircle/step-3.5-flash-free",
+  "growthcircle/deepseek-v4-flash-free",
+  "growthcircle/mimo-v2.5-free",
+  "growthcircle/hy3-free",
+  "growthcircle/Step-3.7-Flash-free",
+  "growthcircle/MiniMax-M2.5-free",
+  "growthcircle/MiniMax-M2.7-free",
+  "growthcircle/MiniMax-M3-free",
+];
+
 function modelIdFromRef(ref: string): string {
   return ref.slice(ref.indexOf("/") + 1);
 }
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.34");
+    expect(packageJson.version).toBe("0.1.35");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -113,7 +129,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.34"');
+    expect(hermesPluginYaml).toContain('version: "0.1.35"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
@@ -350,10 +366,10 @@ describe("GrowthCircle.id model catalog", () => {
     });
   });
 
-  it("uses OpenClaw GPT-5.6 defaults for the GrowthCircle default model", () => {
+  it("uses GPT-5.6 Sol defaults for the GrowthCircle default model", () => {
     expect(normalizeGrowthCircleModels({ data: [{ id: DEFAULT_MODEL_ID }] })[0]).toMatchObject({
-      id: "gpt-5.6",
-      name: "GPT-5.6",
+      id: "gpt-5.6-sol",
+      name: "GPT-5.6-sol",
       reasoning: true,
       input: ["text", "image"],
       contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
@@ -371,14 +387,14 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("normalizes free-tier model ids with the required -free suffix", () => {
     const models = normalizeGrowthCircleModels(
-      { data: [{ id: DEFAULT_MODEL_ID }, { id: "gpt-5.4-free" }] },
+      { data: [{ id: "gpt-5.6-luna" }, { id: "MiniMax-M3-free" }] },
       { freeModels: true },
     );
 
-    expect(models.map((model) => model.id)).toEqual(["gpt-5.6-free", "gpt-5.4-free"]);
+    expect(models.map((model) => model.id)).toEqual(["gpt-5.6-luna-free", "MiniMax-M3-free"]);
     expect(models[0]).toMatchObject({
-      id: "gpt-5.6-free",
-      name: "GPT-5.6 Free",
+      id: "gpt-5.6-luna-free",
+      name: "GPT-5.6-luna Free",
       contextWindow: DEFAULT_MODEL_LIMITS.contextWindow,
       maxTokens: DEFAULT_MODEL_LIMITS.maxTokens,
     });
@@ -422,6 +438,7 @@ describe("GrowthCircle.id model catalog", () => {
       primary: DEFAULT_FREE_MODEL_REF,
     });
     expect(growthCircleModelRefsForTier("free")).toEqual(FREE_TEXT_MODEL_REFS);
+    expect(FREE_TEXT_MODEL_REFS).toEqual(EXPECTED_FREE_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
     expect(FREE_TEXT_MODEL_REFS).toContain("growthcircle/laguna-s-2.1-free");
@@ -432,6 +449,14 @@ describe("GrowthCircle.id model catalog", () => {
       expect(FREE_TEXT_MODEL_REFS).toContain(`growthcircle/${model}-free`);
       expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}`);
     }
+  });
+
+  it("uses the verified tier fallback when live discovery is unavailable", () => {
+    expect(growthCircleFallbackModelsForTier("free").map((model) => `growthcircle/${model.id}`).sort()).toEqual(
+      [...EXPECTED_FREE_TEXT_MODEL_REFS].sort(),
+    );
+    expect(growthCircleFallbackModelsForTier("paid")[0]?.id).toBe("gpt-5.6-sol");
+    expect(growthCircleFallbackModelsForTier("team")[0]?.id).toBe("gpt-5.6-sol");
   });
 
   it("seeds the configured provider catalog and /model allowlist with all tier text models", () => {
@@ -468,9 +493,6 @@ describe("GrowthCircle.id model catalog", () => {
     expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
       "deepseek-v4-flash-free",
     );
-    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
-      "deepseek-v4-pro-free",
-    );
     expect(paidConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
       "MiniMax-M2.7",
     );
@@ -486,13 +508,13 @@ describe("GrowthCircle.id model catalog", () => {
   });
 
   it("exposes medium as the GrowthCircle reasoning default", () => {
-    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.6" })).toBe("medium");
+    expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.6-sol" })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "gpt-5.5" })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: true })).toBe("medium");
     expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: "custom", reasoning: false })).toBeNull();
-    expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.6" })).toBe(true);
+    expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.6-sol" })).toBe(true);
     expect(supportsGrowthCircleXHighThinking({ modelId: "gpt-5.5" })).toBe(true);
-    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.6" })).toEqual({
+    expect(resolveGrowthCircleThinkingProfile({ modelId: "gpt-5.6-sol" })).toEqual({
       levels: [
         { id: "off" },
         { id: "minimal" },

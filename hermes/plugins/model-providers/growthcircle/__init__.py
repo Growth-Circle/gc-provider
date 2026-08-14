@@ -15,37 +15,38 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://ai.growthcircle.id/v1"
 ENV_VAR = "GROWTHCIRCLE_API_KEY"
 FREE_MODEL_SUFFIX = "-free"
-DEFAULT_MODEL_ID = "gpt-5.6"
+DEFAULT_MODEL_ID = "gpt-5.6-sol"
 DEFAULT_MAX_TOKENS = 36_000
 
 FALLBACK_MODELS = (
-    "gpt-5.6",
-    "gpt-5.6-free",
-    "gpt-5.5",
-    "gpt-5.5-free",
-    "gpt-5.4-mini",
-    "gpt-5.4-mini-free",
-    "gpt-5.3-codex",
-    "gpt-5.3-codex-free",
-    "deepseek-v4-flash",
-    "deepseek-v4-flash-free",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-free",
-    "MiniMax-M3",
-    "MiniMax-M3-free",
-    "laguna-s-2.1-free",
-    "qwen3.7-flash",
-    "qwen3.7-flash-free",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
     "gpt-5.6-luna",
-    "gpt-5.6-luna-free",
+    "gpt-5.5",
+    "gpt-5.4",
+    "gpt-5.4-mini",
+    "deepseek-v4-flash",
+    "qwen3.7-flash",
     "muse-spark-1.2-contributor",
-    "muse-spark-1.2-contributor-free",
     "step-3.5-flash",
-    "step-3.5-flash-free",
     "mimo-v2.5",
-    "mimo-v2.5-free",
     "hy3",
+    "Step-3.7-Flash",
+    "MiniMax-M2.5",
+    "MiniMax-M2.7",
+    "MiniMax-M3",
+    "laguna-s-2.1-free",
+    "qwen3.7-flash-free",
+    "gpt-5.6-luna-free",
+    "muse-spark-1.2-contributor-free",
+    "step-3.5-flash-free",
+    "deepseek-v4-flash-free",
+    "mimo-v2.5-free",
     "hy3-free",
+    "Step-3.7-Flash-free",
+    "MiniMax-M2.5-free",
+    "MiniMax-M2.7-free",
+    "MiniMax-M3-free",
 )
 
 
