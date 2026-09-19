@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.36
+
+- Free text catalog is now GClaw-only Luna (`gpt-5.6-luna-free`). Removed the
+  other Free fallback models that GrowthCircle no longer admits for free keys.
+- Default Free onboarding model is `gpt-5.6-luna-free`.
+- Clarified install docs: `403 MODEL_NOT_ALLOWED_FOR_PLAN` vs
+  `429 FREE_QUOTA_EXHAUSTED` (quota is not a provider rate limit).
+- Synced OpenClaw manifest allowlist/catalog and Hermes fallback with the same
+  Free policy.
+
 ## 0.1.35
 
 - Replaced the retired bare `gpt-5.6` default with `gpt-5.6-sol` for Paid and

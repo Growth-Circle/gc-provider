@@ -82,18 +82,7 @@ const hermesInstaller = readFileSync(
 );
 
 const EXPECTED_FREE_TEXT_MODEL_REFS = [
-  "growthcircle/laguna-s-2.1-free",
-  "growthcircle/qwen3.7-flash-free",
   "growthcircle/gpt-5.6-luna-free",
-  "growthcircle/muse-spark-1.2-contributor-free",
-  "growthcircle/step-3.5-flash-free",
-  "growthcircle/deepseek-v4-flash-free",
-  "growthcircle/mimo-v2.5-free",
-  "growthcircle/hy3-free",
-  "growthcircle/Step-3.7-Flash-free",
-  "growthcircle/MiniMax-M2.5-free",
-  "growthcircle/MiniMax-M2.7-free",
-  "growthcircle/MiniMax-M3-free",
 ];
 
 function modelIdFromRef(ref: string): string {
@@ -102,7 +91,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.35");
+    expect(packageJson.version).toBe("0.1.36");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -129,7 +118,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.35"');
+    expect(hermesPluginYaml).toContain('version: "0.1.36"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
@@ -441,12 +430,17 @@ describe("GrowthCircle.id model catalog", () => {
     expect(FREE_TEXT_MODEL_REFS).toEqual(EXPECTED_FREE_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("paid")).toEqual(PAID_TEXT_MODEL_REFS);
     expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
-    expect(FREE_TEXT_MODEL_REFS).toContain("growthcircle/laguna-s-2.1-free");
-    expect(PAID_TEXT_MODEL_REFS).not.toContain("growthcircle/laguna-s-2.1");
-    expect(TEAM_TEXT_MODEL_REFS).not.toContain("growthcircle/laguna-s-2.1");
+    expect(FREE_TEXT_MODEL_REFS).toEqual(["growthcircle/gpt-5.6-luna-free"]);
+    expect(PAID_TEXT_MODEL_REFS).toContain("growthcircle/gpt-5.6-luna");
+    expect(PAID_TEXT_MODEL_REFS).toContain("growthcircle/qwen3.7-flash");
+    expect(TEAM_TEXT_MODEL_REFS).not.toContain("growthcircle/gpt-5.6-luna-free");
     for (const model of ["qwen3.7-flash", "gpt-5.6-luna", "muse-spark-1.2-contributor", "step-3.5-flash", "deepseek-v4-flash", "mimo-v2.5", "hy3"]) {
       expect(PAID_TEXT_MODEL_REFS).toContain(`growthcircle/${model}`);
-      expect(FREE_TEXT_MODEL_REFS).toContain(`growthcircle/${model}-free`);
+      if (model === "gpt-5.6-luna") {
+        expect(FREE_TEXT_MODEL_REFS).toContain(`growthcircle/${model}-free`);
+      } else {
+        expect(FREE_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}-free`);
+      }
       expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}`);
     }
   });
@@ -484,15 +478,9 @@ describe("GrowthCircle.id model catalog", () => {
       teamConfig.models?.providers?.growthcircle?.models?.map((model) => model.id),
     ).toEqual(expect.arrayContaining(TEAM_TEXT_MODEL_REFS.map(modelIdFromRef)));
 
-    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
-      "MiniMax-M2.7-free",
-    );
-    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
-      "MiniMax-M3-free",
-    );
-    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
-      "deepseek-v4-flash-free",
-    );
+    expect(freeConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toEqual([
+      "gpt-5.6-luna-free",
+    ]);
     expect(paidConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
       "MiniMax-M2.7",
     );

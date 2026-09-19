@@ -212,7 +212,9 @@ openclaw configure --section=model
 - `401`: missing, invalid, or revoked AI key.
 - `403`: key scope, plan, policy, or model entitlement does not allow the
   request.
-- `429`: rate limit, quota, cooldown, or rolling free quota window.
+- `403` + `MODEL_NOT_ALLOWED_FOR_PLAN` / scope denial: model not allowed for this key plan or credential context — not a quota/rate-limit failure.
+- `429` + `FREE_QUOTA_EXHAUSTED`: rolling Free text quota window exhausted — not a provider rate limit.
+- `429` without that code: provider rate limit, cooldown, or concurrency pressure.
 - `503`: requested model or generation path is temporarily unavailable.
 - OpenClaw model picker does not update after install: restart gateway and
   rerun model discovery.

@@ -156,7 +156,9 @@ openclaw gateway restart
 - `401`: missing, invalid, or revoked GrowthCircle key.
 - `403`: key scope, plan, policy, or model entitlement does not allow the
   request.
-- `429`: quota, rate limit, cooldown, or rolling free window.
+- `403` + `MODEL_NOT_ALLOWED_FOR_PLAN`: model not allowed for this key/plan — not quota.
+- `429` + `FREE_QUOTA_EXHAUSTED`: Free rolling quota exhausted — not a provider rate limit.
+- Other `429`: provider rate limit, cooldown, or concurrency.
 - `503`: model/path temporarily unavailable.
 - OpenClaw install looks updated but model list is stale: restart
   `openclaw-gateway` and re-run model discovery.

@@ -35,18 +35,8 @@ FALLBACK_MODELS = (
     "MiniMax-M2.5",
     "MiniMax-M2.7",
     "MiniMax-M3",
-    "laguna-s-2.1-free",
-    "qwen3.7-flash-free",
+    # Free text is GClaw-only Luna (see FREE_TEXT_MODEL_IDS in provider.ts).
     "gpt-5.6-luna-free",
-    "muse-spark-1.2-contributor-free",
-    "step-3.5-flash-free",
-    "deepseek-v4-flash-free",
-    "mimo-v2.5-free",
-    "hy3-free",
-    "Step-3.7-Flash-free",
-    "MiniMax-M2.5-free",
-    "MiniMax-M2.7-free",
-    "MiniMax-M3-free",
 )
 
 

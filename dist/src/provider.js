@@ -8,7 +8,7 @@ export const BASE_URL = "https://ai.growthcircle.id/v1";
 export const FREE_MODEL_SUFFIX = "-free";
 export const DEFAULT_MODEL_ID = "gpt-5.6-sol";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
-export const DEFAULT_FREE_MODEL_ID = `MiniMax-M3${FREE_MODEL_SUFFIX}`;
+export const DEFAULT_FREE_MODEL_ID = `gpt-5.6-luna${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
 export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
 export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}`;
@@ -26,19 +26,10 @@ export const TEAM_IMAGE_MODEL_IDS = [
     "gc-image-pro-landscape",
     "gc-image-pro-portrait",
 ];
+// GClaw-only free text policy: Luna alone. Generic member free text stays empty
+// on GrowthCircle (`AI_TEXT_MODELS_BY_SCOPE.free = []`).
 export const FREE_TEXT_MODEL_IDS = [
-    "laguna-s-2.1",
-    "qwen3.7-flash",
     "gpt-5.6-luna",
-    "muse-spark-1.2-contributor",
-    "step-3.5-flash",
-    "deepseek-v4-flash",
-    "mimo-v2.5",
-    "hy3",
-    "Step-3.7-Flash",
-    "MiniMax-M2.5",
-    "MiniMax-M2.7",
-    "MiniMax-M3",
 ];
 export const PAID_TEXT_MODEL_IDS = [
     "gpt-5.4",
@@ -166,7 +157,7 @@ export const DEFAULT_MODEL = {
 export const DEFAULT_FREE_MODEL = {
     ...DEFAULT_MODEL,
     id: DEFAULT_FREE_MODEL_ID,
-    name: "MiniMax-M3 Free",
+    name: "GPT-5.6 Luna Free",
 };
 export async function fetchGrowthCircleModels({ apiKey, fetchFn = fetch, timeoutMs = 10_000, }) {
     const response = await fetchFn(`${BASE_URL}/models`, {
