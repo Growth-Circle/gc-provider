@@ -8,6 +8,8 @@ export const BASE_URL = "https://ai.growthcircle.id/v1";
 export const FREE_MODEL_SUFFIX = "-free";
 export const DEFAULT_MODEL_ID = "gpt-5.6-sol";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
+export const TEAM_DEFAULT_MODEL_ID = "gpt-6.1-sol";
+export const TEAM_DEFAULT_MODEL_REF = `${PROVIDER_ID}/${TEAM_DEFAULT_MODEL_ID}`;
 export const DEFAULT_FREE_MODEL_ID = `gpt-5.6-luna${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
 export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
@@ -15,6 +17,10 @@ export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}
 export const DEFAULT_FREE_IMAGE_MODEL_ID = "gpt-image-2-free";
 export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
 const GROWTHCIRCLE_REASONING_MODEL_IDS = new Set([
+    "gpt-6.1-sol",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-6-astra",
     "gpt-5.5",
     "gpt-5.6-sol",
     "gpt-5.6-terra",
@@ -104,11 +110,22 @@ export const PAID_TEXT_MODEL_IDS = [
     "hy3",
 ];
 export const TEAM_TEXT_MODEL_IDS = [
-    "gpt-5.4",
-    "gpt-5.4-mini",
-    DEFAULT_MODEL_ID,
-    "gpt-5.5",
+    TEAM_DEFAULT_MODEL_ID,
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-6-astra",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
 ];
+// Refs the gateway no longer serves for the tier. Cleaned out of existing
+// configs so members who onboarded on an older release stop seeing them.
+const RETIRED_MODEL_IDS_BY_TIER = {
+    free: [],
+    paid: ["gpt-5.6", "gpt-5.3-codex"],
+    team: ["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "gpt-5.6", "gpt-5.3-codex"],
+};
+export const GROWTHCIRCLE_WILDCARD_MODEL_REF = `${PROVIDER_ID}/*`;
 export const FREE_TEXT_MODEL_IDS_WITH_SUFFIX = FREE_TEXT_MODEL_IDS.map((modelId) => toGrowthCircleFreeModelId(modelId));
 export const FREE_TEXT_MODEL_REFS = FREE_TEXT_MODEL_IDS_WITH_SUFFIX.map((modelId) => `${PROVIDER_ID}/${modelId}`);
 export const PAID_TEXT_MODEL_REFS = PAID_TEXT_MODEL_IDS.map((modelId) => `${PROVIDER_ID}/${modelId}`);
@@ -205,7 +222,9 @@ export function growthCircleDefaultImageModelRefForApiKey(apiKey) {
     return isGrowthCircleFreeApiKey(apiKey) ? DEFAULT_FREE_IMAGE_MODEL_REF : DEFAULT_IMAGE_MODEL_REF;
 }
 export function growthCircleDefaultModelRefForTier(tier) {
-    return tier === "free" ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+    if (tier === "free")
+        return DEFAULT_FREE_MODEL_REF;
+    return tier === "team" ? TEAM_DEFAULT_MODEL_REF : DEFAULT_MODEL_REF;
 }
 export function growthCircleModelRefsForTier(tier) {
     if (tier === "free")
@@ -222,7 +241,7 @@ function growthCircleModelIdsForTier(tier) {
     return PAID_TEXT_MODEL_IDS;
 }
 function growthCircleCatalogModelIdsForTier(tier) {
-    const defaultModelId = tier === "free" ? DEFAULT_FREE_MODEL_ID : DEFAULT_MODEL_ID;
+    const defaultModelId = growthCircleDefaultModelRefForTier(tier).slice(PROVIDER_ID.length + 1);
     return [
         defaultModelId,
         ...growthCircleModelIdsForTier(tier).filter((modelId) => modelId !== defaultModelId),
@@ -266,6 +285,7 @@ function applyGrowthCircleDefaultsWithTierModels(cfg, tier) {
         defaultModelRef,
         modelRefs,
         catalogModels,
+        retiredModelRefs: RETIRED_MODEL_IDS_BY_TIER[tier].map((modelId) => `${PROVIDER_ID}/${modelId}`),
     });
     return {
         ...withModel,
@@ -300,9 +320,10 @@ function applyGrowthCircleModelCatalogPreset(cfg, params) {
                     existingModels: cfg.agents?.defaults?.models,
                     defaultModelRef: params.defaultModelRef,
                     modelRefs: params.modelRefs,
+                    retiredModelRefs: params.retiredModelRefs,
                 }),
                 model: {
-                    ...readExistingModelFallbacks(cfg),
+                    ...readExistingModelFallbacks(cfg, params.retiredModelRefs),
                     primary: params.defaultModelRef,
                 },
             },
@@ -341,6 +362,8 @@ function mergeGrowthCircleCatalogModels(existingModels, catalogModels) {
 }
 function buildGrowthCircleAgentModelMap(params) {
     const models = { ...(params.existingModels ?? {}) };
+    for (const retiredRef of params.retiredModelRefs)
+        delete models[retiredRef];
     const defaultEntry = { ...models[params.defaultModelRef] };
     models[params.defaultModelRef] = {
         ...defaultEntry,
@@ -349,14 +372,17 @@ function buildGrowthCircleAgentModelMap(params) {
     for (const modelRef of params.modelRefs) {
         models[modelRef] = { ...models[modelRef] };
     }
+    // Wildcard lets models returned by /v1/models pass the agent allowlist without
+    // a plugin release; the explicit refs above stay for aliases and metadata.
+    models[GROWTHCIRCLE_WILDCARD_MODEL_REF] = { ...models[GROWTHCIRCLE_WILDCARD_MODEL_REF] };
     return models;
 }
-function readExistingModelFallbacks(cfg) {
+function readExistingModelFallbacks(cfg, retiredModelRefs) {
     const model = cfg.agents?.defaults?.model;
     if (!isRecord(model) || !Array.isArray(model.fallbacks))
         return {};
     return {
-        fallbacks: model.fallbacks.filter((fallback) => typeof fallback === "string"),
+        fallbacks: model.fallbacks.filter((fallback) => typeof fallback === "string" && !retiredModelRefs.includes(fallback)),
     };
 }
 export function applyGrowthCircleDefaultsForApiKey(cfg, apiKey) {

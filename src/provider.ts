@@ -17,6 +17,8 @@ export const BASE_URL = "https://ai.growthcircle.id/v1";
 export const FREE_MODEL_SUFFIX = "-free";
 export const DEFAULT_MODEL_ID = "gpt-5.6-sol";
 export const DEFAULT_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_MODEL_ID}`;
+export const TEAM_DEFAULT_MODEL_ID = "gpt-6.1-sol";
+export const TEAM_DEFAULT_MODEL_REF = `${PROVIDER_ID}/${TEAM_DEFAULT_MODEL_ID}`;
 export const DEFAULT_FREE_MODEL_ID = `gpt-5.6-luna${FREE_MODEL_SUFFIX}`;
 export const DEFAULT_FREE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_MODEL_ID}`;
 export const DEFAULT_IMAGE_MODEL_ID = "gc-image-pro";
@@ -24,6 +26,10 @@ export const DEFAULT_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_IMAGE_MODEL_ID}
 export const DEFAULT_FREE_IMAGE_MODEL_ID = "gpt-image-2-free";
 export const DEFAULT_FREE_IMAGE_MODEL_REF = `${PROVIDER_ID}/${DEFAULT_FREE_IMAGE_MODEL_ID}`;
 const GROWTHCIRCLE_REASONING_MODEL_IDS = new Set([
+  "gpt-6.1-sol",
+  "gpt-6-sol",
+  "gpt-6-luna",
+  "gpt-6-astra",
   "gpt-5.5",
   "gpt-5.6-sol",
   "gpt-5.6-terra",
@@ -116,11 +122,24 @@ export const PAID_TEXT_MODEL_IDS = [
 ] as const;
 
 export const TEAM_TEXT_MODEL_IDS = [
-  "gpt-5.4",
-  "gpt-5.4-mini",
-  DEFAULT_MODEL_ID,
-  "gpt-5.5",
+  TEAM_DEFAULT_MODEL_ID,
+  "gpt-6-sol",
+  "gpt-6-luna",
+  "gpt-6-astra",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
 ] as const;
+
+// Refs the gateway no longer serves for the tier. Cleaned out of existing
+// configs so members who onboarded on an older release stop seeing them.
+const RETIRED_MODEL_IDS_BY_TIER: Record<GrowthCircleKeyTier, readonly string[]> = {
+  free: [],
+  paid: ["gpt-5.6", "gpt-5.3-codex"],
+  team: ["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "gpt-5.6", "gpt-5.3-codex"],
+};
+
+export const GROWTHCIRCLE_WILDCARD_MODEL_REF = `${PROVIDER_ID}/*`;
 
 export const FREE_TEXT_MODEL_IDS_WITH_SUFFIX = FREE_TEXT_MODEL_IDS.map((modelId) =>
   toGrowthCircleFreeModelId(modelId),
@@ -308,7 +327,8 @@ export function growthCircleDefaultImageModelRefForApiKey(apiKey: unknown): stri
 }
 
 export function growthCircleDefaultModelRefForTier(tier: GrowthCircleKeyTier): string {
-  return tier === "free" ? DEFAULT_FREE_MODEL_REF : DEFAULT_MODEL_REF;
+  if (tier === "free") return DEFAULT_FREE_MODEL_REF;
+  return tier === "team" ? TEAM_DEFAULT_MODEL_REF : DEFAULT_MODEL_REF;
 }
 
 export function growthCircleModelRefsForTier(tier: GrowthCircleKeyTier): string[] {
@@ -324,7 +344,7 @@ function growthCircleModelIdsForTier(tier: GrowthCircleKeyTier): readonly string
 }
 
 function growthCircleCatalogModelIdsForTier(tier: GrowthCircleKeyTier): string[] {
-  const defaultModelId = tier === "free" ? DEFAULT_FREE_MODEL_ID : DEFAULT_MODEL_ID;
+  const defaultModelId = growthCircleDefaultModelRefForTier(tier).slice(PROVIDER_ID.length + 1);
   return [
     defaultModelId,
     ...growthCircleModelIdsForTier(tier).filter((modelId) => modelId !== defaultModelId),
@@ -388,6 +408,7 @@ function applyGrowthCircleDefaultsWithTierModels(
     defaultModelRef,
     modelRefs,
     catalogModels,
+    retiredModelRefs: RETIRED_MODEL_IDS_BY_TIER[tier].map((modelId) => `${PROVIDER_ID}/${modelId}`),
   });
 
   return {
@@ -410,6 +431,7 @@ function applyGrowthCircleModelCatalogPreset(
     defaultModelRef: string;
     modelRefs: readonly string[];
     catalogModels: ModelDefinitionConfig[];
+    retiredModelRefs: readonly string[];
   },
 ): OpenClawConfig {
   const providers = { ...(cfg.models?.providers ?? {}) } as ConfiguredModelProviderMap;
@@ -432,9 +454,10 @@ function applyGrowthCircleModelCatalogPreset(
           existingModels: cfg.agents?.defaults?.models,
           defaultModelRef: params.defaultModelRef,
           modelRefs: params.modelRefs,
+          retiredModelRefs: params.retiredModelRefs,
         }),
         model: {
-          ...readExistingModelFallbacks(cfg),
+          ...readExistingModelFallbacks(cfg, params.retiredModelRefs),
           primary: params.defaultModelRef,
         },
       },
@@ -487,8 +510,10 @@ function buildGrowthCircleAgentModelMap(params: {
   existingModels?: ConfiguredAgentModelMap;
   defaultModelRef: string;
   modelRefs: readonly string[];
+  retiredModelRefs: readonly string[];
 }): ConfiguredAgentModelMap {
   const models = { ...(params.existingModels ?? {}) } as ConfiguredAgentModelMap;
+  for (const retiredRef of params.retiredModelRefs) delete models[retiredRef];
   const defaultEntry = { ...models[params.defaultModelRef] };
   models[params.defaultModelRef] = {
     ...defaultEntry,
@@ -499,14 +524,23 @@ function buildGrowthCircleAgentModelMap(params: {
     models[modelRef] = { ...models[modelRef] };
   }
 
+  // Wildcard lets models returned by /v1/models pass the agent allowlist without
+  // a plugin release; the explicit refs above stay for aliases and metadata.
+  models[GROWTHCIRCLE_WILDCARD_MODEL_REF] = { ...models[GROWTHCIRCLE_WILDCARD_MODEL_REF] };
+
   return models;
 }
 
-function readExistingModelFallbacks(cfg: OpenClawConfig): { fallbacks?: string[] } {
+function readExistingModelFallbacks(
+  cfg: OpenClawConfig,
+  retiredModelRefs: readonly string[],
+): { fallbacks?: string[] } {
   const model = cfg.agents?.defaults?.model;
   if (!isRecord(model) || !Array.isArray(model.fallbacks)) return {};
   return {
-    fallbacks: model.fallbacks.filter((fallback): fallback is string => typeof fallback === "string"),
+    fallbacks: model.fallbacks.filter(
+      (fallback): fallback is string => typeof fallback === "string" && !retiredModelRefs.includes(fallback),
+    ),
   };
 }
 

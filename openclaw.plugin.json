@@ -1,7 +1,7 @@
 {
   "id": "gc-provider",
   "name": "GrowthCircle.id Provider",
-  "version": "0.1.36",
+  "version": "0.1.37",
   "description": "OpenAI-compatible GrowthCircle.id model provider for OpenClaw.",
   "extensions": [
     "./index.ts"
@@ -237,16 +237,22 @@
       ],
       "modelAllowlist": {
         "allowedKeys": [
-          "growthcircle/gpt-5.4",
-          "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-6.1-sol",
+          "growthcircle/gpt-6-sol",
+          "growthcircle/gpt-6-luna",
+          "growthcircle/gpt-6-astra",
           "growthcircle/gpt-5.6-sol",
-          "growthcircle/gpt-5.5"
+          "growthcircle/gpt-5.6-terra",
+          "growthcircle/gpt-5.6-luna"
         ],
         "initialSelections": [
-          "growthcircle/gpt-5.4",
-          "growthcircle/gpt-5.4-mini",
+          "growthcircle/gpt-6.1-sol",
+          "growthcircle/gpt-6-sol",
+          "growthcircle/gpt-6-luna",
+          "growthcircle/gpt-6-astra",
           "growthcircle/gpt-5.6-sol",
-          "growthcircle/gpt-5.5"
+          "growthcircle/gpt-5.6-terra",
+          "growthcircle/gpt-5.6-luna"
         ],
         "message": "GrowthCircle.id team models in /model picker (multi-select)"
       }
@@ -1940,6 +1946,106 @@
               "text"
             ],
             "reasoning": false,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "name": "GPT-6.1-sol",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-6-sol",
+            "name": "GPT-6-sol",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-6-luna",
+            "name": "GPT-6-luna",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
+            "contextWindow": 256000,
+            "maxTokens": 36000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsDeveloperRole": true,
+              "supportsReasoningEffort": true,
+              "supportsStrictMode": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_completion_tokens"
+            }
+          },
+          {
+            "id": "gpt-6-astra",
+            "name": "GPT-6-astra",
+            "api": "openai-completions",
+            "input": [
+              "text",
+              "image"
+            ],
+            "reasoning": true,
             "contextWindow": 256000,
             "maxTokens": 36000,
             "cost": {

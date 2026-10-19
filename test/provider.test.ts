@@ -9,7 +9,10 @@ import {
   DEFAULT_MODEL_REF,
   FREE_TEXT_MODEL_REFS,
   GROWTHCIRCLE_OPENAI_COMPAT,
+  GROWTHCIRCLE_WILDCARD_MODEL_REF,
   PAID_TEXT_MODEL_REFS,
+  TEAM_DEFAULT_MODEL_REF,
+  TEAM_TEXT_MODEL_IDS,
   TEAM_TEXT_MODEL_REFS,
   applyGrowthCircleDefaults,
   applyGrowthCircleDefaultsForTier,
@@ -91,7 +94,7 @@ function modelIdFromRef(ref: string): string {
 
 describe("GrowthCircle.id model catalog", () => {
   it("declares compiled runtime entry metadata for managed package installs", () => {
-    expect(packageJson.version).toBe("0.1.36");
+    expect(packageJson.version).toBe("0.1.37");
     expect(packageJson.files).toEqual(
       expect.arrayContaining([
         "hermes/plugins/model-providers/growthcircle/__init__.py",
@@ -118,7 +121,7 @@ describe("GrowthCircle.id model catalog", () => {
 
   it("ships a Hermes Agent model-provider plugin and installer", () => {
     expect(hermesPluginYaml).toContain("kind: model-provider");
-    expect(hermesPluginYaml).toContain('version: "0.1.36"');
+    expect(hermesPluginYaml).toContain('version: "0.1.37"');
     expect(hermesProvider).toContain("register_provider(growthcircle)");
     expect(hermesProvider).toContain('env_vars=(ENV_VAR,)');
     expect(hermesProvider).toContain('base_url=BASE_URL');
@@ -203,8 +206,12 @@ describe("GrowthCircle.id model catalog", () => {
       id: DEFAULT_MODEL_ID,
       compat: GROWTHCIRCLE_OPENAI_COMPAT,
     });
+    const teamOnlyModelIds = TEAM_TEXT_MODEL_REFS.filter((ref) => !PAID_TEXT_MODEL_REFS.includes(ref)).map(
+      modelIdFromRef,
+    );
     expect(manifest.modelCatalog?.providers?.growthcircle?.models?.map((model) => model.id)).toEqual([
       ...PAID_TEXT_MODEL_REFS.map(modelIdFromRef),
+      ...teamOnlyModelIds,
       ...FREE_TEXT_MODEL_REFS.map(modelIdFromRef),
     ]);
   });
@@ -441,7 +448,11 @@ describe("GrowthCircle.id model catalog", () => {
       } else {
         expect(FREE_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}-free`);
       }
-      expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}`);
+      if (model === "gpt-5.6-luna") {
+        expect(TEAM_TEXT_MODEL_REFS).toContain(`growthcircle/${model}`);
+      } else {
+        expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${model}`);
+      }
     }
   });
 
@@ -450,7 +461,7 @@ describe("GrowthCircle.id model catalog", () => {
       [...EXPECTED_FREE_TEXT_MODEL_REFS].sort(),
     );
     expect(growthCircleFallbackModelsForTier("paid")[0]?.id).toBe("gpt-5.6-sol");
-    expect(growthCircleFallbackModelsForTier("team")[0]?.id).toBe("gpt-5.6-sol");
+    expect(growthCircleFallbackModelsForTier("team")[0]?.id).toBe("gpt-6.1-sol");
   });
 
   it("seeds the configured provider catalog and /model allowlist with all tier text models", () => {
@@ -493,6 +504,148 @@ describe("GrowthCircle.id model catalog", () => {
     expect(paidConfig.models?.providers?.growthcircle?.models?.map((model) => model.id)).toContain(
       "deepseek-v4-pro",
     );
+  });
+
+  it("AC-CAT-001: sets gpt-6.1-sol as the team default model", () => {
+    expect(TEAM_DEFAULT_MODEL_REF).toBe("growthcircle/gpt-6.1-sol");
+    expect(applyGrowthCircleDefaultsForTier({}, "team").agents?.defaults?.model).toEqual({
+      primary: "growthcircle/gpt-6.1-sol",
+    });
+    expect(applyGrowthCircleDefaultsForTier({}, "paid").agents?.defaults?.model).toEqual({
+      primary: DEFAULT_MODEL_REF,
+    });
+  });
+
+  it("AC-CAT-002: lists exactly the 7 team models in code, manifest, Hermes fallback and README", () => {
+    const expected = [
+      "gpt-6.1-sol",
+      "gpt-6-sol",
+      "gpt-6-luna",
+      "gpt-6-astra",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-5.6-luna",
+    ];
+    expect([...TEAM_TEXT_MODEL_IDS]).toEqual(expected);
+    const teamChoice = manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-team-api-key");
+    expect(teamChoice?.modelAllowlist?.allowedKeys).toEqual(TEAM_TEXT_MODEL_REFS);
+    expect(teamChoice?.modelAllowlist?.initialSelections).toEqual(TEAM_TEXT_MODEL_REFS);
+    const hermesTeam = /TEAM_FALLBACK_MODELS = \(([^)]*)\)/u.exec(hermesProvider)?.[1] ?? "";
+    expect([...hermesTeam.matchAll(/"([^"]+)"/gu)].map((match) => match[1])).toEqual(expected);
+    const readmeTeam = /### Team\s+```text\s+([^`]*)```/u.exec(readme)?.[1] ?? "";
+    expect(readmeTeam.trim().split(/\s+/u)).toEqual(TEAM_TEXT_MODEL_REFS);
+    expect(growthCircleModelRefsForTier("team")).toEqual(TEAM_TEXT_MODEL_REFS);
+  });
+
+  it("AC-CAT-003: keeps retired ids out of every team list", () => {
+    const teamChoice = manifest.providerAuthChoices.find((choice) => choice.choiceId === "growthcircle-team-api-key");
+    const hermesTeam = /TEAM_FALLBACK_MODELS = \(([^)]*)\)/u.exec(hermesProvider)?.[1] ?? "";
+    for (const retired of ["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "gpt-5.6"]) {
+      expect(TEAM_TEXT_MODEL_IDS as readonly string[]).not.toContain(retired);
+      expect(TEAM_TEXT_MODEL_REFS).not.toContain(`growthcircle/${retired}`);
+      expect(teamChoice?.modelAllowlist?.allowedKeys).not.toContain(`growthcircle/${retired}`);
+      expect(teamChoice?.modelAllowlist?.initialSelections).not.toContain(`growthcircle/${retired}`);
+      expect(hermesTeam).not.toContain(`"${retired}"`);
+    }
+  });
+
+  it("treats gpt-6 models as reasoning models", () => {
+    for (const id of ["gpt-6.1-sol", "gpt-6-sol", "gpt-6-luna", "gpt-6-astra"]) {
+      expect(resolveGrowthCircleDefaultThinkingLevel({ modelId: id })).toBe("medium");
+      expect(supportsGrowthCircleXHighThinking({ modelId: id })).toBe(true);
+    }
+  });
+
+  it("AC-ALW-001: adds the growthcircle/* wildcard for every tier", () => {
+    expect(GROWTHCIRCLE_WILDCARD_MODEL_REF).toBe("growthcircle/*");
+    for (const tier of ["free", "paid", "team"] as const) {
+      const config = applyGrowthCircleDefaultsForTier({}, tier);
+      expect(config.agents?.defaults?.models).toHaveProperty("growthcircle/*", {});
+      expect(Object.keys(config.agents?.defaults?.models ?? {})).toEqual(
+        expect.arrayContaining(growthCircleModelRefsForTier(tier)),
+      );
+    }
+  });
+
+  it("AC-ALW-002: replaces a retired team primary and drops retired fallbacks", () => {
+    const config = applyGrowthCircleDefaultsForTier(
+      {
+        agents: {
+          defaults: {
+            model: { primary: "growthcircle/gpt-5.5", fallbacks: ["growthcircle/gpt-5.4", "growthcircle/gpt-6-luna"] },
+            models: { "growthcircle/gpt-5.5": {}, "growthcircle/gpt-5.4-mini": {}, "growthcircle/gpt-5.6": {} },
+          },
+        },
+      } as never,
+      "team",
+    );
+    expect(config.agents?.defaults?.model).toEqual({
+      primary: "growthcircle/gpt-6.1-sol",
+      fallbacks: ["growthcircle/gpt-6-luna"],
+    });
+    const allowlist = Object.keys(config.agents?.defaults?.models ?? {});
+    for (const retired of ["gpt-5.5", "gpt-5.4-mini", "gpt-5.6"]) {
+      expect(allowlist).not.toContain(`growthcircle/${retired}`);
+    }
+  });
+
+  it("only cleans bare gpt-5.6 and gpt-5.3-codex for paid keys", () => {
+    const config = applyGrowthCircleDefaultsForTier(
+      {
+        agents: {
+          defaults: {
+            model: { fallbacks: ["growthcircle/gpt-5.5", "growthcircle/gpt-5.6", "growthcircle/gpt-5.3-codex"] },
+            models: { "growthcircle/gpt-5.6": {}, "growthcircle/gpt-5.3-codex": {} },
+          },
+        },
+      } as never,
+      "paid",
+    );
+    expect(config.agents?.defaults?.model).toEqual({
+      primary: DEFAULT_MODEL_REF,
+      fallbacks: ["growthcircle/gpt-5.5"],
+    });
+    const allowlist = Object.keys(config.agents?.defaults?.models ?? {});
+    expect(allowlist).toContain("growthcircle/gpt-5.5");
+    expect(allowlist).not.toContain("growthcircle/gpt-5.6");
+    expect(allowlist).not.toContain("growthcircle/gpt-5.3-codex");
+  });
+
+  it("AC-ALW-003: leaves other providers' refs unchanged and in order", () => {
+    const config = applyGrowthCircleDefaultsForTier(
+      {
+        agents: {
+          defaults: {
+            model: {
+              primary: "growthcircle/gpt-5.5",
+              fallbacks: ["google/gemini-3-pro", "growthcircle/gpt-5.5", "openai/gpt-5.5", "anthropic/claude-opus-4-6"],
+            },
+            models: { "google/gemini-3-pro": { alias: "G" }, "openai/gpt-5.5": {} },
+          },
+        },
+      } as never,
+      "team",
+    );
+    expect(config.agents?.defaults?.model).toEqual({
+      primary: "growthcircle/gpt-6.1-sol",
+      fallbacks: ["google/gemini-3-pro", "openai/gpt-5.5", "anthropic/claude-opus-4-6"],
+    });
+    expect(config.agents?.defaults?.models?.["google/gemini-3-pro"]).toEqual({ alias: "G" });
+    expect(config.agents?.defaults?.models).toHaveProperty("openai/gpt-5.5");
+  });
+
+  it("AC-ALW-004: applying defaults twice is idempotent", () => {
+    for (const tier of ["free", "paid", "team"] as const) {
+      const once = applyGrowthCircleDefaultsForTier(
+        {
+          agents: {
+            defaults: { model: { primary: "growthcircle/gpt-5.5", fallbacks: ["growthcircle/gpt-5.4", "google/x"] } },
+          },
+        } as never,
+        tier,
+      );
+      expect(applyGrowthCircleDefaultsForTier(once, tier)).toEqual(once);
+    }
   });
 
   it("exposes medium as the GrowthCircle reasoning default", () => {

@@ -686,8 +686,14 @@ openclaw gateway restart
 openclaw models list --provider growthcircle
 ```
 
-The paid and team default model is `growthcircle/gpt-5.6-sol`; the free default is
-`growthcircle/MiniMax-M3-free`.
+The paid default model is `growthcircle/gpt-5.6-sol`, the team default is
+`growthcircle/gpt-6.1-sol`, and the free default is `growthcircle/gpt-5.6-luna-free`.
+
+`openclaw configure --section=model` also adds `growthcircle/*` to the agent model
+allowlist, so any model returned by your key's `/v1/models` can be selected with
+`/model growthcircle/<id>` without a plugin update. It also removes retired
+`growthcircle/*` refs (for example `gpt-5.5` on Team keys) from the allowlist and
+fallbacks. Refs from other providers are left untouched.
 
 If OpenClaw prints `plugins.allow is empty`, add this provider to the plugin
 allowlist:
@@ -895,10 +901,13 @@ growthcircle/hy3
 ### Team
 
 ```text
-growthcircle/gpt-5.4
-growthcircle/gpt-5.4-mini
+growthcircle/gpt-6.1-sol
+growthcircle/gpt-6-sol
+growthcircle/gpt-6-luna
+growthcircle/gpt-6-astra
 growthcircle/gpt-5.6-sol
-growthcircle/gpt-5.5
+growthcircle/gpt-5.6-terra
+growthcircle/gpt-5.6-luna
 ```
 
 # Compatibility

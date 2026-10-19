@@ -40,6 +40,19 @@ FALLBACK_MODELS = (
 )
 
 
+# Keep in sync with TEAM_TEXT_MODEL_IDS in src/provider.ts (test/provider.test.ts
+# asserts the two lists match).
+TEAM_FALLBACK_MODELS = (
+    "gpt-6.1-sol",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-6-astra",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+)
+
+
 class GrowthCircleProfile(ProviderProfile):
     """OpenAI-compatible GrowthCircle.id profile with filtered live catalog."""
 
@@ -63,7 +76,7 @@ class GrowthCircleProfile(ProviderProfile):
                 payload = json.loads(resp.read().decode())
         except Exception as exc:
             logger.debug("fetch_models(growthcircle): %s", exc)
-            return None
+            return list(TEAM_FALLBACK_MODELS) if _is_team_api_key(api_key) else None
 
         free_models = _is_free_api_key(api_key)
         seen: set[str] = set()
@@ -202,3 +215,7 @@ def _is_free_api_key(api_key: str | None) -> bool:
 
 def _to_free_model_id(model_id: str) -> str:
     return model_id if model_id.endswith(FREE_MODEL_SUFFIX) else f"{model_id}{FREE_MODEL_SUFFIX}"
+
+
+def _is_team_api_key(api_key: str | None) -> bool:
+    return bool(api_key and api_key.strip().lower().startswith("gc-team-"))
