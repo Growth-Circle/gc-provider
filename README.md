@@ -706,6 +706,30 @@ openclaw gateway restart
 If other non-bundled plugins are already in use, include them in the same JSON
 array instead of replacing the list with only `gc-provider`.
 
+## When your Team quota runs out
+
+GrowthCircle Team (Patungan) keys have a 7-day weighted quota for each member
+share. When it is used up, the gateway answers `429 TEAM_WEIGHTED_QUOTA_EXHAUSTED`
+with a message like "Jatah Patungan 7 hari kamu belum cukup untuk request ini."
+and keeps refusing until the weekly reset. This is a quota limit, not a provider
+rate limit, and it is separate from `429 FREE_QUOTA_EXHAUSTED` on Free keys.
+GrowthCircle also sends an in-app and email notice at 80% and 100% of your quota.
+
+OpenClaw treats every 429 as a rate limit and replaces the provider message with
+its own generic text, so your agent may only say it is rate-limited. Check your
+remaining quota at <https://growthcircle.id/app/patungan>.
+
+To keep the agent answering in the meantime, configure at least one fallback
+model from a different provider. `config set` replaces the whole list, so
+include any fallbacks you already have:
+
+```sh
+openclaw config set agents.defaults.model.fallbacks '["<provider>/<model>"]' --strict-json
+openclaw gateway restart
+```
+
+Replace `<provider>/<model>` with a model you already have access to.
+
 ---
 
 # Hermes Agent plugin
