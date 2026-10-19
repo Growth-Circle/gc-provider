@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.1.37
+
+Versions 0.1.34 through 0.1.36 were never published to npm or ClawHub, so this
+release includes everything from those versions (see below) in addition to the
+changes listed here.
+
+- Updated the Team model catalog to the models the GrowthCircle gateway serves
+  for Team keys today: `gpt-6.1-sol`, `gpt-6-sol`, `gpt-6-luna`,
+  `gpt-6-astra`, `gpt-5.6-sol`, `gpt-5.6-terra` and `gpt-5.6-luna`. The
+  retired `gpt-5.5`, `gpt-5.4` and `gpt-5.4-mini` are no longer offered to Team keys.
+- Team onboarding now defaults to `growthcircle/gpt-6.1-sol`. Paid and Free
+  defaults are unchanged.
+- Added the GPT-6 family to the reasoning models, so they get the medium default
+  and extended thinking levels.
+- Onboarding now adds `growthcircle/*` to the agent model allowlist. Models that
+  appear in your key's `/v1/models` can be selected with `/model growthcircle/<id>`
+  without waiting for a plugin release.
+- Onboarding now removes retired `growthcircle/*` refs from the agent allowlist
+  and fallbacks (Team: `gpt-5.5`, `gpt-5.4`, `gpt-5.4-mini`, bare `gpt-5.6`,
+  `gpt-5.3-codex`; Paid: bare `gpt-5.6` and `gpt-5.3-codex`). Refs from other
+  providers are left untouched, and re-running onboarding gives the same result.
+- Hermes plugin: added a Team fallback list, used when live `/models` discovery
+  fails for a `gc-team-` key.
+- Synced the OpenClaw manifest (Team allowlist and bundled catalog), Hermes
+  fallback and README with the new Team catalog.
+
 ## 0.1.36
 
 - Free text catalog is now GClaw-only Luna (`gpt-5.6-luna-free`). Removed the
